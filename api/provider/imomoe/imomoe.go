@@ -3,6 +3,7 @@ package imomoe
 import (
 	"AynaAPI/api/model"
 	"AynaAPI/api/model/e"
+	"AynaAPI/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cast"
@@ -30,21 +31,41 @@ func InitDefault() *ImomoeVideo {
 	}
 }
 
-func InitWithUid(uid string) *ImomoeVideo {
+func InitWithUid(uid string) (*ImomoeVideo, bool) {
 	idString := regexp.MustCompile("imomoe-[0-9]+-[0-9]+-[0-9]+").FindString(uid)
 	if idString == "" {
-		return nil
+		return nil, false
 	}
 	idstringL := strings.Split(idString, "-")
 	return &ImomoeVideo{
 		Id:       idstringL[1],
 		SourceId: idstringL[2],
 		EpId:     idstringL[3],
-	}
+	}, true
 }
 
-func InitWithUrl(url string) *ImomoeVideo {
-	return nil
+func InitWithUrl(url string) (*ImomoeVideo, bool) {
+	if v, b := InitWithUid(url); b {
+		return v, b
+	}
+	if urlString := regexp.MustCompile("imomoe.la/view/[0-9]+\\.html").FindString(url); urlString != "" {
+		if id, b := utils.SliceString(urlString, 15, -5); b {
+			v := InitDefault()
+			v.Id = id
+			return v, true
+		}
+	}
+	if urlString := regexp.MustCompile("imomoe.la/player/[0-9]+-[0-9]+-[0-9]+\\.html").FindString(url); urlString != "" {
+		if idString, b := utils.SliceString(urlString, 17, -5); b {
+			idstringL := strings.Split(idString, "-")
+			return &ImomoeVideo{
+				Id:       idstringL[0],
+				SourceId: idstringL[1],
+				EpId:     idstringL[2],
+			}, true
+		}
+	}
+	return nil, false
 }
 
 func GenerateUniqueId(id string, sourcdId string, epId string) string {

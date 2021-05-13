@@ -1,6 +1,7 @@
 package anime
 
 import (
+	apiE "AynaAPI/api/model/e"
 	providerApi "AynaAPI/api/provider"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
@@ -23,5 +24,9 @@ func Search(context *gin.Context) {
 	}
 	page := appG.GetIntQueryWithDefault("page", 1)
 	result := providerApi.Search(provider, keyword, page)
-	appG.MakeResponse(http.StatusOK, e.API_OK, result)
+	if result.Status != apiE.SUCCESS {
+		appG.MakeResponse(http.StatusOK, e.BGM_SEARCH_FAIL, result)
+		return
+	}
+	appG.MakeResponse(http.StatusOK, e.API_OK, result.Data)
 }

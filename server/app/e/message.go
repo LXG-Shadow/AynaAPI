@@ -8,6 +8,7 @@ var CODE_MESSAGE = map[int]string{
 
 	BGM_INITIALIZE_FAIL:        "获取信息失败",
 	BGM_PROVIDER_NOT_AVAILABLE: "该来源暂时不可用",
+	BGM_SEARCH_FAIL:            "资源搜索失败",
 }
 
 // GetMessage get error information based on Code

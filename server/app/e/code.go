@@ -11,4 +11,5 @@ const (
 	// Anime provider code
 	BGM_INITIALIZE_FAIL        = 20001
 	BGM_PROVIDER_NOT_AVAILABLE = 20002
+	BGM_SEARCH_FAIL            = 20003
 )

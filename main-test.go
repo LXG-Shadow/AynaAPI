@@ -1,10 +1,11 @@
 package main
 
 import (
-	"AynaAPI/api/uf/imghost"
+	"AynaAPI/api/provider"
 	"fmt"
 )
 
 func main() {
-	fmt.Println(imghost.UploadFileBilibili("conf/123.jpg"))
+	var pvdr provider.ApiProvider
+	fmt.Println(pvdr, pvdr == nil)
 }

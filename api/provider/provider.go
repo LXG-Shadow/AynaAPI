@@ -31,15 +31,36 @@ func IsProviderAvailable(provider string) bool {
 	return false
 }
 
-func InitWithUid(provider string, uid string) *ApiProvider {
+func InitWithUrl(provider string, url string) (*ApiProvider, bool) {
 	var pvdr ApiProvider
+	var b bool
 	switch provider {
 	case IMOMOE:
-		pvdr = imomoeApi.InitWithUid(uid)
+		pvdr, b = imomoeApi.InitWithUrl(url)
 	case YHDM:
-		pvdr = yhdmApi.InitWithUid(uid)
+		pvdr, b = yhdmApi.InitWithUrl(url)
 	default:
-		pvdr = imomoeApi.InitWithUid(uid)
+		pvdr, b = imomoeApi.InitWithUrl(url)
 	}
-	return &pvdr
+	if b {
+		return &pvdr, b
+	}
+	return nil, false
+}
+
+func InitWithUid(provider string, uid string) (*ApiProvider, bool) {
+	var pvdr ApiProvider
+	var b bool
+	switch provider {
+	case IMOMOE:
+		pvdr, b = imomoeApi.InitWithUid(uid)
+	case YHDM:
+		pvdr, b = yhdmApi.InitWithUid(uid)
+	default:
+		pvdr, b = imomoeApi.InitWithUid(uid)
+	}
+	if b {
+		return &pvdr, b
+	}
+	return nil, false
 }

@@ -3,6 +3,7 @@ package yhdm
 import (
 	"AynaAPI/api/model"
 	"AynaAPI/api/model/e"
+	"AynaAPI/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cast"
@@ -28,20 +29,39 @@ func InitDefault() *YhdmVideo {
 	}
 }
 
-func InitWithUid(uid string) *YhdmVideo {
+func InitWithUid(uid string) (*YhdmVideo, bool) {
 	idString := regexp.MustCompile("yhdm-[0-9]+-[^-]+").FindString(uid)
 	if idString == "" {
-		return nil
+		return nil, false
 	}
 	idstringL := strings.Split(idString, "-")
 	return &YhdmVideo{
 		Id:   idstringL[1],
 		EpId: idstringL[2],
-	}
+	}, true
 }
 
-func InitWithUrl(url string) *YhdmVideo {
-	return nil
+func InitWithUrl(url string) (*YhdmVideo, bool) {
+	if v, b := InitWithUid(url); b {
+		return v, b
+	}
+	if urlString := regexp.MustCompile("yhdm\\.so/show/[0-9]+\\.html").FindString(url); urlString != "" {
+		if id, b := utils.SliceString(urlString, 13, -5); b {
+			v := InitDefault()
+			v.Id = id
+			return v, true
+		}
+	}
+	if urlString := regexp.MustCompile("yhdm\\.so/v/[0-9]+-[^-]+\\.html").FindString(url); urlString != "" {
+		if idString, b := utils.SliceString(urlString, 10, -5); b {
+			idstringL := strings.Split(idString, "-")
+			return &YhdmVideo{
+				Id:   idstringL[0],
+				EpId: idstringL[1],
+			}, true
+		}
+	}
+	return nil, false
 }
 
 func GenerateUniqueId(id string, epId string) string {
