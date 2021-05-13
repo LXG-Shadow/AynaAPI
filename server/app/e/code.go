@@ -1,0 +1,14 @@
+package e
+
+const (
+	API_ERROR_UNKNOWN = 10003
+
+	// API CODE
+	API_OK                = 10000
+	API_REQUIRE_PARAMETER = 10001
+	API_INVALID_PARAMETER = 10002
+
+	// Anime provider code
+	BGM_INITIALIZE_FAIL        = 20001
+	BGM_PROVIDER_NOT_AVAILABLE = 20002
+)
