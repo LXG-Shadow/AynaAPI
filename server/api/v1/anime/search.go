@@ -30,3 +30,23 @@ func Search(context *gin.Context) {
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, result.Data)
 }
+
+func SearchAll(context *gin.Context) {
+	appG := app.AppGin{C: context}
+	keyword, b := appG.C.GetQuery("keyword")
+	if !b {
+		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require keyword")
+		return
+	}
+	page := appG.GetIntQueryWithDefault("page", 1)
+	result := map[string]map[string]interface{}{}
+	for provider, status := range providerApi.ProviderStatusMap {
+		if status {
+			resp := providerApi.Search(provider, keyword, page)
+			if resp.Status == apiE.SUCCESS {
+				result[provider] = resp.Data
+			}
+		}
+	}
+	appG.MakeResponse(http.StatusOK, e.API_OK, result)
+}

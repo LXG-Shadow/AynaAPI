@@ -32,3 +32,26 @@ func GetInfo(context *gin.Context) {
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, vModel)
 }
+
+func InfoAll(context *gin.Context) {
+	appG := app.AppGin{C: context}
+	uid, b := appG.C.GetQuery("uid")
+	if !b {
+		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require uid")
+		return
+	}
+	for provider, status := range providerApi.ProviderStatusMap {
+		if status {
+			vModel, b := providerApi.InitWithUid(provider, uid)
+			if !b {
+				continue
+			}
+			if !(*vModel).Initialize() {
+				continue
+			}
+			appG.MakeResponse(http.StatusOK, e.API_OK, vModel)
+			return
+		}
+	}
+	appG.MakeResponse(http.StatusOK, e.BGM_NO_RESULT, "无法找到匹配的uid")
+}

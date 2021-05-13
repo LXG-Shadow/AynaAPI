@@ -39,3 +39,32 @@ func Resolve(context *gin.Context) {
 		(*vModel).GetPlayUrls(),
 	})
 }
+
+func ResolveAll(context *gin.Context) {
+	appG := app.AppGin{C: context}
+	url, b := appG.C.GetQuery("url")
+	if !b {
+		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require url")
+		return
+	}
+	for provider, status := range providerApi.ProviderStatusMap {
+		if status {
+			vModel, b := providerApi.InitWithUrl(provider, url)
+			if !b {
+				continue
+			}
+			if !(*vModel).Initialize() {
+				continue
+			}
+			appG.MakeResponse(http.StatusOK, e.API_OK, struct {
+				Info    *providerApi.ApiProvider `json:"info"`
+				Playurl []model.ApiResource      `json:"playurl"`
+			}{
+				vModel,
+				(*vModel).GetPlayUrls(),
+			})
+			return
+		}
+	}
+	appG.MakeResponse(http.StatusOK, e.BGM_NO_RESULT, "无法找到匹配的url")
+}
