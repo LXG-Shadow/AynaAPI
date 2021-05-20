@@ -1,15 +1,26 @@
 package e
 
 var CODE_MESSAGE = map[int]string{
-	API_ERROR_UNKNOWN:     "Unknown error",
-	API_OK:                "Get success",
-	API_REQUIRE_PARAMETER: "Require parameter",
-	API_INVALID_PARAMETER: "Invalid parameter",
+	ERROR_UNKNOWN: "Unknown error",
+
+	API_ERROR_UNKNOWN:                "Unknown error",
+	API_OK:                           "Get success",
+	API_ERROR_REQUIRE_PARAMETER:      "Require parameter",
+	API_ERROR_INVALID_PARAMETER:      "Invalid parameter",
+	API_ERROR_REQUIRE_TOKEN:          "Require token",
+	API_ERROR_INVALID_TOKEN:          "Invalid token",
+	API_ERROR_UPLOAD_SAVE_IMAGE_FAIL: "Fail to upload image",
+	API_ERROR_UPLOAD_IMAGE_NOT_FOUND: "Image not found",
 
 	BGM_INITIALIZE_FAIL:        "获取信息失败",
 	BGM_PROVIDER_NOT_AVAILABLE: "该来源暂时不可用",
 	BGM_SEARCH_FAIL:            "资源搜索失败",
 	BGM_NO_RESULT:              "无结果",
+
+	AUTH_OK:                     "登录成功",
+	AUTH_ERROR_REQUIRE_USERNAME: "需要用户名",
+	AUTH_ERROR_REQUIRE_PASSWORD: "需要密码",
+	AUTH_ERROR_U_P_NOT_MATCH:    "用户名密码不匹配",
 }
 
 // GetMessage get error information based on Code

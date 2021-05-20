@@ -18,12 +18,12 @@ func GetPlayUrl(context *gin.Context) {
 	}
 	uid, b := appG.C.GetQuery("uid")
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require uid")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require uid")
 		return
 	}
 	vModel, b := providerApi.InitWithUid(provider, uid)
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_INVALID_PARAMETER, "uid not valid")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_INVALID_PARAMETER, "uid not valid")
 		return
 	}
 	if !(*vModel).Initialize() {
@@ -37,7 +37,7 @@ func GetPlayUrlAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	uid, b := appG.C.GetQuery("uid")
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require uid")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require uid")
 		return
 	}
 	for provider, status := range providerApi.ProviderStatusMap {

@@ -13,7 +13,7 @@ func UploadBiliPic(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	b64val, err := appG.C.GetPostForm("cover")
 	if !err {
-		appG.MakeEmptyResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER)
+		appG.MakeEmptyResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER)
 		return
 	}
 	resp := imghost.UploadBilibili(b64val)

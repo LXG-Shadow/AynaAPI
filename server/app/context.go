@@ -2,8 +2,14 @@ package app
 
 import (
 	"AynaAPI/server/app/e"
+	"AynaAPI/server/fs"
+	"AynaAPI/utils/vfile"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
+	"io"
+	"mime/multipart"
+	"os"
+	"path/filepath"
 )
 
 type AppGin struct {
@@ -50,4 +56,35 @@ func (g *AppGin) MakeEmptyResponse(httpCode int, statusCode int) {
 		Data:    nil,
 	})
 	return
+}
+
+func (g *AppGin) SetCookie(name, value string, maxAge int, secure, httpOnly bool) {
+	g.C.SetCookie(name, value, maxAge, "", "", secure, httpOnly)
+}
+
+func (g *AppGin) DeleteCookie(name string) {
+	g.C.SetCookie(name, "", -1, "", "", true, true)
+}
+
+func (g *AppGin) SaveUploadedFileWithMD5(file *multipart.FileHeader) (string, error) {
+	src, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+
+	md5string, err := vfile.CalcFileHeaderMD5(file)
+	if err != nil {
+		return "", err
+	}
+	filename := md5string + vfile.GetFileExt(file.Filename)
+	dst := filepath.Join(fs.GetUploadPath(), filename)
+	out, err := os.Create(dst)
+	if err != nil {
+		return filename, err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, src)
+	return filename, err
 }

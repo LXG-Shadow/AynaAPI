@@ -15,12 +15,12 @@ func BypassCors(context *gin.Context) {
 	value, b := context.GetQuery("url")
 	if !b {
 		appG.MakeResponse(http.StatusBadRequest,
-			e.API_REQUIRE_PARAMETER, "url required")
+			e.API_ERROR_REQUIRE_PARAMETER, "url required")
 		return
 	}
 	if !vhttp.IsUrl(value) {
 		appG.MakeResponse(http.StatusBadRequest,
-			e.API_INVALID_PARAMETER, "not proper url")
+			e.API_ERROR_INVALID_PARAMETER, "not proper url")
 		return
 	}
 	uri, _ := url.Parse(value)

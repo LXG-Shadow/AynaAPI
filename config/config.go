@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/go-ini/ini"
 	"log"
+	"path/filepath"
 )
 
 type API struct {
@@ -12,17 +13,32 @@ type API struct {
 }
 
 type Server struct {
-	Version  string
-	GinMode  string
-	HttpPort int
+	Version   string
+	GinMode   string
+	HttpPort  int
+	JwtSecret string
+	FileRoot  string
+	RealUrl   string
+}
+
+func (self *Server) GetFilePath(path string) string {
+	return filepath.Join(self.FileRoot, path)
+}
+
+type ServerDB struct {
+	SqlitePath  string
+	Name        string
+	TablePrefix string
 }
 
 var APIConfig *API
 var ServerConfig *Server
+var ServerDBConfig *ServerDB
 
 func init() {
 	APIConfig = &API{}
 	ServerConfig = &Server{}
+	ServerDBConfig = &ServerDB{}
 	Initialize()
 }
 
@@ -34,6 +50,7 @@ func Initialize() {
 
 	mapTo(cfg, "API", APIConfig)
 	mapTo(cfg, "Server", ServerConfig)
+	mapTo(cfg, "ServerDB", ServerDBConfig)
 }
 
 // mapTo map section

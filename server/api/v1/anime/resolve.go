@@ -19,12 +19,12 @@ func Resolve(context *gin.Context) {
 	}
 	url, b := appG.C.GetQuery("url")
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require url")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require url")
 		return
 	}
 	vModel, b := providerApi.InitWithUrl(provider, url)
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_INVALID_PARAMETER, "url not match provider")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_INVALID_PARAMETER, "url not match provider")
 		return
 	}
 	if !(*vModel).Initialize() {
@@ -44,7 +44,7 @@ func ResolveAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	url, b := appG.C.GetQuery("url")
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require url")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require url")
 		return
 	}
 	for provider, status := range providerApi.ProviderStatusMap {

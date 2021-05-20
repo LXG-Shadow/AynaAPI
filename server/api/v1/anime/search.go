@@ -19,7 +19,7 @@ func Search(context *gin.Context) {
 	}
 	keyword, b := appG.C.GetQuery("keyword")
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require keyword")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require keyword")
 		return
 	}
 	page := appG.GetIntQueryWithDefault("page", 1)
@@ -35,7 +35,7 @@ func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	keyword, b := appG.C.GetQuery("keyword")
 	if !b {
-		appG.MakeResponse(http.StatusBadRequest, e.API_REQUIRE_PARAMETER, "require keyword")
+		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require keyword")
 		return
 	}
 	page := appG.GetIntQueryWithDefault("page", 1)

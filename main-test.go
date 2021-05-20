@@ -1,11 +1,11 @@
 package main
 
 import (
-	"AynaAPI/api/provider"
+	"AynaAPI/utils/vfile"
 	"fmt"
 )
 
 func main() {
-	var pvdr provider.ApiProvider
-	fmt.Println(pvdr, pvdr == nil)
+	fmt.Println(vfile.CalcFileMD5("main.go"))
+	fmt.Println(vfile.CalcFileMD5("README.md"))
 }
