@@ -11,6 +11,7 @@ var CODE_MESSAGE = map[int]string{
 	API_ERROR_INVALID_TOKEN:          "Invalid token",
 	API_ERROR_UPLOAD_SAVE_IMAGE_FAIL: "Fail to upload image",
 	API_ERROR_UPLOAD_IMAGE_NOT_FOUND: "Image not found",
+	API_ERROR_UPLOAD_IVALID_IMAGE:    "Not a valid image",
 
 	BGM_INITIALIZE_FAIL:        "获取信息失败",
 	BGM_PROVIDER_NOT_AVAILABLE: "该来源暂时不可用",

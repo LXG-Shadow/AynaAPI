@@ -1,4 +1,4 @@
-package general
+package upload
 
 import (
 	apiE "AynaAPI/api/model/e"

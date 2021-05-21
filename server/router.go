@@ -5,6 +5,7 @@ import (
 	"AynaAPI/server/api/v1/anime"
 	"AynaAPI/server/api/v1/auth"
 	"AynaAPI/server/api/v1/general"
+	"AynaAPI/server/api/v1/upload"
 	"AynaAPI/server/fs"
 	"AynaAPI/server/middleware/jwt"
 	"github.com/gin-gonic/gin"
@@ -38,12 +39,16 @@ func InitRouter() *gin.Engine {
 		{
 			authApi.GET("/login", auth.Login)
 		}
+		uploadApi := apiV1.Group("/upload")
+		{
+			uploadApi.Use(jwt.JWT())
+			uploadApi.POST("/bilipic", upload.UploadBiliPic)
+			uploadApi.POST("/image", upload.UploadImage)
+		}
 		generalApi := apiV1.Group("/general")
 		{
 			generalApi.GET("/bypasscors", general.BypassCors)
 			generalApi.GET("/teamsplit", general.GetRandomSeparation)
-			generalApi.POST("/upload/bilipic", jwt.JWT(), general.UploadBiliPic)
-			generalApi.POST("/upload/image", jwt.JWT(), general.UploadImage)
 		}
 		animeApi := apiV1.Group("/anime")
 		{
