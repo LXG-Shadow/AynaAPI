@@ -17,6 +17,10 @@ func UploadImage(c *gin.Context) {
 		return
 	}
 	contentType, err := vfile.GetFileHeaderContentType(fh)
+	if fs.IsExceedMaxUploadImageSize(fh) {
+		appG.MakeEmptyResponse(http.StatusBadRequest, e.API_ERROR_UPLOAD_EXCEED_IMAGE_MAX_SIZE)
+		return
+	}
 	if !fs.IsImageContentType(contentType) {
 		appG.MakeEmptyResponse(http.StatusBadRequest, e.API_ERROR_UPLOAD_IVALID_IMAGE)
 		return

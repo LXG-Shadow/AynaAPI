@@ -19,6 +19,8 @@ type Server struct {
 	JwtSecret string
 	FileRoot  string
 	RealUrl   string
+
+	UploadImageMaxSize int64
 }
 
 func (self *Server) GetFilePath(path string) string {
