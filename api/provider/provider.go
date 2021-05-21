@@ -19,7 +19,7 @@ const (
 )
 
 var ProviderStatusMap = map[string]bool{
-	IMOMOE: true,
+	IMOMOE: false,
 	YHDM:   true,
 }
 
