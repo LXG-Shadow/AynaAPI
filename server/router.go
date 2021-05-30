@@ -52,15 +52,16 @@ func InitRouter() *gin.Engine {
 		}
 		animeApi := apiV1.Group("/anime")
 		{
+
+			animeApi.GET("/search/:provider", anime.Search)
+			animeApi.GET("/playur/:providerl", anime.GetPlayUrl)
+			animeApi.GET("/info/:provider", anime.GetInfo)
+			animeApi.GET("/resolve/:provider", anime.Resolve)
+
 			animeApi.GET("/search", anime.SearchAll)
 			animeApi.GET("/playurl", anime.GetPlayUrlAll)
 			animeApi.GET("/info", anime.InfoAll)
 			animeApi.GET("/resolve", anime.ResolveAll)
-
-			animeApi.GET("/:provider/search", anime.Search)
-			animeApi.GET("/:provider/playurl", anime.GetPlayUrl)
-			animeApi.GET("/:provider/info", anime.GetInfo)
-			animeApi.GET("/:provider/resolve", anime.Resolve)
 		}
 	}
 	return engine

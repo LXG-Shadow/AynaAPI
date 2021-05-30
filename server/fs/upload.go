@@ -2,16 +2,25 @@ package fs
 
 import (
 	"AynaAPI/config"
+	"AynaAPI/utils/vfile"
 	"fmt"
 	"mime/multipart"
+	"os"
 	"regexp"
 )
 
 func GetUploadPath() string {
+	if !vfile.IsDir(config.ServerConfig.GetFilePath("upload")) {
+		err := os.MkdirAll(config.ServerConfig.GetFilePath("upload"), os.ModePerm)
+		if err != nil {
+			return config.ServerConfig.GetFilePath("upload")
+		}
+	}
 	return config.ServerConfig.GetFilePath("upload")
 }
 
 func GetUploadUrl() string {
+
 	return "/upload"
 }
 

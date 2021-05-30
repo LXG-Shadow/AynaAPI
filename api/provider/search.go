@@ -3,6 +3,7 @@ package provider
 import (
 	"AynaAPI/api/model"
 	imomoeApi "AynaAPI/api/provider/imomoe"
+	susudmApi "AynaAPI/api/provider/susudm"
 	yhdmApi "AynaAPI/api/provider/yhdm"
 )
 
@@ -12,7 +13,9 @@ func Search(provider string, keyword string, page int) model.ApiResponse {
 		return imomoeApi.Search(keyword, page)
 	case YHDM:
 		return yhdmApi.Search(keyword, page)
+	case SUSUDM:
+		return susudmApi.Search(keyword, page)
 	default:
-		return imomoeApi.Search(keyword, page)
+		return susudmApi.Search(keyword, page)
 	}
 }

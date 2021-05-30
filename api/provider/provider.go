@@ -3,6 +3,7 @@ package provider
 import (
 	"AynaAPI/api/model"
 	imomoeApi "AynaAPI/api/provider/imomoe"
+	susudmApi "AynaAPI/api/provider/susudm"
 	yhdmApi "AynaAPI/api/provider/yhdm"
 )
 
@@ -16,11 +17,13 @@ type ApiProvider interface {
 const (
 	IMOMOE = "imomoe"
 	YHDM   = "yhdm"
+	SUSUDM = "susudm"
 )
 
 var ProviderStatusMap = map[string]bool{
-	IMOMOE: false,
+	IMOMOE: true,
 	YHDM:   true,
+	SUSUDM: true,
 }
 
 func IsProviderAvailable(provider string) bool {
@@ -39,8 +42,10 @@ func InitWithUrl(provider string, url string) (*ApiProvider, bool) {
 		pvdr, b = imomoeApi.InitWithUrl(url)
 	case YHDM:
 		pvdr, b = yhdmApi.InitWithUrl(url)
+	case SUSUDM:
+		pvdr, b = susudmApi.InitWithUrl(url)
 	default:
-		pvdr, b = imomoeApi.InitWithUrl(url)
+		pvdr, b = susudmApi.InitWithUrl(url)
 	}
 	if b {
 		return &pvdr, b
@@ -56,8 +61,10 @@ func InitWithUid(provider string, uid string) (*ApiProvider, bool) {
 		pvdr, b = imomoeApi.InitWithUid(uid)
 	case YHDM:
 		pvdr, b = yhdmApi.InitWithUid(uid)
+	case SUSUDM:
+		pvdr, b = susudmApi.InitWithUid(uid)
 	default:
-		pvdr, b = imomoeApi.InitWithUid(uid)
+		pvdr, b = susudmApi.InitWithUid(uid)
 	}
 	if b {
 		return &pvdr, b
