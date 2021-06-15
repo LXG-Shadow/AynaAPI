@@ -5,6 +5,7 @@ import (
 	providerApi "AynaAPI/api/provider"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
+	"AynaAPI/server/service/api_service"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -18,12 +19,13 @@ func Search(context *gin.Context) {
 		return
 	}
 	keyword, b := appG.C.GetQuery("keyword")
+	useCache := appG.GetBoolQueryWithDefault("cache", true)
 	if !b {
 		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require keyword")
 		return
 	}
 	page := appG.GetIntQueryWithDefault("page", 1)
-	result := providerApi.Search(provider, keyword, page)
+	result := api_service.ProviderSearch(provider, keyword, page, useCache)
 	if result.Status != apiE.SUCCESS {
 		appG.MakeResponse(http.StatusOK, e.BGM_SEARCH_FAIL, result)
 		return
@@ -39,10 +41,11 @@ func SearchAll(context *gin.Context) {
 		return
 	}
 	page := appG.GetIntQueryWithDefault("page", 1)
+	useCache := appG.GetBoolQueryWithDefault("cache", true)
 	result := map[string]map[string]interface{}{}
 	for provider, status := range providerApi.ProviderStatusMap {
 		if status {
-			resp := providerApi.Search(provider, keyword, page)
+			resp := api_service.ProviderSearch(provider, keyword, page, useCache)
 			if resp.Status == apiE.SUCCESS {
 				result[provider] = resp.Data
 			}

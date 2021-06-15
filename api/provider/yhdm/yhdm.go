@@ -18,7 +18,7 @@ type YhdmVideo struct {
 	EpId       string   `json:"ep_id"`
 	Title      string   `json:"title"`
 	PictureUrl string   `json:"pic"`
-	Url        string   `json:"-"`
+	Url        string   `json:"urls"`
 	Episodes   []string `json:"episodes"`
 }
 

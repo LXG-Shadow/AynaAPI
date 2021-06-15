@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	Host = "http://www.susudm.com"
+	Host = "http://feijisu7.com"
 )
 
-type SusuDmVideo struct {
+type FeijisuDmVideo struct {
 	Id         string   `json:"id"`
 	Category   string   `json:"category"`
 	EpId       string   `json:"ep_id"`
@@ -25,28 +25,28 @@ type SusuDmVideo struct {
 	Episodes   []string `json:"episodes"`
 }
 
-func InitDefault() *SusuDmVideo {
-	return &SusuDmVideo{EpId: "1"}
+func InitDefault() *FeijisuDmVideo {
+	return &FeijisuDmVideo{EpId: "1"}
 }
-func InitWithUid(uid string) (*SusuDmVideo, bool) {
-	idString := regexp.MustCompile("susudm-[0-9]+-[a-zA-z]+-[0-9]+").FindString(uid)
+func InitWithUid(uid string) (*FeijisuDmVideo, bool) {
+	idString := regexp.MustCompile("feijisu-[0-9]+-[a-zA-z]+-[0-9]+").FindString(uid)
 	if idString == "" {
 		return nil, false
 	}
 	idstringL := strings.Split(idString, "-")
-	return &SusuDmVideo{
+	return &FeijisuDmVideo{
 		Id:       idstringL[1],
 		Category: idstringL[2],
 		EpId:     idstringL[3],
 	}, true
 }
 
-func InitWithUrl(url string) (*SusuDmVideo, bool) {
+func InitWithUrl(url string) (*FeijisuDmVideo, bool) {
 	if v, b := InitWithUid(url); b {
 		return v, b
 	}
-	if urlString := regexp.MustCompile("susudm\\.com/[a-zA-z]+/[0-9]+/").FindString(url); urlString != "" {
-		if idString, b := utils.SliceString(urlString, 11, -1); b {
+	if urlString := regexp.MustCompile("feijisu[0-9]\\.com/[a-zA-z]+/[0-9]+/").FindString(url); urlString != "" {
+		if idString, b := utils.SliceString(urlString, 13, -1); b {
 			idstringL := strings.Split(idString, "/")
 			v := InitDefault()
 			v.Id = idstringL[1]
@@ -54,10 +54,10 @@ func InitWithUrl(url string) (*SusuDmVideo, bool) {
 			return v, true
 		}
 	}
-	if urlString := regexp.MustCompile("susudm\\.com/[a-zA-z]+/[0-9]+/[0-9]+.html").FindString(url); urlString != "" {
-		if idString, b := utils.SliceString(urlString, 11, -5); b {
+	if urlString := regexp.MustCompile("feijisu[0-9]\\.com/[a-zA-z]+/[0-9]+/[0-9]+.html").FindString(url); urlString != "" {
+		if idString, b := utils.SliceString(urlString, 13, -5); b {
 			idstringL := strings.Split(idString, "/")
-			return &SusuDmVideo{
+			return &FeijisuDmVideo{
 				Id:       idstringL[1],
 				Category: idstringL[0],
 				EpId:     idstringL[2],
@@ -68,12 +68,12 @@ func InitWithUrl(url string) (*SusuDmVideo, bool) {
 }
 
 func GenerateUniqueId(id string, category string, epId string) string {
-	return fmt.Sprintf("susudm-%s-%s-%s", id, category, epId)
+	return fmt.Sprintf("feijisu-%s-%s-%s", id, category, epId)
 }
 
 // MarshalJSON method from http://choly.ca/post/go-json-marshalling/
-func (self *SusuDmVideo) MarshalJSON() ([]byte, error) {
-	type FakeV SusuDmVideo
+func (self *FeijisuDmVideo) MarshalJSON() ([]byte, error) {
+	type FakeV FeijisuDmVideo
 	return json.Marshal(&struct {
 		Uid string `json:"uid"`
 		*FakeV
@@ -83,11 +83,11 @@ func (self *SusuDmVideo) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (self *SusuDmVideo) GetUniqueId() string {
-	return fmt.Sprintf("susudm-%s-%s-%s", self.Id, self.Category, self.EpId)
+func (self *FeijisuDmVideo) GetUniqueId() string {
+	return fmt.Sprintf("feijisu-%s-%s-%s", self.Id, self.Category, self.EpId)
 }
 
-func (self *SusuDmVideo) Initialize() bool {
+func (self *FeijisuDmVideo) Initialize() bool {
 	resp := GetInfo(self.Id, self.Category, self.EpId)
 	if resp.Status != e.SUCCESS {
 		return false
@@ -103,7 +103,7 @@ func (self *SusuDmVideo) Initialize() bool {
 	return true
 }
 
-func (self *SusuDmVideo) GetPlayUrls() []model.ApiResource {
+func (self *FeijisuDmVideo) GetPlayUrls() []model.ApiResource {
 	pUrls := make([]model.ApiResource, 0)
 	for _, url := range self.Urls {
 		pUrls = append(pUrls, model.ApiResource{

@@ -54,7 +54,7 @@ func InitRouter() *gin.Engine {
 		{
 
 			animeApi.GET("/search/:provider", anime.Search)
-			animeApi.GET("/playur/:providerl", anime.GetPlayUrl)
+			animeApi.GET("/playurl/:provider", anime.GetPlayUrl)
 			animeApi.GET("/info/:provider", anime.GetInfo)
 			animeApi.GET("/resolve/:provider", anime.Resolve)
 

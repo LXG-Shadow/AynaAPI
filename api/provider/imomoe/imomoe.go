@@ -19,7 +19,7 @@ type ImomoeVideo struct {
 	EpId       string              `json:"ep_id"`
 	Title      string              `json:"title"`
 	PictureUrl string              `json:"pic"`
-	Urls       []string            `json:"-"`
+	Urls       []string            `json:"urls"`
 	Episodes   map[string][]string `json:"episodes"`
 }
 

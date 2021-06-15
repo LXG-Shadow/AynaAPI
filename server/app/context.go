@@ -40,6 +40,15 @@ func (g *AppGin) GetIntQueryWithDefault(key string, defaultValue int) int {
 	return defaultValue
 }
 
+func (g *AppGin) GetBoolQueryWithDefault(key string, defaultValue bool) bool {
+	if val, b := g.C.GetQuery(key); b {
+		if bval, b1 := cast.ToBoolE(val); b1 == nil {
+			return bval
+		}
+	}
+	return defaultValue
+}
+
 func (g *AppGin) MakeResponse(httpCode int, statusCode int, data interface{}) {
 	g.C.JSON(httpCode, AppJsonResponse{
 		Code:    statusCode,

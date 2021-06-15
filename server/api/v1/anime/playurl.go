@@ -4,6 +4,7 @@ import (
 	providerApi "AynaAPI/api/provider"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
+	"AynaAPI/server/service/api_service"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -17,6 +18,7 @@ func GetPlayUrl(context *gin.Context) {
 		return
 	}
 	uid, b := appG.C.GetQuery("uid")
+	useCache := appG.GetBoolQueryWithDefault("cache", true)
 	if !b {
 		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require uid")
 		return
@@ -26,16 +28,17 @@ func GetPlayUrl(context *gin.Context) {
 		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_INVALID_PARAMETER, "uid not valid")
 		return
 	}
-	if !(*vModel).Initialize() {
+	if !api_service.ProviderInitialize(provider, vModel, useCache) {
 		appG.MakeResponse(http.StatusOK, e.BGM_INITIALIZE_FAIL, "无法获取到对应id的信息")
 		return
 	}
-	appG.MakeResponse(http.StatusOK, e.API_OK, (*vModel).GetPlayUrls())
+	appG.MakeResponse(http.StatusOK, e.API_OK, api_service.ProviderGetPlayUrls(vModel, useCache))
 }
 
 func GetPlayUrlAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	uid, b := appG.C.GetQuery("uid")
+	useCache := appG.GetBoolQueryWithDefault("cache", true)
 	if !b {
 		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require uid")
 		return
@@ -46,10 +49,10 @@ func GetPlayUrlAll(context *gin.Context) {
 			if !b {
 				continue
 			}
-			if !(*vModel).Initialize() {
+			if !api_service.ProviderInitialize(provider, vModel, useCache) {
 				continue
 			}
-			appG.MakeResponse(http.StatusOK, e.API_OK, (*vModel).GetPlayUrls())
+			appG.MakeResponse(http.StatusOK, e.API_OK, api_service.ProviderGetPlayUrls(vModel, useCache))
 			return
 		}
 	}

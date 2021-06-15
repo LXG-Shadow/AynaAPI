@@ -4,6 +4,7 @@ import (
 	"github.com/go-ini/ini"
 	"log"
 	"path/filepath"
+	"time"
 )
 
 type API struct {
@@ -21,6 +22,8 @@ type Server struct {
 	RealUrl   string
 
 	UploadImageMaxSize int64
+
+	UseRedisCache bool
 }
 
 func (self *Server) GetFilePath(path string) string {
@@ -33,14 +36,24 @@ type ServerDB struct {
 	TablePrefix string
 }
 
+type Redis struct {
+	Host        string
+	Password    string
+	MaxIdle     int
+	MaxActive   int
+	IdleTimeout time.Duration
+}
+
 var APIConfig *API
 var ServerConfig *Server
 var ServerDBConfig *ServerDB
+var RedisConfig *Redis
 
 func init() {
 	APIConfig = &API{}
 	ServerConfig = &Server{}
 	ServerDBConfig = &ServerDB{}
+	RedisConfig = &Redis{}
 	Initialize()
 }
 
@@ -53,6 +66,7 @@ func Initialize() {
 	mapTo(cfg, "API", APIConfig)
 	mapTo(cfg, "Server", ServerConfig)
 	mapTo(cfg, "ServerDB", ServerDBConfig)
+	mapTo(cfg, "Redis", RedisConfig)
 }
 
 // mapTo map section
