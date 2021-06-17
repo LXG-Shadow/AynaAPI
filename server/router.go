@@ -5,6 +5,7 @@ import (
 	"AynaAPI/server/api/v1/anime"
 	"AynaAPI/server/api/v1/auth"
 	"AynaAPI/server/api/v1/general"
+	"AynaAPI/server/api/v1/novel"
 	"AynaAPI/server/api/v1/upload"
 	"AynaAPI/server/fs"
 	"AynaAPI/server/middleware/jwt"
@@ -62,6 +63,14 @@ func InitRouter() *gin.Engine {
 			animeApi.GET("/playurl", anime.GetPlayUrlAll)
 			animeApi.GET("/info", anime.InfoAll)
 			animeApi.GET("/resolve", anime.ResolveAll)
+		}
+		novelApi := apiV1.Group("/novel")
+		{
+			novelApi.GET("/info", novel.GetInfo)
+			novelApi.GET("/content", novel.GetContent)
+
+			novelApi.GET("/search/:provider", novel.Search)
+			novelApi.GET("/search", novel.SearchAll)
 		}
 	}
 	return engine

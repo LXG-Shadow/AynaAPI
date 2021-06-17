@@ -23,6 +23,10 @@ var CODE_MESSAGE = map[int]string{
 	AUTH_ERROR_REQUIRE_USERNAME: "需要用户名",
 	AUTH_ERROR_REQUIRE_PASSWORD: "需要密码",
 	AUTH_ERROR_U_P_NOT_MATCH:    "用户名密码不匹配",
+
+	NOVEL_PROVIDER_NOT_AVAILABLE: "小说源暂时不可用",
+	NOVEL_URL_NOT_SUPPORT:        "Url不匹配",
+	NOVEL_GET_DATA_FAIL:          "获取数据失败",
 }
 
 // GetMessage get error information based on Code

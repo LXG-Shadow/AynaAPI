@@ -10,3 +10,7 @@ func SliceString(str string, from int, to int) (string, bool) {
 	}
 	return string(sList[from:to]), true
 }
+
+func LenString(str string) int {
+	return len([]rune(str))
+}
