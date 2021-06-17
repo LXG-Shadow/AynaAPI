@@ -44,12 +44,10 @@ func SearchAll(context *gin.Context) {
 	result := map[string]map[string]interface{}{}
 	for _, provider := range novelApi.ProviderMap {
 		resp := api_service.NovelSearch(&provider, keyword, useCache)
-		fmt.Println(provider.Identifier, resp)
 		if resp.Status == apiE.SUCCESS {
 			result[provider.Identifier] = resp.Data
 		}
 	}
-	fmt.Println(result)
 	appG.MakeResponse(http.StatusOK, e.API_OK, result)
 	return
 }
