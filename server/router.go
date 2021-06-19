@@ -10,6 +10,10 @@ import (
 	"AynaAPI/server/fs"
 	"AynaAPI/server/middleware/jwt"
 	"github.com/gin-gonic/gin"
+
+	_ "AynaAPI/docs"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 func init() {
@@ -33,6 +37,8 @@ func InitRouter() *gin.Engine {
 		staticFs.Static("/file", config.ServerConfig.GetFilePath("file"))
 		staticFs.Static(fs.GetUploadUrl(), fs.GetUploadPath())
 	}
+
+	engine.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	apiV1 := engine.Group("/api/v1")
 	{

@@ -10,6 +10,15 @@ import (
 	"net/http"
 )
 
+// GetInfo godoc
+// @Summary get novel info
+// @Description 获取小说简介
+// @Tags Novel
+// @Produce json
+// @Param url query string true "info page url"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "https://www.linovelib.com/novel/8.html"
+// @Router /api/v1/novel/info [get]
 func GetInfo(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	url, b := appG.C.GetQuery("url")

@@ -17,10 +17,32 @@ func applyFilters(content string, rule ItemRule) string {
 	return content
 }
 
+func applyReplacers(content string, rule ItemRule) string {
+	if rule.Replacers == nil {
+		return content
+	}
+	for key, val := range rule.Replacers {
+		content = regexp.MustCompile(key).ReplaceAllString(content, val)
+	}
+	return content
+}
+
+func applySelectionReplacers(selection *goquery.Selection, rule ItemRule) *goquery.Selection {
+	if rule.Replacers == nil {
+		return selection
+	}
+	htmltext, _ := selection.Html()
+	for key, val := range rule.Replacers {
+		htmltext = regexp.MustCompile(key).ReplaceAllString(htmltext, val)
+	}
+	return selection.SetHtml(htmltext)
+}
+
 func getValue(selection *goquery.Selection, rule ItemRule) string {
 	if rule.Selector == "" {
 		return ""
 	}
+	selection = applySelectionReplacers(selection, rule)
 	switch rule.Target.Type {
 	case SelectorTargetTypeInnerText:
 		return applyFilters(selection.Text(), rule)
@@ -37,19 +59,28 @@ func ParseSingle(doc *goquery.Document, collection Item) (result string) {
 	if collection.Type != ItemTypeSingle {
 		return
 	}
-	if len(collection.Rules) != 1 {
+	if len(collection.Rules) < 1 {
 		return
 	}
-	result = getValue(doc.Find(collection.Rules[0].Selector), collection.Rules[0])
+	for _, rule := range collection.Rules {
+		switch rule.Target.Type {
+		case SelectorTargetTypeRegExp:
+			htext, _ := doc.Html()
+			result += applyFilters(applyReplacers(regexp.MustCompile(rule.Selector).FindString(htext), rule), rule)
+		default:
+			result += getValue(doc.Find(rule.Selector), rule)
+		}
+	}
 	return
 }
 
+// todo same key append
 func ParseList(doc *goquery.Document, collection Item) (result []string) {
 	result = make([]string, 0)
 	if collection.Type != ItemTypeList {
 		return
 	}
-	if len(collection.Rules) != 1 {
+	if len(collection.Rules) < 1 {
 		return
 	}
 	rule := collection.Rules[0]
@@ -65,7 +96,14 @@ func ParseMap(doc *goquery.Document, collection Item) (result map[string]string)
 		return
 	}
 	for _, rule := range collection.Rules {
-		result[rule.Key] = getValue(doc.Find(rule.Selector), rule)
+		switch rule.Target.Type {
+		case SelectorTargetTypeRegExp:
+			htext, _ := doc.Html()
+			result[rule.Key] += applyFilters(applyReplacers(regexp.MustCompile(rule.Selector).FindString(htext), rule), rule)
+		default:
+			result[rule.Key] += getValue(doc.Find(rule.Selector), rule)
+		}
+
 	}
 	return
 }
@@ -84,15 +122,28 @@ func ParseMapList(doc *goquery.Document, collection Item) (result []map[string]s
 		return
 	}
 	for _, rule := range collection.Rules {
-		doc.Find(rule.Selector).Each(func(index int, selection *goquery.Selection) {
-			if len(result) <= index {
-				result = append(result, newBaseMap(collection))
+		switch rule.Target.Type {
+		case SelectorTargetTypeRegExp:
+			htext, _ := doc.Html()
+			for index, val := range regexp.MustCompile(rule.Selector).FindAllString(htext, 0) {
+				if len(result) <= index {
+					result = append(result, newBaseMap(collection))
+				}
+				result[index][rule.Key] += applyFilters(applyReplacers(val, rule), rule)
 			}
-			result[index][rule.Key] = getValue(selection, rule)
-		})
+		default:
+			doc.Find(rule.Selector).Each(func(index int, selection *goquery.Selection) {
+				if len(result) <= index {
+					result = append(result, newBaseMap(collection))
+				}
+				result[index][rule.Key] += getValue(selection, rule)
+			})
+		}
 	}
 	return
 }
+
+// todo json same key append
 
 func ParseJsonSingle(doc *gjson.Result, item Item) (result string) {
 	result = ""

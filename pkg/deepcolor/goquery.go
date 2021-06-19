@@ -9,7 +9,6 @@ import (
 var (
 	TagReplacement = map[string]string{
 		"<br(\\s)?(/)?>": "\n",
-		//"</p>":"\n</p>",
 	}
 )
 

@@ -10,7 +10,17 @@ import (
 	"net/http"
 )
 
+// GetContent godoc
+// @Summary get novel content
+// @Description 获取小说章节内容
+// @Tags Novel
+// @Produce json
+// @Param url query string true "content url"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "https://www.linovelib.com/novel/2342/133318.html"
+// @Router /api/v1/novel/content [get]
 func GetContent(context *gin.Context) {
+
 	appG := app.AppGin{C: context}
 	url, b := appG.C.GetQuery("url")
 	useCache := appG.GetBoolQueryWithDefault("cache", true)

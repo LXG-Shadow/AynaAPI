@@ -14,6 +14,7 @@ type SelectorTargetType string
 const (
 	SelectorTargetTypeInnerText SelectorTargetType = "innertext"
 	SelectorTargetTypeAttribute SelectorTargetType = "attribute"
+	SelectorTargetTypeRegExp    SelectorTargetType = "regexp"
 
 	SelectorTargetTypeJson SelectorTargetType = "json"
 )
@@ -31,6 +32,10 @@ func AttributeTarget(attribute string) SelectorTarget {
 	return SelectorTarget{SelectorTargetTypeAttribute, attribute}
 }
 
+func RegularExpressionTarget() SelectorTarget {
+	return SelectorTarget{SelectorTargetTypeRegExp, ""}
+}
+
 func JsonTarget() SelectorTarget {
 	return SelectorTarget{SelectorTargetTypeJson, ""}
 }
@@ -41,8 +46,9 @@ type Item struct {
 }
 
 type ItemRule struct {
-	Key      string         `json:"key"`
-	Selector string         `json:"selector"`
-	Target   SelectorTarget `json:"target"`
-	Filters  []string       `json:"filters"`
+	Key       string            `json:"key"`
+	Selector  string            `json:"selector"`
+	Target    SelectorTarget    `json:"target"`
+	Filters   []string          `json:"filters"`
+	Replacers map[string]string `json:"replacers"`
 }

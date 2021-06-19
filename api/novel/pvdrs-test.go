@@ -375,12 +375,35 @@ var (
 					Key:      "content",
 					Selector: "#TextContent",
 					Target:   deepcolor.TextTarget(),
-					Filters:  []string{"style_bm\\(\\);", "style_tp\\(\\);"},
+					Filters:  []string{"style_bm\\(\\);", "style_tp\\(\\);", "\\n\\n"},
+					Replacers: map[string]string{
+						"</p>":                  "\n</p>",
+						"<span[^>]*>.*?</span>": "",
+					},
+				},
+				{
+					Key:      "content",
+					Selector: "let dom_nr = '(.*)<!-- <p",
+					Target:   deepcolor.RegularExpressionTarget(),
+					Filters:  []string{"let dom_nr = '", "<!-- <p", "<p>", "</p>"},
+					Replacers: map[string]string{
+						"</p>": "\n</p>",
+					},
 				},
 				{
 					Key:      "name",
 					Selector: "#mlfy_main_text > h1",
 					Target:   deepcolor.TextTarget(),
+				},
+			},
+		},
+		ContentUrl: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: ".mlfy_page > a:nth-of-type(5)",
+					Target:   deepcolor.AttributeTarget("href"),
+					Filters:  []string{"/novel/[0-9]+/[0-9]+\\.html"},
 				},
 			},
 		},

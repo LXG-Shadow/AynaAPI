@@ -66,6 +66,16 @@ func GetContentByProvider(provider *NovelProvider, uri string) model.ApiResponse
 		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
 	}
 	value := deepcolor.ParseMap(doc, provider.Rule.Content)
+	contentUrl := completeUrl(uri, deepcolor.ParseSingle(doc, provider.Rule.ContentUrl))
+	for contentUrl != "" {
+		rs, err1 := deepcolor.Fetch(deepcolor.TentacleHTML(contentUrl, provider.Charset), deepcolor.GetCORS)
+		if err1 == nil {
+			value["content"] = value["content"] + rs.GetMap(provider.Rule.Content)["content"]
+			contentUrl = completeUrl(uri, rs.GetSingle(provider.Rule.ContentUrl))
+		} else {
+			break
+		}
+	}
 	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
 		"content": value["content"],
 		"name":    value["name"],

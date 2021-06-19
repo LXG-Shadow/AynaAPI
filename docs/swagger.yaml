@@ -1,0 +1,109 @@
+definitions:
+  app.AppJsonResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/novel/content:
+    get:
+      description: 获取小说章节内容
+      parameters:
+      - description: content url
+        in: query
+        name: url
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: https://www.linovelib.com/novel/2342/133318.html
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get novel content
+      tags:
+      - Novel
+  /api/v1/novel/info:
+    get:
+      description: 获取小说简介
+      parameters:
+      - description: info page url
+        in: query
+        name: url
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: https://www.linovelib.com/novel/8.html
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get novel info
+      tags:
+      - Novel
+  /api/v1/novel/providerlist:
+    get:
+      description: 获取来源列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get provider list
+      tags:
+      - Novel
+  /api/v1/novel/rulelist:
+    get:
+      description: 获取来源规则
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get provider rules
+      tags:
+      - Novel
+  /api/v1/novel/search:
+    get:
+      description: 搜索小说
+      parameters:
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 诡秘之主
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search novel
+      tags:
+      - Novel
+swagger: "2.0"

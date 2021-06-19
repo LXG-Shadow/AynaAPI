@@ -11,6 +11,17 @@ import (
 	"net/http"
 )
 
+// Search godoc
+// @Summary search novel
+// @Description 根据来源搜索小说
+// @Tags Novel
+// @Produce json
+// @Param provider path string true "novel provider identifier"
+// @Param keyword query string true "keyword"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "biqugeB?keyword=诡秘之主"
+// @Router /api/v1/novel/search/{provider} [get]
+
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	providerName := context.Param("provider")
@@ -33,6 +44,15 @@ func Search(context *gin.Context) {
 	appG.MakeResponse(http.StatusOK, e.API_OK, resp.Data)
 }
 
+// SearchAll godoc
+// @Summary search novel
+// @Description 搜索小说
+// @Tags Novel
+// @Produce json
+// @Param keyword query string true "keyword"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "诡秘之主"
+// @Router /api/v1/novel/search [get]
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	keyword, b := appG.C.GetQuery("keyword")

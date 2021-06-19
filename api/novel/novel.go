@@ -40,7 +40,8 @@ type NovelProviderRule struct {
 	Chapters    deepcolor.Item `json:"chapters"`
 	ChapaterUrl deepcolor.Item `json:"chapater_url"`
 
-	Content deepcolor.Item `json:"content"`
+	Content    deepcolor.Item `json:"content"`
+	ContentUrl deepcolor.Item `json:"content_url"`
 
 	Search deepcolor.Item `json:"search"`
 }

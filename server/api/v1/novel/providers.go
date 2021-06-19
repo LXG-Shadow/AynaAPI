@@ -8,6 +8,13 @@ import (
 	"net/http"
 )
 
+// GetProviderList godoc
+// @Summary get provider list
+// @Description 获取来源列表
+// @Tags Novel
+// @Produce json
+// @Success 200 {object} app.AppJsonResponse
+// @Router /api/v1/novel/providerlist [get]
 func GetProviderList(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	plist := make([]string, 0)
@@ -18,6 +25,13 @@ func GetProviderList(context *gin.Context) {
 	return
 }
 
+// GetProviderRules godoc
+// @Summary get provider rules
+// @Description 获取来源规则
+// @Tags Novel
+// @Produce json
+// @Success 200 {object} app.AppJsonResponse
+// @Router /api/v1/novel/rulelist [get]
 func GetProviderRules(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	rlist := map[string]interface{}{}
