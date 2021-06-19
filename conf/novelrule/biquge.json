@@ -1,0 +1,516 @@
+[
+  {
+    "identifier": "biqugeB",
+    "name": "笔趣阁 B",
+    "alias": "biquwx.la",
+    "home_url": "https://www.biquwx.la/",
+    "charset": "utf-8",
+    "status": true,
+    "info_url": "^http(s)?://www.biquwx.la/[0-9]+_[0-9]+(/)?$",
+    "content_url": "^http(s)?://www.biquwx.la/[0-9]+_[0-9]+/[0-9]+\\.html$",
+    "search_api": "https://www.biquwx.la/modules/article/search.php?searchkey=%s",
+    "rule": {
+      "title": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#info > h1",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "author": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#info > p:nth-of-type(1)",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": [
+              "作(.*)者:"
+            ]
+          }
+        ]
+      },
+      "cover": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#fmimg > img",
+            "target": {
+              "Type": "attribute",
+              "Value": "src"
+            },
+            "filters": null
+          }
+        ]
+      },
+      "abstraction": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#intro",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": [
+              "本站提示：各位书友要是觉得(.*)还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"
+            ]
+          }
+        ]
+      },
+      "chapters": {
+        "type": "maplist",
+        "rules": [
+          {
+            "key": "name",
+            "selector": "#list > dl > dd > a",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "url",
+            "selector": "#list > dl > dd > a",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null
+          }
+        ]
+      },
+      "content": {
+        "type": "map",
+        "rules": [
+          {
+            "key": "content",
+            "selector": "#content",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": [
+              " "
+            ]
+          },
+          {
+            "key": "name",
+            "selector": ".bookname > h1",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "search": {
+        "type": "maplist",
+        "rules": [
+          {
+            "key": "title",
+            "selector": "tbody > tr[align!=center] > td:nth-of-type(1) > a",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "url",
+            "selector": "tbody > tr[align!=center] > td:nth-of-type(1) > a",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null
+          },
+          {
+            "key": "cover",
+            "selector": "",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "abstraction",
+            "selector": "",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "author",
+            "selector": "tbody > tr[align!=center] > td:nth-of-type(3)",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "identifier": "biqugeC",
+    "name": "笔趣阁 B",
+    "alias": "biquwx.la",
+    "home_url": "http://www.liquge.com/",
+    "charset": "utf-8",
+    "status": true,
+    "info_url": "^http(s)?://www.liquge.com/book/[0-9]+(/)?$",
+    "content_url": "^http(s)?://www.liquge.com/book/[0-9]+/[0-9]+\\.html$",
+    "search_api": "http://www.liquge.com/modules/article/search.php?searchkey=%s",
+    "rule": {
+      "title": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": ".divbox.cf > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "author": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": ".divbox.cf > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2) > a",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "cover": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": ".divbox.cf > div:nth-of-type(1) > a",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null
+          }
+        ]
+      },
+      "abstraction": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": ".tabcontent > .tabvalue > div",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": [
+              "(.*)的其它作品",
+              " ",
+              " "
+            ]
+          }
+        ]
+      },
+      "chapters": {
+        "type": "maplist",
+        "rules": [
+          {
+            "key": "name",
+            "selector": ".main > div:nth-of-type(3) > .divbg > .infoindex > dd > a",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "url",
+            "selector": ".main > div:nth-of-type(3) > .divbg > .infoindex > dd > a",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null
+          }
+        ]
+      },
+      "content": {
+        "type": "map",
+        "rules": [
+          {
+            "key": "content",
+            "selector": "#acontent",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": [
+              "笔趣阁",
+              " ",
+              "(.*)，最快更新(.*)最新章节！",
+              " "
+            ]
+          },
+          {
+            "key": "name",
+            "selector": ".atitle",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "search": {
+        "type": "maplist",
+        "rules": [
+          {
+            "key": "title",
+            "selector": "#jieqi_page_contents > .c_row > div:nth-of-type(2) >div:nth-of-type(1) > span > a > span",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "url",
+            "selector": "#jieqi_page_contents > .c_row > div:nth-of-type(2) >div:nth-of-type(1) > span > a",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null
+          },
+          {
+            "key": "cover",
+            "selector": "#jieqi_page_contents > .c_row > .fl > a > img",
+            "target": {
+              "Type": "attribute",
+              "Value": "src"
+            },
+            "filters": null
+          },
+          {
+            "key": "abstraction",
+            "selector": ".c_description",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "author",
+            "selector": "#jieqi_page_contents > .c_row > div:nth-of-type(2) >div:nth-of-type(2) > span:nth-of-type(2)",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "identifier": "biqugeA",
+    "name": "笔趣阁 A",
+    "alias": "biquege.com.cn",
+    "home_url": "https://www.biquge.com.cn/",
+    "charset": "utf-8",
+    "status": true,
+    "info_url": "^http(s)?://www.biquge.com.cn/book/[0-9]+(/)?$",
+    "content_url": "^https(:)?//www.biquge.com.cn/book/[0-9]+/[0-9]+\\.html$",
+    "search_api": "https://www.biquge.com.cn/search.php?q=%s",
+    "rule": {
+      "title": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#div1 > h1",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "author": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#info > p:nth-of-type(1)",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": [
+              "作(.*)者："
+            ]
+          }
+        ]
+      },
+      "cover": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#fmimg > img",
+            "target": {
+              "Type": "attribute",
+              "Value": "src"
+            },
+            "filters": null
+          }
+        ]
+      },
+      "abstraction": {
+        "type": "single",
+        "rules": [
+          {
+            "key": "",
+            "selector": "#intro",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "chapters": {
+        "type": "maplist",
+        "rules": [
+          {
+            "key": "name",
+            "selector": "#list > dl > dd > a",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "url",
+            "selector": "#list > dl > dd > a",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null
+          }
+        ]
+      },
+      "content": {
+        "type": "map",
+        "rules": [
+          {
+            "key": "content",
+            "selector": "#content",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": [
+              " "
+            ]
+          },
+          {
+            "key": "name",
+            "selector": ".bookname > h1",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      },
+      "search": {
+        "type": "maplist",
+        "rules": [
+          {
+            "key": "title",
+            "selector": ".result-item-title.result-game-item-title > a > span",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "url",
+            "selector": ".result-item.result-game-item > .result-game-item-pic > a",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null
+          },
+          {
+            "key": "cover",
+            "selector": ".result-item.result-game-item > .result-game-item-pic > a > img",
+            "target": {
+              "Type": "attribute",
+              "Value": "src"
+            },
+            "filters": null
+          },
+          {
+            "key": "abstraction",
+            "selector": ".result-game-item-detail > .result-game-item-desc",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          },
+          {
+            "key": "author",
+            "selector": ".result-game-item-detail > .result-game-item-info > p:nth-of-type(1) > span::nth-of-type(2)",
+            "target": {
+              "Type": "innertext",
+              "Value": ""
+            },
+            "filters": null
+          }
+        ]
+      }
+    }
+  }
+]

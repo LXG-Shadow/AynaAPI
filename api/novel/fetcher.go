@@ -9,21 +9,43 @@ import (
 	"fmt"
 )
 
+func completeUrl(host, path string) string {
+	if path == "" {
+		return ""
+	}
+	if !vhttp.IsUrl(path) {
+		return vhttp.JoinUrl(host, path)
+	}
+	return path
+}
+
 func GetInfoByProvider(provider *NovelProvider, uri string) model.ApiResponse {
 	result := httpc.GetCORS(uri).String()
 	if result == "" {
 		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
 	}
-	doc, err := deepcolor.NewDocumentFromStringWithTagRepl(result)
+	doc, err := deepcolor.NewDocumentFromStringWithEncoding(result, provider.Charset)
 	if err != nil {
 		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
 	}
-	chapters := deepcolor.ParseMapList(doc, provider.Rule.Chapters)
-	for _, chapter := range chapters {
-		chaUrl := chapter["url"]
-		if chaUrl != "" && !vhttp.IsUrl(chaUrl) {
-			chapter["url"] = vhttp.JoinUrl(uri, chaUrl)
+	chapaterUrl := completeUrl(uri, deepcolor.ParseSingle(doc, provider.Rule.ChapaterUrl))
+	var chapters = []map[string]string{}
+	if chapaterUrl == "" {
+		chapters = deepcolor.ParseMapList(doc, provider.Rule.Chapters)
+	} else {
+		for chapaterUrl != "" {
+			rs, err1 := deepcolor.Fetch(deepcolor.TentacleHTML(chapaterUrl, provider.Charset), deepcolor.GetCORS)
+			if err1 == nil && rs != nil {
+				chapters = append(chapters, rs.GetMapList(provider.Rule.Chapters)...)
+				chapaterUrl = completeUrl(uri, rs.GetSingle(provider.Rule.ChapaterUrl))
+			} else {
+				break
+			}
+
 		}
+	}
+	for _, chapter := range chapters {
+		chapter["url"] = completeUrl(uri, chapter["url"])
 	}
 	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
 		"title":       deepcolor.ParseSingle(doc, provider.Rule.Title),
@@ -39,7 +61,7 @@ func GetContentByProvider(provider *NovelProvider, uri string) model.ApiResponse
 	if result == "" {
 		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
 	}
-	doc, err := deepcolor.NewDocumentFromStringWithTagRepl(result)
+	doc, err := deepcolor.NewDocumentFromStringWithEncoding(result, provider.Charset)
 	if err != nil {
 		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
 	}
@@ -52,15 +74,16 @@ func GetContentByProvider(provider *NovelProvider, uri string) model.ApiResponse
 
 func SearchByProvider(provider *NovelProvider, keyword string) model.ApiResponse {
 	uri := fmt.Sprintf(provider.SearchApi, keyword)
-	result := httpc.GetCORS(uri).String()
-	if result == "" {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
-	}
-	doc, err := deepcolor.NewDocumentFromStringWithTagRepl(result)
+	result, err := deepcolor.Fetch(deepcolor.Tentacle{
+		Url:         uri,
+		Charset:     provider.Charset,
+		ContentType: deepcolor.TentacleContentTypeHTMl,
+		Header:      provider.Header,
+	}, deepcolor.GetCORS)
 	if err != nil {
 		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
 	}
-	searchResult := deepcolor.ParseMapList(doc, provider.Rule.Search)
+	searchResult := result.GetMapList(provider.Rule.Search)
 	for _, sr := range searchResult {
 		bUrl := sr["url"]
 		if bUrl != "" && !vhttp.IsUrl(bUrl) {

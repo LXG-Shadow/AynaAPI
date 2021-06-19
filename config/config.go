@@ -11,6 +11,8 @@ type API struct {
 	Version           string
 	Bilibili_SESSDATA string
 	Bilibili_JCT      string
+
+	NovelRulePath string
 }
 
 type Server struct {

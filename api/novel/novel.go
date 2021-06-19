@@ -1,25 +1,26 @@
 package novel
 
 import (
-	deepcolor2 "AynaAPI/pkg/deepcolor"
+	"AynaAPI/pkg/deepcolor"
 	"regexp"
 )
 
 type NovelProvider struct {
-	Identifier string
-	Name       string
-	Alias      string
-	HomeUrl    string
-	Charset    string
+	Identifier string            `json:"identifier"`
+	Name       string            `json:"name"`
+	Alias      string            `json:"alias"`
+	HomeUrl    string            `json:"home_url"`
+	Charset    string            `json:"charset"`
+	Header     map[string]string `json:"header"`
 
-	Status bool
+	Status bool `json:"status"`
 
-	InfoUrl    string
-	ContentUrl string
+	InfoUrl    string `json:"info_url"`
+	ContentUrl string `json:"content_url"`
 
-	SearchApi string
+	SearchApi string `json:"search_api"`
 
-	Rule NovelProviderRule
+	Rule NovelProviderRule `json:"rule"`
 }
 
 func (self *NovelProvider) IsInfoUrl(uri string) bool {
@@ -31,14 +32,15 @@ func (self *NovelProvider) IsContentUrl(uri string) bool {
 }
 
 type NovelProviderRule struct {
-	Title       deepcolor2.RuleCollection
-	Author      deepcolor2.RuleCollection
-	Cover       deepcolor2.RuleCollection
-	Abstraction deepcolor2.RuleCollection
+	Title       deepcolor.Item `json:"title"`
+	Author      deepcolor.Item `json:"author"`
+	Cover       deepcolor.Item `json:"cover"`
+	Abstraction deepcolor.Item `json:"abstraction"`
 
-	Chapters deepcolor2.RuleCollection
+	Chapters    deepcolor.Item `json:"chapters"`
+	ChapaterUrl deepcolor.Item `json:"chapater_url"`
 
-	Content deepcolor2.RuleCollection
+	Content deepcolor.Item `json:"content"`
 
-	Search deepcolor2.RuleCollection
+	Search deepcolor.Item `json:"search"`
 }

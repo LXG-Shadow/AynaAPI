@@ -7,10 +7,21 @@ import (
 )
 
 var (
-	TagReplacement = map[string]string{"<br(\\s)?(/)?>": "\n"}
+	TagReplacement = map[string]string{
+		"<br(\\s)?(/)?>": "\n",
+		//"</p>":"\n</p>",
+	}
 )
 
-func NewDocumentFromStringWithTagRepl(src string) (*goquery.Document, error) {
+func NewDocumentFromString(src string) (*goquery.Document, error) {
+	for tag, repl := range TagReplacement {
+		src = regexp.MustCompile(tag).ReplaceAllString(src, repl)
+	}
+	return goquery.NewDocumentFromReader(strings.NewReader(src))
+}
+
+func NewDocumentFromStringWithEncoding(src string, encoding string) (*goquery.Document, error) {
+	src = DecodeString(src, encoding)
 	for tag, repl := range TagReplacement {
 		src = regexp.MustCompile(tag).ReplaceAllString(src, repl)
 	}

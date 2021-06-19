@@ -66,6 +66,11 @@ func InitRouter() *gin.Engine {
 		}
 		novelApi := apiV1.Group("/novel")
 		{
+			novelApi.GET("/plist", novel.GetProviderList)
+			novelApi.GET("/providerlist", novel.GetProviderList)
+			novelApi.GET("/rlist", novel.GetProviderRules)
+			novelApi.GET("/rulelist", novel.GetProviderRules)
+
 			novelApi.GET("/info", novel.GetInfo)
 			novelApi.GET("/content", novel.GetContent)
 
@@ -74,5 +79,4 @@ func InitRouter() *gin.Engine {
 		}
 	}
 	return engine
-
 }

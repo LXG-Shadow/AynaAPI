@@ -6,8 +6,8 @@ import (
 
 var (
 	BiqugeARule = NovelProviderRule{
-		Title: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Title: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#div1 > h1",
@@ -15,8 +15,8 @@ var (
 				},
 			},
 		},
-		Author: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Author: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#info > p:nth-of-type(1)",
@@ -25,8 +25,8 @@ var (
 				},
 			},
 		},
-		Cover: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Cover: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#fmimg > img",
@@ -34,8 +34,8 @@ var (
 				},
 			},
 		},
-		Abstraction: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Abstraction: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#intro",
@@ -43,8 +43,8 @@ var (
 				},
 			},
 		},
-		Chapters: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapListItem,
+		Chapters: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#list > dl > dd > a",
@@ -58,8 +58,8 @@ var (
 				},
 			},
 		},
-		Content: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapItem,
+		Content: deepcolor.Item{
+			Type: deepcolor.ItemTypeMap,
 			Rules: []deepcolor.ItemRule{
 				{
 					Key:      "content",
@@ -74,8 +74,8 @@ var (
 				},
 			},
 		},
-		Search: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapListItem,
+		Search: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
 			Rules: []deepcolor.ItemRule{
 				{
 					Key:      "title",
@@ -106,8 +106,8 @@ var (
 		},
 	}
 	BiqugeBRule = NovelProviderRule{
-		Title: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Title: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#info > h1",
@@ -115,8 +115,8 @@ var (
 				},
 			},
 		},
-		Author: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Author: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#info > p:nth-of-type(1)",
@@ -125,8 +125,8 @@ var (
 				},
 			},
 		},
-		Cover: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Cover: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#fmimg > img",
@@ -134,8 +134,8 @@ var (
 				},
 			},
 		},
-		Abstraction: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Abstraction: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#intro",
@@ -144,8 +144,8 @@ var (
 				},
 			},
 		},
-		Chapters: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapListItem,
+		Chapters: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "#list > dl > dd > a",
@@ -159,8 +159,8 @@ var (
 				},
 			},
 		},
-		Content: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapItem,
+		Content: deepcolor.Item{
+			Type: deepcolor.ItemTypeMap,
 			Rules: []deepcolor.ItemRule{
 				{
 					Key:      "content",
@@ -175,8 +175,8 @@ var (
 				},
 			},
 		},
-		Search: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapListItem,
+		Search: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
 			Rules: []deepcolor.ItemRule{
 				{
 					Key:      "title",
@@ -184,13 +184,13 @@ var (
 					Target:   deepcolor.TextTarget(),
 				},
 				{
-					Selector: "tbody > tr[align!=center] > td:nth-of-type(1) > a",
 					Key:      "url",
+					Selector: "tbody > tr[align!=center] > td:nth-of-type(1) > a",
 					Target:   deepcolor.AttributeTarget("href"),
 				},
 				{
-					Selector: "",
 					Key:      "cover",
+					Selector: "",
 					Target:   deepcolor.TextTarget(),
 				},
 				{
@@ -207,8 +207,8 @@ var (
 		},
 	}
 	BiqugeCRule = NovelProviderRule{
-		Title: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Title: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: ".divbox.cf > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
@@ -216,8 +216,8 @@ var (
 				},
 			},
 		},
-		Author: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Author: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: ".divbox.cf > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2) > a",
@@ -225,8 +225,8 @@ var (
 				},
 			},
 		},
-		Cover: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Cover: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: ".divbox.cf > div:nth-of-type(1) > a",
@@ -234,8 +234,8 @@ var (
 				},
 			},
 		},
-		Abstraction: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeSingleItem,
+		Abstraction: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: ".tabcontent > .tabvalue > div",
@@ -244,8 +244,8 @@ var (
 				},
 			},
 		},
-		Chapters: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapListItem,
+		Chapters: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: ".main > div:nth-of-type(3) > .divbg > .infoindex > dd > a",
@@ -259,8 +259,8 @@ var (
 				},
 			},
 		},
-		Content: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapItem,
+		Content: deepcolor.Item{
+			Type: deepcolor.ItemTypeMap,
 			Rules: []deepcolor.ItemRule{
 				{
 					Key:      "content",
@@ -275,8 +275,8 @@ var (
 				},
 			},
 		},
-		Search: deepcolor.RuleCollection{
-			Type: deepcolor.RuleTypeMapListItem,
+		Search: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
 			Rules: []deepcolor.ItemRule{
 				{
 					Key:      "title",
@@ -301,6 +301,115 @@ var (
 				{
 					Key:      "author",
 					Selector: "#jieqi_page_contents > .c_row > div:nth-of-type(2) >div:nth-of-type(2) > span:nth-of-type(2)",
+					Target:   deepcolor.TextTarget(),
+				},
+			},
+		},
+	}
+
+	LigntNovelRule = NovelProviderRule{
+		Title: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: ".book-name",
+					Target:   deepcolor.TextTarget(),
+				},
+			},
+		},
+		Author: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: ".au-name > a",
+					Target:   deepcolor.TextTarget(),
+				},
+			},
+		},
+		Cover: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: ".book-img > img",
+					Target:   deepcolor.AttributeTarget("src"),
+				},
+			},
+		},
+		Abstraction: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: ".book-dec > p",
+					Target:   deepcolor.TextTarget(),
+				},
+			},
+		},
+		ChapaterUrl: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: ".btn.read-btn",
+					Target:   deepcolor.AttributeTarget("href"),
+				},
+			},
+		},
+		Chapters: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: ".chapter-list > li > a",
+					Key:      "name",
+					Target:   deepcolor.TextTarget(),
+				},
+				{
+					Selector: ".chapter-list > li > a",
+					Key:      "url",
+					Target:   deepcolor.AttributeTarget("href"),
+				},
+			},
+		},
+		Content: deepcolor.Item{
+			Type: deepcolor.ItemTypeMap,
+			Rules: []deepcolor.ItemRule{
+				{
+					Key:      "content",
+					Selector: "#TextContent",
+					Target:   deepcolor.TextTarget(),
+					Filters:  []string{"style_bm\\(\\);", "style_tp\\(\\);"},
+				},
+				{
+					Key:      "name",
+					Selector: "#mlfy_main_text > h1",
+					Target:   deepcolor.TextTarget(),
+				},
+			},
+		},
+		Search: deepcolor.Item{
+			Type: deepcolor.ItemTypeMapList,
+			Rules: []deepcolor.ItemRule{
+				{
+					Key:      "title",
+					Selector: ".search-result-list > .se-result-infos > h2 > a",
+					Target:   deepcolor.TextTarget(),
+				},
+				{
+					Key:      "url",
+					Selector: ".search-result-list > .se-result-infos > h2 > a",
+					Target:   deepcolor.AttributeTarget("href"),
+				},
+				{
+					Key:      "cover",
+					Selector: ".search-result-list > .imgbox > a > img",
+					Target:   deepcolor.AttributeTarget("src"),
+				},
+				{
+					Key:      "abstraction",
+					Selector: ".search-result-list > .se-result-infos > p",
+					Target:   deepcolor.TextTarget(),
+				},
+				{
+					Key:      "author",
+					Selector: ".search-result-list > .se-result-infos > .bookinfo > a:nth-of-type(1)",
 					Target:   deepcolor.TextTarget(),
 				},
 			},
@@ -344,5 +453,20 @@ var (
 		ContentUrl: "^http(s)?://www.liquge.com/book/[0-9]+/[0-9]+\\.html$",
 		SearchApi:  "http://www.liquge.com/modules/article/search.php?searchkey=%s",
 		Rule:       BiqugeCRule,
+	}
+	LigntNovelProvider = NovelProvider{
+		Identifier: "linovelib",
+		Name:       "哔哩轻小说",
+		Alias:      "linovelib.com",
+		HomeUrl:    "https://www.linovelib.com/",
+		Charset:    "utf-8",
+		Header: map[string]string{
+			"cookie": "PHPSESSID=47c8s8ti7n0j3nk10l1mjl0g6n;",
+		},
+		Status:     true,
+		InfoUrl:    "^http(s)?://www.linovelib.com/novel/[0-9]+\\.html$",
+		ContentUrl: "^http(s)?://www.linovelib.com/novel/[0-9]+/[0-9]+\\.html$",
+		SearchApi:  "https://www.linovelib.com/s/?searchkey=%s",
+		Rule:       LigntNovelRule,
 	}
 )
