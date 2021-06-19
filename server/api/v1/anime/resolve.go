@@ -11,6 +11,16 @@ import (
 	"net/http"
 )
 
+// Resolve godoc
+// @Summary resolve anime
+// @Description 根据来源解析动漫
+// @Tags Anime
+// @Produce json
+// @Param provider path string true "anime provider identifier"
+// @Param url query string true "url"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "susudm?url=susudm-17891-acg-1, susudm?url=http://susudm.com/acg/17891/"
+// @Router /api/v1/anime/resolve/{provider} [get]
 func Resolve(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	provider := context.Param("provider")
@@ -42,6 +52,15 @@ func Resolve(context *gin.Context) {
 	})
 }
 
+// ResolveAll godoc
+// @Summary resolve anime
+// @Description 解析动漫
+// @Tags Anime
+// @Produce json
+// @Param url query string true "url"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "susudm-17891-acg-1, http://susudm.com/acg/17891/"
+// @Router /api/v1/anime/resolve [get]
 func ResolveAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	url, b := appG.C.GetQuery("url")

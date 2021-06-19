@@ -21,7 +21,6 @@ import (
 // @Param cache query boolean false "use cache"
 // @Success 200 {object} app.AppJsonResponse "biqugeB?keyword=诡秘之主"
 // @Router /api/v1/novel/search/{provider} [get]
-
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	providerName := context.Param("provider")

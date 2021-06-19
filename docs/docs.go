@@ -24,6 +24,314 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/anime/info": {
+            "get": {
+                "description": "获取动漫信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "get anime info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "susudm-17891-acg-1",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/anime/info/{provider}": {
+            "get": {
+                "description": "根据来源获取动漫信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "get anime info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "anime provider identifier",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "susudm?uid=susudm-17891-acg-1",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/anime/playurl": {
+            "get": {
+                "description": "获取动漫播放地址",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "get anime playurl",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "susudm-17891-acg-1",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/anime/playurl/{provider}": {
+            "get": {
+                "description": "根据来源获取动漫播放地址",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "get anime playurl",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "anime provider identifier",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "susudm?uid=susudm-17891-acg-1",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/anime/resolve": {
+            "get": {
+                "description": "解析动漫",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "resolve anime",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "url",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "susudm-17891-acg-1, http://susudm.com/acg/17891/",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/anime/resolve/{provider}": {
+            "get": {
+                "description": "根据来源解析动漫",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "resolve anime",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "anime provider identifier",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "url",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "susudm?url=susudm-17891-acg-1, susudm?url=http://susudm.com/acg/17891/",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/anime/search": {
+            "get": {
+                "description": "搜索动漫",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "search anime",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "刀剑神域",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/anime/search/{provider}": {
+            "get": {
+                "description": "根据来源搜索动漫",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Anime"
+                ],
+                "summary": "search anime",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "anime provider identifier",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "susudm?keyword=刀剑神域",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/novel/content": {
             "get": {
                 "description": "获取小说章节内容",
@@ -162,6 +470,48 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "诡秘之主",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/novel/search/{provider}": {
+            "get": {
+                "description": "根据来源搜索小说",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Novel"
+                ],
+                "summary": "search novel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "novel provider identifier",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "biqugeB?keyword=诡秘之主",
                         "schema": {
                             "$ref": "#/definitions/app.AppJsonResponse"
                         }

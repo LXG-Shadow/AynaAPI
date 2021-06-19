@@ -11,6 +11,210 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/anime/info:
+    get:
+      description: 获取动漫信息
+      parameters:
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm-17891-acg-1
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get anime info
+      tags:
+      - Anime
+  /api/v1/anime/info/{provider}:
+    get:
+      description: 根据来源获取动漫信息
+      parameters:
+      - description: anime provider identifier
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm?uid=susudm-17891-acg-1
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get anime info
+      tags:
+      - Anime
+  /api/v1/anime/playurl:
+    get:
+      description: 获取动漫播放地址
+      parameters:
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm-17891-acg-1
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get anime playurl
+      tags:
+      - Anime
+  /api/v1/anime/playurl/{provider}:
+    get:
+      description: 根据来源获取动漫播放地址
+      parameters:
+      - description: anime provider identifier
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm?uid=susudm-17891-acg-1
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get anime playurl
+      tags:
+      - Anime
+  /api/v1/anime/resolve:
+    get:
+      description: 解析动漫
+      parameters:
+      - description: url
+        in: query
+        name: url
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm-17891-acg-1, http://susudm.com/acg/17891/
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: resolve anime
+      tags:
+      - Anime
+  /api/v1/anime/resolve/{provider}:
+    get:
+      description: 根据来源解析动漫
+      parameters:
+      - description: anime provider identifier
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: url
+        in: query
+        name: url
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm?url=susudm-17891-acg-1, susudm?url=http://susudm.com/acg/17891/
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: resolve anime
+      tags:
+      - Anime
+  /api/v1/anime/search:
+    get:
+      description: 搜索动漫
+      parameters:
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 刀剑神域
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search anime
+      tags:
+      - Anime
+  /api/v1/anime/search/{provider}:
+    get:
+      description: 根据来源搜索动漫
+      parameters:
+      - description: anime provider identifier
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm?keyword=刀剑神域
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search anime
+      tags:
+      - Anime
   /api/v1/novel/content:
     get:
       description: 获取小说章节内容
@@ -101,6 +305,34 @@ paths:
       responses:
         "200":
           description: 诡秘之主
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search novel
+      tags:
+      - Novel
+  /api/v1/novel/search/{provider}:
+    get:
+      description: 根据来源搜索小说
+      parameters:
+      - description: novel provider identifier
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: biqugeB?keyword=诡秘之主
           schema:
             $ref: '#/definitions/app.AppJsonResponse'
       summary: search novel

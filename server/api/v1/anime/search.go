@@ -11,6 +11,16 @@ import (
 	"net/http"
 )
 
+// Search godoc
+// @Summary search anime
+// @Description 根据来源搜索动漫
+// @Tags Anime
+// @Produce json
+// @Param provider path string true "anime provider identifier"
+// @Param keyword query string true "keyword"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "susudm?keyword=刀剑神域"
+// @Router /api/v1/anime/search/{provider} [get]
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	provider := context.Param("provider")
@@ -33,6 +43,15 @@ func Search(context *gin.Context) {
 	appG.MakeResponse(http.StatusOK, e.API_OK, result.Data)
 }
 
+// SearchAll godoc
+// @Summary search anime
+// @Description 搜索动漫
+// @Tags Anime
+// @Produce json
+// @Param keyword query string true "keyword"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "刀剑神域"
+// @Router /api/v1/anime/search [get]
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	keyword, b := appG.C.GetQuery("keyword")

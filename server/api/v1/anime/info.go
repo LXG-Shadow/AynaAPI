@@ -10,6 +10,16 @@ import (
 	"net/http"
 )
 
+// GetInfo godoc
+// @Summary get anime info
+// @Description 根据来源获取动漫信息
+// @Tags Anime
+// @Produce json
+// @Param provider path string true "anime provider identifier"
+// @Param uid query string true "uid"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "susudm?uid=susudm-17891-acg-1"
+// @Router /api/v1/anime/info/{provider} [get]
 func GetInfo(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	provider := context.Param("provider")
@@ -35,6 +45,15 @@ func GetInfo(context *gin.Context) {
 	appG.MakeResponse(http.StatusOK, e.API_OK, vModel)
 }
 
+// InfoAll godoc
+// @Summary get anime info
+// @Description 获取动漫信息
+// @Tags Anime
+// @Produce json
+// @Param uid query string true "uid"
+// @Param cache query boolean false "use cache"
+// @Success 200 {object} app.AppJsonResponse "susudm-17891-acg-1"
+// @Router /api/v1/anime/info [get]
 func InfoAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	uid, b := appG.C.GetQuery("uid")
