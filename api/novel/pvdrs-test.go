@@ -383,9 +383,10 @@ var (
 				},
 				{
 					Key:      "content",
-					Selector: "let dom_nr = '(.*)<!-- <p",
+					Selector: "let dom_nr = '(.*)';document",
 					Target:   deepcolor.RegularExpressionTarget(),
-					Filters:  []string{"let dom_nr = '", "<!-- <p", "<p>", "</p>"},
+					Filters: []string{"let dom_nr = '", "';document", "（本章未完）",
+						"<!-- <p", "<p[^>]*>", "</p>", "<!-- ", " -->", "<img[^>]*>"},
 					Replacers: map[string]string{
 						"</p>": "\n</p>",
 					},

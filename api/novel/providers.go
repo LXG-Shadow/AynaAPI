@@ -13,7 +13,7 @@ var ProviderMap map[string]NovelProvider = map[string]NovelProvider{
 	//BiqugeProvider.Identifier:  BiqugeProvider,
 	//BiqugeBProvider.Identifier: BiqugeBProvider,
 	//BiqugeCProvider.Identifier: BiqugeCProvider,
-	LigntNovelProvider.Identifier: LigntNovelProvider,
+	//LigntNovelProvider.Identifier: LigntNovelProvider,
 }
 
 func init() {
