@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func TestA() {
 	//fmt.Println(novel.GetDataByProvider(&novel.BiqugeProvider,"https://www.biquge.com.cn/book/32135/"))
 	//fmt.Println(novel.SearchByProvider(&novel.BiqugeBProvider,"猫腻").Data)
 	//fmt.Printf("%q",novel.GetData("http://www.liquge.com/book/228/").Data["abstraction"])

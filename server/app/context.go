@@ -3,6 +3,7 @@ package app
 import (
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/fs"
+	"AynaAPI/server/models"
 	"AynaAPI/utils/vfile"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
@@ -73,6 +74,18 @@ func (g *AppGin) SetCookie(name, value string, maxAge int, secure, httpOnly bool
 
 func (g *AppGin) DeleteCookie(name string) {
 	g.C.SetCookie(name, "", -1, "", "", true, true)
+}
+
+func (g *AppGin) SetUser(user *models.User) {
+	g.C.Set("ayapi_user", user)
+}
+
+func (g *AppGin) GetUser() (user *models.User, exists bool) {
+	if val, ok := g.C.Get("ayapi_user"); !ok {
+		return nil, false
+	} else {
+		return val.(*models.User), true
+	}
 }
 
 func (g *AppGin) SaveUploadedFileWithMD5(file *multipart.FileHeader) (string, error) {

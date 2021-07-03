@@ -2,13 +2,13 @@
   {
     "identifier": "biqugeB",
     "name": "笔趣阁 B",
-    "alias": "biquwx.la",
-    "home_url": "https://www.biquwx.la/",
+    "alias": "biqusk.com",
+    "home_url": "https://www.biqusk.com/",
     "charset": "utf-8",
     "status": true,
-    "info_url": "^http(s)?://www.biquwx.la/[0-9]+_[0-9]+(/)?$",
-    "content_url": "^http(s)?://www.biquwx.la/[0-9]+_[0-9]+/[0-9]+\\.html$",
-    "search_api": "https://www.biquwx.la/modules/article/search.php?searchkey=%s",
+    "info_url": "^http(s)?://www.biqusk.com/[0-9]+_[0-9]+(/)?$",
+    "content_url": "^http(s)?://www.biqusk.com/[0-9]+_[0-9]+/[0-9]+\\.html$",
+    "search_api": "https://www.biqusk.com/s.php?q=%s",
     "rule": {
       "title": {
         "type": "single",
@@ -115,6 +115,16 @@
               "Value": ""
             },
             "filters": null
+          },
+          {
+            "key": "info",
+            "selector": ".bottem1 > a:nth-of-type(3)",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null,
+            "replacers": null
           }
         ]
       },
@@ -172,7 +182,7 @@
   },
   {
     "identifier": "biqugeC",
-    "name": "笔趣阁 B",
+    "name": "笔趣阁 C",
     "alias": "biquwx.la",
     "home_url": "http://www.liquge.com/",
     "charset": "utf-8",
@@ -289,6 +299,16 @@
               "Value": ""
             },
             "filters": null
+          },
+          {
+            "key": "info",
+            "selector": ".linkleft > a:nth-of-type(3)",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null,
+            "replacers": null
           }
         ]
       },
@@ -348,12 +368,12 @@
     "identifier": "biqugeA",
     "name": "笔趣阁 A",
     "alias": "biquege.com.cn",
-    "home_url": "https://www.biquge.com.cn/",
+    "home_url": "https://www.sobiquge.com/",
     "charset": "utf-8",
     "status": true,
-    "info_url": "^http(s)?://www.biquge.com.cn/book/[0-9]+(/)?$",
-    "content_url": "^https(:)?//www.biquge.com.cn/book/[0-9]+/[0-9]+\\.html$",
-    "search_api": "https://www.biquge.com.cn/search.php?q=%s",
+    "info_url": "^http(s)?://www.sobiquge.com/book/[0-9]+(/)?$",
+    "content_url": "^https(:)?//www.sobiquge.com/book/[0-9]+/[0-9]+\\.html$",
+    "search_api": "https://www.sobiquge.com/search.php?q=%s",
     "rule": {
       "title": {
         "type": "single",
@@ -458,6 +478,16 @@
               "Value": ""
             },
             "filters": null
+          },
+          {
+            "key": "info",
+            "selector": ".bottem1 > a:nth-of-type(2)",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
+            },
+            "filters": null,
+            "replacers": null
           }
         ]
       },

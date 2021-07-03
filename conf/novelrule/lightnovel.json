@@ -6,12 +6,12 @@
     "home_url": "https://www.linovelib.com/",
     "charset": "utf-8",
     "header": {
-      "cookie": "jieqiUserInfo=jieqiUserId%3D319827%2CjieqiUserUname%3Daynatesta%2CjieqiUserName%3Daynatesta%2CjieqiUserGroup%3D3%2CjieqiUserGroupName%3D%E6%99%AE%E9%80%9A%E4%BC%9A%E5%91%98%2CjieqiUserVip%3D0%2CjieqiUserHonorId%3D1%2CjieqiUserHonor%3D%E5%A4%A9%E7%84%B6%2CjieqiUserToken%3D41d8caedaf74e0436ff5f004de187ba8%2CjieqiCodeLogin%3D0%2CjieqiCodePost%3D7%2CjieqiUserLogin%3D1624159304%2CjieqiUserPassword%3D379d129274408227b1f1d9cfa28578cb;"
+      "cookie": "PHPSESSID=1qdgvbj20o8enucbv4fbjjvcli; jieqiUserInfo=jieqiUserId%3D319827%2CjieqiUserUname%3Daynatesta%2CjieqiUserName%3Daynatesta%2CjieqiUserGroup%3D3%2CjieqiUserGroupName%3D%E6%99%AE%E9%80%9A%E4%BC%9A%E5%91%98%2CjieqiUserVip%3D0%2CjieqiUserHonorId%3D1%2CjieqiUserHonor%3D%E5%A4%A9%E7%84%B6%2CjieqiUserToken%3D4dda4aa4e0fa0e9ecbe57734c4589212%2CjieqiCodeLogin%3D0%2CjieqiCodePost%3D7%2CjieqiUserLogin%3D1625300499%2CjieqiUserPassword%3D379d129274408227b1f1d9cfa28578cb;"
     },
     "status": true,
     "info_url": "^http(s)?://www.linovelib.com/novel/[0-9]+\\.html$",
     "content_url": "^http(s)?://www.linovelib.com/novel/[0-9]+/[0-9]+\\.html$",
-    "search_api": "https://www.linovelib.com/s/?searchkey=%s",
+    "search_api": "https://www.linovelib.com/s1/?searchkey=%s",
     "rule": {
       "title": {
         "type": "single",
@@ -125,11 +125,10 @@
             },
             "filters": [
               "style_bm\\(\\);",
-              "style_tp\\(\\);",
-              "\\n\\n"
+              "style_tp\\(\\);"
             ],
             "replacers": {
-              "</p>": "\n</p>",
+              "</p>": "\n\n</p>",
               "<span[^>]*>.*?</span>": ""
             }
           },
@@ -147,12 +146,12 @@
               "<!-- <p",
               "<p[^>]*>",
               "</p>",
-              "<!-- ",
-              " -->",
               "<img[^>]*>"
             ],
             "replacers": {
-              "</p>": "\n</p>"
+              "</p>": "\n\n</p>",
+              "<!--(.)*-->": "",
+              "<p[^>]*>（本章未完）</p>":""
             }
           },
           {
@@ -161,6 +160,16 @@
             "target": {
               "Type": "innertext",
               "Value": ""
+            },
+            "filters": null,
+            "replacers": null
+          },
+          {
+            "key": "info",
+            "selector": ".chepnav > a:nth-of-type(3)",
+            "target": {
+              "Type": "attribute",
+              "Value": "href"
             },
             "filters": null,
             "replacers": null
@@ -241,5 +250,4 @@
       }
     }
   }
-
 ]

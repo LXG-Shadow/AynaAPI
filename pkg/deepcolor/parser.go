@@ -74,7 +74,6 @@ func ParseSingle(doc *goquery.Document, collection Item) (result string) {
 	return
 }
 
-// todo same key append
 func ParseList(doc *goquery.Document, collection Item) (result []string) {
 	result = make([]string, 0)
 	if collection.Type != ItemTypeList {
@@ -83,10 +82,15 @@ func ParseList(doc *goquery.Document, collection Item) (result []string) {
 	if len(collection.Rules) < 1 {
 		return
 	}
-	rule := collection.Rules[0]
-	doc.Find(rule.Selector).Each(func(i int, selection *goquery.Selection) {
-		result = append(result, getValue(selection, rule))
-	})
+	for _, rule := range collection.Rules {
+		doc.Find(rule.Selector).Each(func(i int, selection *goquery.Selection) {
+			if len(result) <= i {
+				result = append(result, getValue(selection, rule))
+			} else {
+				result[i] += getValue(selection, rule)
+			}
+		})
+	}
 	return
 }
 
@@ -103,7 +107,6 @@ func ParseMap(doc *goquery.Document, collection Item) (result map[string]string)
 		default:
 			result[rule.Key] += getValue(doc.Find(rule.Selector), rule)
 		}
-
 	}
 	return
 }

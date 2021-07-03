@@ -17,9 +17,9 @@ import (
 // @Router /api/v1/novel/providerlist [get]
 func GetProviderList(context *gin.Context) {
 	appG := app.AppGin{C: context}
-	plist := make([]string, 0)
-	for id, _ := range novelApi.ProviderMap {
-		plist = append(plist, id)
+	plist := make([]map[string]string, 0)
+	for id, val := range novelApi.ProviderMap {
+		plist = append(plist, map[string]string{"id": id, "name": val.Name})
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, plist)
 	return

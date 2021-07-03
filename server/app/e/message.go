@@ -14,6 +14,8 @@ var CODE_MESSAGE = map[int]string{
 	API_ERROR_UPLOAD_IVALID_IMAGE:          "Not a valid image",
 	API_ERROR_UPLOAD_EXCEED_IMAGE_MAX_SIZE: "Exceed image maxsize",
 
+	API_ERROR_PERMISSION_NOT_ALLOWED: "Do not have enough permission",
+
 	BGM_INITIALIZE_FAIL:        "获取信息失败",
 	BGM_PROVIDER_NOT_AVAILABLE: "该来源暂时不可用",
 	BGM_SEARCH_FAIL:            "资源搜索失败",

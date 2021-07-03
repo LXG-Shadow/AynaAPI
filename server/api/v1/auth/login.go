@@ -9,6 +9,15 @@ import (
 	"net/http"
 )
 
+// Login godoc
+// @Summary login
+// @Description 登录
+// @Tags Auth
+// @Produce json
+// @Param username query string true "username"
+// @Param password query string true "password"
+// @Success 200 {object} app.AppJsonResponse "
+// @Router /api/v1/auth/login [get]
 func Login(c *gin.Context) {
 	appG := app.AppGin{C: c}
 

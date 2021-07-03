@@ -158,6 +158,26 @@
                 }
             }
         },
+        "/api/v1/anime/providerlist": {
+            "get": {
+                "description": "获取来源列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Novel"
+                ],
+                "summary": "get provider list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/anime/resolve": {
             "get": {
                 "description": "解析动漫",
@@ -305,6 +325,62 @@
                 "responses": {
                     "200": {
                         "description": "susudm?keyword=刀剑神域",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/info": {
+            "get": {
+                "description": "获取当前用户信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "get current user info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "get": {
+                "description": "登录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/app.AppJsonResponse"
                         }
