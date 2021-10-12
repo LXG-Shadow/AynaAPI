@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"AynaAPI/api/model"
+	"AynaAPI/api/core"
 	feijisuApi "AynaAPI/api/provider/feijisu"
 	imomoeApi "AynaAPI/api/provider/imomoe"
 	susudmApi "AynaAPI/api/provider/susudm"
@@ -13,7 +13,7 @@ type ApiProvider interface {
 	//InitDefault()
 	GetUniqueId() string
 	Initialize() bool
-	GetPlayUrls() []model.ApiResource
+	GetPlayUrls() []core.ApiResource
 }
 
 const (

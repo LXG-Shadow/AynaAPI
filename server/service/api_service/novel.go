@@ -1,14 +1,14 @@
 package api_service
 
 import (
-	apiModel "AynaAPI/api/model"
+	"AynaAPI/api/core"
 	novelApi "AynaAPI/api/novel"
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/service/cache_service"
 	"time"
 )
 
-func NovelSearch(provider *novelApi.NovelProvider, keyword string, useCache bool) apiModel.ApiResponse {
+func NovelSearch(provider *novelApi.NovelProvider, keyword string, useCache bool) core.ApiResponse {
 	if !gredis.Online {
 		return novelApi.SearchByProvider(provider, keyword)
 	}
@@ -19,7 +19,7 @@ func NovelSearch(provider *novelApi.NovelProvider, keyword string, useCache bool
 		return resp
 	}
 	// redis has cache
-	var resp apiModel.ApiResponse
+	var resp core.ApiResponse
 	if b := gredis.GetData(key, &resp); b {
 		return resp
 	}
@@ -28,7 +28,7 @@ func NovelSearch(provider *novelApi.NovelProvider, keyword string, useCache bool
 	return resp
 }
 
-func NovelContent(provider *novelApi.NovelProvider, uri string, useCache bool) apiModel.ApiResponse {
+func NovelContent(provider *novelApi.NovelProvider, uri string, useCache bool) core.ApiResponse {
 	if !gredis.Online {
 		return novelApi.GetContentByProvider(provider, uri)
 	}
@@ -39,7 +39,7 @@ func NovelContent(provider *novelApi.NovelProvider, uri string, useCache bool) a
 		return resp
 	}
 	// redis has cache
-	var resp apiModel.ApiResponse
+	var resp core.ApiResponse
 	if b := gredis.GetData(key, &resp); b {
 		return resp
 	}
@@ -48,7 +48,7 @@ func NovelContent(provider *novelApi.NovelProvider, uri string, useCache bool) a
 	return resp
 }
 
-func NovelInfo(provider *novelApi.NovelProvider, uri string, useCache bool) apiModel.ApiResponse {
+func NovelInfo(provider *novelApi.NovelProvider, uri string, useCache bool) core.ApiResponse {
 	if !gredis.Online {
 		return novelApi.GetInfoByProvider(provider, uri)
 	}
@@ -59,7 +59,7 @@ func NovelInfo(provider *novelApi.NovelProvider, uri string, useCache bool) apiM
 		return resp
 	}
 	// redis has cache
-	var resp apiModel.ApiResponse
+	var resp core.ApiResponse
 	if b := gredis.GetData(key, &resp); b {
 		return resp
 	}

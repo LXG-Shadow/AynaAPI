@@ -1,8 +1,8 @@
 package imomoe
 
 import (
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/utils"
 	"encoding/json"
 	"fmt"
@@ -90,26 +90,26 @@ func (self *ImomoeVideo) GetUniqueId() string {
 
 func (self *ImomoeVideo) Initialize() bool {
 	resp := GetInfo(self.Id, self.SourceId, self.EpId)
-	if resp.Status != e.SUCCESS {
+	if resp.Status != e2.SUCCESS {
 		return false
 	}
 	self.PictureUrl = cast.ToString(resp.Data["pic"])
 	self.Title = cast.ToString(resp.Data["title"])
 	self.Episodes = cast.ToStringMapStringSlice(resp.Data["episodes"])
 	resp = GetPlayData(cast.ToStringMapString(resp.Data)["playdataUrl"])
-	if resp.Status != e.SUCCESS {
+	if resp.Status != e2.SUCCESS {
 		return false
 	}
 	self.Urls = cast.ToStringSlice(resp.Data["urls"])
 	return true
 }
 
-func (self *ImomoeVideo) GetPlayUrls() []model.ApiResource {
-	pUrls := make([]model.ApiResource, 0)
+func (self *ImomoeVideo) GetPlayUrls() []core.ApiResource {
+	pUrls := make([]core.ApiResource, 0)
 	for _, url := range self.Urls {
 		resp := ResolveVideoUrl(url)
 		if resp.Status == 0 {
-			pUrls = append(pUrls, model.ApiResource{
+			pUrls = append(pUrls, core.ApiResource{
 				Url:    cast.ToString(resp.Data["realUrl"]),
 				Header: nil,
 			})

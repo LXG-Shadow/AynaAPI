@@ -1,9 +1,9 @@
 package imomoe
 
 import (
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/api/httpc"
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
 	"AynaAPI/utils"
 	"AynaAPI/utils/vhttp"
 	"fmt"
@@ -31,12 +31,12 @@ func GetResolveApi(url string) string {
 	return fmt.Sprintf(resolveUrl, url)
 }
 
-func GetInfo(id string, sourceId string, epId string) model.ApiResponse {
+func GetInfo(id string, sourceId string, epId string) core.ApiResponse {
 	result := vhttp.DecodeString(httpc.Get(GetPlayerApi(id, sourceId, epId), nil).String(),
 		"gb2312")
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(result))
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.INTERNAL_ERROR)
 	}
 	eps := map[string][]string{}
 	hrefExp := regexp.MustCompile("[0-9]+-[0-9]+-[0-9]+")
@@ -53,15 +53,15 @@ func GetInfo(id string, sourceId string, epId string) model.ApiResponse {
 	})
 	title, b := utils.SliceString(regexp.MustCompile("xTitle='(.*)'").FindString(result), 8, -1)
 	if !b {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 	playdataUrl, b := utils.SliceString(regexp.MustCompile("src=\"/playdata/(.*)\"").FindString(result), 5, -1)
 	if !b {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 
 	pic, _ := utils.SliceString(regexp.MustCompile("'bdPic':'[^,]*',").FindString(result), 9, -1)
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"title":       title,
 		"pic":         pic,
 		"playdataUrl": playdataUrl,
@@ -69,29 +69,29 @@ func GetInfo(id string, sourceId string, epId string) model.ApiResponse {
 	})
 }
 
-func GetPlayData(playdataUrl string) model.ApiResponse {
+func GetPlayData(playdataUrl string) core.ApiResponse {
 	result := httpc.Get(Host+playdataUrl, nil).String()
 	videoList, b := utils.SliceString(strings.ReplaceAll(regexp.MustCompile("\\[(.*)\\],").FindString(result), "'", "\""), 0, -1)
 	if !b {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 	gresult := gjson.Get(videoList, "@this.#.1.0")
 	urls := make([]string, 0)
 	for _, value := range gresult.Array() {
 		urls = append(urls, strings.Split(value.String(), "$")[1])
 	}
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"urls": urls,
 	})
 }
 
-func ResolveVideoUrl(url string) model.ApiResponse {
+func ResolveVideoUrl(url string) core.ApiResponse {
 	result := strings.ReplaceAll(httpc.Get(GetResolveApi(url), nil).String(), " ", "")
 	realUrl, b := utils.SliceString(regexp.MustCompile("varvideo='(.*)';").FindString(result), 10, -2)
 	if !b {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"url":     url,
 		"realUrl": realUrl,
 	})

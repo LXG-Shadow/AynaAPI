@@ -1,9 +1,9 @@
 package susudm
 
 import (
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/api/httpc"
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
 	"AynaAPI/utils"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -29,20 +29,20 @@ func GetDataApi(id string) string {
 	return fmt.Sprintf(dataApi, id)
 }
 
-func GetInfo(id string, category string, epId string) model.ApiResponse {
+func GetInfo(id string, category string, epId string) core.ApiResponse {
 	result := httpc.Get(GetPlayerApi(id, category, epId), nil).String()
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(result))
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.INTERNAL_ERROR)
 	}
 	title := doc.Find("div[class=tvinfo] > h3").Text()
 	if title == "" {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 	result = httpc.Get(GetInfoApi(id, category), nil).String()
 	doc, err = goquery.NewDocumentFromReader(strings.NewReader(result))
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.INTERNAL_ERROR)
 	}
 	eps := make([]string, 0)
 	hrefExp := regexp.MustCompile("[0-9]+\\.html")
@@ -55,14 +55,14 @@ func GetInfo(id string, category string, epId string) model.ApiResponse {
 		}
 	})
 	pic, _ := doc.Find("div[class=pic] > img").Attr("data-original")
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"title":    title,
 		"pic":      pic,
 		"episodes": eps,
 	})
 }
 
-func GetPlayData(id string, epId string) model.ApiResponse {
+func GetPlayData(id string, epId string) core.ApiResponse {
 	result := httpc.Get(GetDataApi(id), nil).String()
 	urlsExp := regexp.MustCompile(fmt.Sprintf("playarr(_[0-9])?\\[%s\\]=\"[^\"]*\";", epId))
 	urls := make([]string, 0)
@@ -74,7 +74,7 @@ func GetPlayData(id string, epId string) model.ApiResponse {
 			}
 		}
 	}
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"urls": urls,
 	})
 }

@@ -1,9 +1,9 @@
 package susudm
 
 import (
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/api/httpc"
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
 	"encoding/json"
 	"fmt"
 	"github.com/tidwall/gjson"
@@ -32,19 +32,19 @@ type searchResult struct {
 	Sort      string `json:"sort"`
 }
 
-func Search(keyword string, page int) model.ApiResponse {
+func Search(keyword string, page int) core.ApiResponse {
 	if page == 0 {
 		page = 1
 	}
 	result := httpc.Get(GetSearchApi(keyword, page), map[string]string{"origin": Host}).String()
 	if result == "" {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.INTERNAL_ERROR)
 	}
 	videoList := make([]*FeijisuDmVideo, 0)
 	var sresults []searchResult
 	err := json.Unmarshal([]byte(gjson.Parse(strings.ReplaceAll(result, "\ufeff", "")).String()), &sresults)
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 	for _, rs := range sresults {
 		if v, b := InitWithUrl(rs.Url); b {
@@ -53,7 +53,7 @@ func Search(keyword string, page int) model.ApiResponse {
 			videoList = append(videoList, v)
 		}
 	}
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"videoList":   videoList,
 		"currentPage": page,
 		"totalPage":   page,

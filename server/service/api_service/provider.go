@@ -1,7 +1,7 @@
 package api_service
 
 import (
-	apiModel "AynaAPI/api/model"
+	"AynaAPI/api/core"
 	providerApi "AynaAPI/api/provider"
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/service/cache_service"
@@ -28,7 +28,7 @@ func ProviderInitialize(provider string, model *providerApi.ApiProvider, useCach
 	return (*model).Initialize()
 }
 
-func ProviderGetPlayUrls(model *providerApi.ApiProvider, useCache bool) []apiModel.ApiResource {
+func ProviderGetPlayUrls(model *providerApi.ApiProvider, useCache bool) []core.ApiResource {
 	if !gredis.Online {
 		return (*model).GetPlayUrls()
 	}
@@ -38,7 +38,7 @@ func ProviderGetPlayUrls(model *providerApi.ApiProvider, useCache bool) []apiMod
 		return (*model).GetPlayUrls()
 	}
 	// redis has cache
-	var resource []apiModel.ApiResource
+	var resource []core.ApiResource
 	if b := gredis.GetData(key, &resource); b {
 		return resource
 	}
@@ -46,7 +46,7 @@ func ProviderGetPlayUrls(model *providerApi.ApiProvider, useCache bool) []apiMod
 	return (*model).GetPlayUrls()
 }
 
-func ProviderSearch(provider string, keyword string, page int, useCache bool) apiModel.ApiResponse {
+func ProviderSearch(provider string, keyword string, page int, useCache bool) core.ApiResponse {
 	if !gredis.Online {
 		return providerApi.Search(provider, keyword, page)
 	}
@@ -56,7 +56,7 @@ func ProviderSearch(provider string, keyword string, page int, useCache bool) ap
 		gredis.SetData(key, result, time.Hour*24)
 		return result
 	}
-	var result apiModel.ApiResponse
+	var result core.ApiResponse
 	if b := gredis.GetData(key, &result); b {
 		return result
 	}

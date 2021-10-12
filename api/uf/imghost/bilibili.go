@@ -1,8 +1,8 @@
 package imghost
 
 import (
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/config"
 	"AynaAPI/config/cookie"
 	"encoding/base64"
@@ -13,7 +13,7 @@ import (
 
 const BilibiliUploadApi = "https://api.bilibili.com/x/article/creative/article/upcover"
 
-func UploadBilibili(imgBS64 string) model.ApiResponse {
+func UploadBilibili(imgBS64 string) core.ApiResponse {
 	resp, err := grequests.Post(BilibiliUploadApi, &grequests.RequestOptions{
 		Cookies: cookie.GetCookie("bilibili"),
 		Data: map[string]string{
@@ -21,24 +21,24 @@ func UploadBilibili(imgBS64 string) model.ApiResponse {
 			"cover": imgBS64,
 		}})
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 
 	code := gjson.Get(resp.String(), "code").Int()
 	if code != 0 {
-		return model.CreateApiResponseByStatus(e.EXTERNAL_API_ERROR, map[string]interface{}{
+		return core.CreateApiResponseByStatus(e2.EXTERNAL_API_ERROR, map[string]interface{}{
 			"response": resp,
 		})
 	}
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"url": gjson.Get(resp.String(), "data.url").String(),
 	})
 }
 
-func UploadFileBilibili(imgPath string) model.ApiResponse {
+func UploadFileBilibili(imgPath string) core.ApiResponse {
 	ff, err := ioutil.ReadFile(imgPath)
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.ERROR_READFILE)
+		return core.CreateEmptyApiResponseByStatus(e2.ERROR_READFILE)
 	}
 	return UploadBilibili("data:image/png;base64," + base64.StdEncoding.EncodeToString(ff))
 }

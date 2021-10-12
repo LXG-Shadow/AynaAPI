@@ -1,9 +1,9 @@
 package yhdm
 
 import (
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/api/httpc"
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
 	"AynaAPI/utils/vhttp"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -20,18 +20,18 @@ func GetSearchApi(keyword string, page int) string {
 	return fmt.Sprintf(searchApi, vhttp.QueryEscapeWithEncoding(keyword, "utf-8"), page)
 }
 
-func Search(keyword string, page int) model.ApiResponse {
+func Search(keyword string, page int) core.ApiResponse {
 	if page == 0 {
 		page = 1
 	}
 	result := httpc.Get(GetSearchApi(keyword, page), nil).String()
 	if result == "" {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.INTERNAL_ERROR)
 	}
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(result))
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.INTERNAL_ERROR)
 	}
 	tP := doc.Find("a[id=lastn]").Text()
 	totalPage, b := cast.ToIntE(tP)
@@ -52,7 +52,7 @@ func Search(keyword string, page int) model.ApiResponse {
 			videoList = append(videoList, v)
 		}
 	})
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"videoList":   videoList,
 		"currentPage": page,
 		"totalPage":   totalPage,

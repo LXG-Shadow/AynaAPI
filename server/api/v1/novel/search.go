@@ -1,7 +1,7 @@
 package novel
 
 import (
-	apiE "AynaAPI/api/model/e"
+	e2 "AynaAPI/api/core/e"
 	novelApi "AynaAPI/api/novel"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
@@ -36,7 +36,7 @@ func Search(context *gin.Context) {
 	}
 	provider := novelApi.GetNovelProvider(providerName)
 	resp := api_service.NovelSearch(provider, keyword, useCache)
-	if resp.Status != apiE.SUCCESS {
+	if resp.Status != e2.SUCCESS {
 		appG.MakeResponse(http.StatusOK, e.NOVEL_GET_DATA_FAIL, resp)
 		return
 	}
@@ -63,7 +63,7 @@ func SearchAll(context *gin.Context) {
 	result := map[string]map[string]interface{}{}
 	for _, provider := range novelApi.ProviderMap {
 		resp := api_service.NovelSearch(&provider, keyword, useCache)
-		if resp.Status == apiE.SUCCESS {
+		if resp.Status == e2.SUCCESS {
 			result[provider.Identifier] = resp.Data
 		}
 	}

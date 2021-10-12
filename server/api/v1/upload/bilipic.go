@@ -1,7 +1,7 @@
 package upload
 
 import (
-	apiE "AynaAPI/api/model/e"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/api/uf/imghost"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
@@ -17,7 +17,7 @@ func UploadBiliPic(context *gin.Context) {
 		return
 	}
 	resp := imghost.UploadBilibili(b64val)
-	if resp.Status != apiE.SUCCESS {
+	if resp.Status != e2.SUCCESS {
 		appG.MakeResponse(http.StatusOK, e.API_ERROR_UNKNOWN, resp)
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, resp)

@@ -1,8 +1,8 @@
 package susudm
 
 import (
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/utils"
 	"encoding/json"
 	"fmt"
@@ -89,24 +89,24 @@ func (self *FeijisuDmVideo) GetUniqueId() string {
 
 func (self *FeijisuDmVideo) Initialize() bool {
 	resp := GetInfo(self.Id, self.Category, self.EpId)
-	if resp.Status != e.SUCCESS {
+	if resp.Status != e2.SUCCESS {
 		return false
 	}
 	self.PictureUrl = cast.ToString(resp.Data["pic"])
 	self.Title = cast.ToString(resp.Data["title"])
 	self.Episodes = cast.ToStringSlice(resp.Data["episodes"])
 	resp = GetPlayData(self.Id, self.EpId)
-	if resp.Status != e.SUCCESS {
+	if resp.Status != e2.SUCCESS {
 		return false
 	}
 	self.Urls = cast.ToStringSlice(resp.Data["urls"])
 	return true
 }
 
-func (self *FeijisuDmVideo) GetPlayUrls() []model.ApiResource {
-	pUrls := make([]model.ApiResource, 0)
+func (self *FeijisuDmVideo) GetPlayUrls() []core.ApiResource {
+	pUrls := make([]core.ApiResource, 0)
 	for _, url := range self.Urls {
-		pUrls = append(pUrls, model.ApiResource{
+		pUrls = append(pUrls, core.ApiResource{
 			Url:    url,
 			Header: nil,
 		})

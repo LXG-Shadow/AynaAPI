@@ -1,8 +1,8 @@
 package yhdm
 
 import (
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/utils"
 	"encoding/json"
 	"fmt"
@@ -86,7 +86,7 @@ func (self *YhdmVideo) GetUniqueId() string {
 
 func (self *YhdmVideo) Initialize() bool {
 	resp := GetInfo(self.Id, self.EpId)
-	if resp.Status != e.SUCCESS {
+	if resp.Status != e2.SUCCESS {
 		return false
 	}
 	self.PictureUrl = cast.ToString(resp.Data["pic"])
@@ -96,11 +96,11 @@ func (self *YhdmVideo) Initialize() bool {
 	return true
 }
 
-func (self *YhdmVideo) GetPlayUrls() []model.ApiResource {
-	pUrls := make([]model.ApiResource, 0)
+func (self *YhdmVideo) GetPlayUrls() []core.ApiResource {
+	pUrls := make([]core.ApiResource, 0)
 	resp := ResolveVideoUrl(self.Url)
-	if resp.Status == e.SUCCESS {
-		pUrls = append(pUrls, model.ApiResource{
+	if resp.Status == e2.SUCCESS {
+		pUrls = append(pUrls, core.ApiResource{
 			Url:    cast.ToString(resp.Data["realUrl"]),
 			Header: nil,
 		})

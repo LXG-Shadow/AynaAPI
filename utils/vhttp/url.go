@@ -30,6 +30,14 @@ func GetUrlHost(uri string) string {
 	return u.Host
 }
 
+func GetUrlPath(uri string) string {
+	u, err := url.Parse(uri)
+	if err != nil {
+		return ""
+	}
+	return u.Path
+}
+
 func JoinUrl(base string, paths ...string) string {
 	u, err := url.Parse(base)
 	if err != nil {

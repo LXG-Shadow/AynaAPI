@@ -1,9 +1,9 @@
 package yhdm
 
 import (
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/core/e"
 	"AynaAPI/api/httpc"
-	"AynaAPI/api/model"
-	"AynaAPI/api/model/e"
 	"AynaAPI/utils"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -36,16 +36,16 @@ func GetResolveApi(rawurl string) string {
 	}
 }
 
-func GetInfo(id string, epId string) model.ApiResponse {
+func GetInfo(id string, epId string) core.ApiResponse {
 	result := httpc.Get(GetPlayerApi(id, epId), nil).String()
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(result))
 	if err != nil {
-		return model.CreateEmptyApiResponseByStatus(e.INTERNAL_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.INTERNAL_ERROR)
 	}
 	title := doc.Find("h1 > a").Text()
 
 	if title == "" {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 
 	eps := make([]string, 0)
@@ -61,11 +61,11 @@ func GetInfo(id string, epId string) model.ApiResponse {
 	playdataUrl, b := doc.Find("div[id=playbox]").Attr("data-vid")
 
 	if !b {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
 	pic, _ := utils.SliceString(regexp.MustCompile("var bdPic = \"[^;]*\";").FindString(result), 13, -2)
 
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"title":    title,
 		"pic":      pic,
 		"playUrl":  playdataUrl,
@@ -73,13 +73,13 @@ func GetInfo(id string, epId string) model.ApiResponse {
 	})
 }
 
-func ResolveVideoUrl(url string) model.ApiResponse {
+func ResolveVideoUrl(url string) core.ApiResponse {
 	result := httpc.Get(GetResolveApi(url), nil).String()
 	realUrl, b := utils.SliceString(regexp.MustCompile("url: \"(.*)\",").FindString(result), 6, -2)
 	if !b {
-		return model.CreateEmptyApiResponseByStatus(e.EXTERNAL_API_ERROR)
+		return core.CreateEmptyApiResponseByStatus(e2.EXTERNAL_API_ERROR)
 	}
-	return model.CreateApiResponseByStatus(e.SUCCESS, map[string]interface{}{
+	return core.CreateApiResponseByStatus(e2.SUCCESS, map[string]interface{}{
 		"url":     url,
 		"realUrl": realUrl,
 	})

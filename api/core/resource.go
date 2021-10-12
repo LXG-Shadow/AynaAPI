@@ -1,4 +1,4 @@
-package model
+package core
 
 type ApiResource struct {
 	Url    string            `json:"url"`

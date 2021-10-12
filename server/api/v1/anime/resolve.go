@@ -1,7 +1,7 @@
 package anime
 
 import (
-	"AynaAPI/api/model"
+	"AynaAPI/api/core"
 	providerApi "AynaAPI/api/provider"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
@@ -45,7 +45,7 @@ func Resolve(context *gin.Context) {
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, struct {
 		Info    *providerApi.ApiProvider `json:"info"`
-		Playurl []model.ApiResource      `json:"playurl"`
+		Playurl []core.ApiResource       `json:"playurl"`
 	}{
 		vModel,
 		api_service.ProviderGetPlayUrls(vModel, useCache),
@@ -80,7 +80,7 @@ func ResolveAll(context *gin.Context) {
 			}
 			appG.MakeResponse(http.StatusOK, e.API_OK, struct {
 				Info    *providerApi.ApiProvider `json:"info"`
-				Playurl []model.ApiResource      `json:"playurl"`
+				Playurl []core.ApiResource       `json:"playurl"`
 			}{
 				vModel,
 				api_service.ProviderGetPlayUrls(vModel, useCache),
