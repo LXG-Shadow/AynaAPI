@@ -1,5 +1,7 @@
 package core
 
+import "fmt"
+
 type AnimeMeta struct {
 	Title       string       `json:"title"`
 	Cover       string       `json:"cover"`
@@ -25,5 +27,5 @@ type AnimeVideo struct {
 }
 
 func (a *Anime) GetUID() string {
-	return ""
+	return fmt.Sprintf("%s-%s", a.Provider.Name, a.Title)
 }

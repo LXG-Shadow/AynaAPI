@@ -4,6 +4,7 @@ import "github.com/aynakeya/deepcolor"
 
 type SusuDmRules struct {
 	Title     deepcolor.Item
+	Cover     deepcolor.Item
 	Tags      deepcolor.Item
 	Desc      deepcolor.Item
 	AreaYear  deepcolor.Item
@@ -21,6 +22,15 @@ func InitializeSusuDmRules() SusuDmRules {
 					Substitution: map[string]string{
 						"<span[^>]*>.*</span>": "",
 					},
+				},
+			},
+		},
+		Cover: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: "body > div.wrap > div.content.mb.clearfix > div.pic > img",
+					Target:   deepcolor.AttributeTarget("src"),
 				},
 			},
 		},
