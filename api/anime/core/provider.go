@@ -1,14 +1,14 @@
 package core
 
-import "AynaAPI/api/core"
-
 type ProviderMeta struct {
 	Name string `json:"name"`
 	Url  string `json:"url"`
 }
 
 type Provider interface {
-	Search(keyword string) core.ApiResource
-	GetAnimeMeta()
-	UpdateAnimeMeta(meta *AnimeMeta)
+	Search(keyword string) (AnimeSearchResult, error)
+	GetAnimeMeta(meta ProviderMeta) (AnimeMeta, error)
+	UpdateAnimeMeta(meta *AnimeMeta) error
+	GetAnime(meta AnimeMeta) (Anime, error)
+	UpdateAnime(anime *Anime) error
 }

@@ -1,5 +1,7 @@
 package e
 
+import "errors"
+
 var CODE_MESSAGE = map[int]string{
 	SUCCESS:            "Success",
 	INTERNAL_ERROR:     "Server internal error",
@@ -18,4 +20,8 @@ func GetMessage(code int) string {
 		return msg
 	}
 	return CODE_MESSAGE[INTERNAL_ERROR]
+}
+
+func NewError(code int) error {
+	return errors.New(GetMessage(code))
 }
