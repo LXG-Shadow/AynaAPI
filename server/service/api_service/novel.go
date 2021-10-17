@@ -1,69 +1,111 @@
 package api_service
 
 import (
-	"AynaAPI/api/core"
-	novelApi "AynaAPI/api/novel"
+	"AynaAPI/api/novel"
+	novelCore "AynaAPI/api/novel/core"
 	"AynaAPI/pkg/gredis"
+	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/cache_service"
 	"time"
 )
 
-func NovelSearch(provider *novelApi.NovelProvider, keyword string, useCache bool) core.ApiResponse {
-	if !gredis.Online {
-		return novelApi.SearchByProvider(provider, keyword)
+func NovelSearch(providerName string, keyword string, useCache bool) (novelCore.NovelSearchResult, int) {
+	provider := novel.GetNovelProvider(providerName)
+	if provider == nil {
+		return novelCore.NovelSearchResult{}, e.NOVEL_PROVIDER_NOT_AVAILABLE
 	}
-	key := cache_service.GetNovelSearchKey(provider.Identifier, keyword)
-	if !useCache {
-		resp := novelApi.SearchByProvider(provider, keyword)
-		defer gredis.SetData(key, resp, time.Hour*24)
-		return resp
+	key := cache_service.GetNovelSearchKey(provider, keyword)
+
+	if useCache && gredis.Online {
+		var result novelCore.NovelSearchResult
+		if b := gredis.GetData(key, &result); b {
+			return result, 0
+		}
 	}
-	// redis has cache
-	var resp core.ApiResponse
-	if b := gredis.GetData(key, &resp); b {
-		return resp
+	result, err := provider.Search(keyword)
+	if err != nil {
+		return result, e.NOVEL_SEARCH_FAIL
 	}
-	resp = novelApi.SearchByProvider(provider, keyword)
-	defer gredis.SetData(key, resp, time.Hour*24)
-	return resp
+	if gredis.Online {
+		defer gredis.SetData(key, result, time.Hour*24)
+	}
+	return result, 0
 }
 
-func NovelContent(provider *novelApi.NovelProvider, uri string, useCache bool) core.ApiResponse {
-	if !gredis.Online {
-		return novelApi.GetContentByProvider(provider, uri)
+func NovelContent(metadata string, volume int, chapter int, useCache bool) (novelCore.NovelChapter, int) {
+	novell, errcode := NovelGet(metadata, useCache)
+	if errcode != 0 {
+		return novelCore.NovelChapter{}, errcode
 	}
-	key := cache_service.GetNovelContentKey(uri)
-	if !useCache {
-		resp := novelApi.GetContentByProvider(provider, uri)
-		defer gredis.SetData(key, resp, time.Hour*24*31)
-		return resp
+	if volume < 0 || volume >= len(novell.Volumes) {
+		return novelCore.NovelChapter{}, e.NOVEL_CHAPTER_NOT_FOUND
 	}
-	// redis has cache
-	var resp core.ApiResponse
-	if b := gredis.GetData(key, &resp); b {
-		return resp
+	if chapter < 0 || chapter >= len(novell.Volumes[volume].Chapters) {
+		return novelCore.NovelChapter{}, e.NOVEL_CHAPTER_NOT_FOUND
 	}
-	resp = novelApi.GetContentByProvider(provider, uri)
-	defer gredis.SetData(key, resp, time.Hour*24*31)
-	return resp
+	c := &novell.Volumes[volume].Chapters[chapter]
+	if c.GetCompletionStatus() && useCache {
+		return *c, 0
+	}
+	err := novel.GetNovelProvider(novell.Provider.Name).UpdateNovelChapter(c)
+	if err != nil {
+		return *c, e.NOVEL_CHAPTER_NOT_FOUND
+	}
+	key := cache_service.GetNovelInfoKey(novell.Provider)
+	if gredis.Online {
+		defer gredis.SetData(key, novell, time.Hour*24)
+	}
+	return *c, 0
 }
 
-func NovelInfo(provider *novelApi.NovelProvider, uri string, useCache bool) core.ApiResponse {
-	if !gredis.Online {
-		return novelApi.GetInfoByProvider(provider, uri)
+func NovelGet(metadata string, useCache bool) (novelCore.Novel, int) {
+	meta := novelCore.ProviderMeta{}
+	err := meta.Load(metadata)
+	if err != nil {
+		return novelCore.Novel{}, e.NOVEL_INITIALIZE_FAIL
 	}
-	key := cache_service.GetNovelInfoKey(uri)
-	if !useCache {
-		resp := novelApi.GetInfoByProvider(provider, uri)
-		defer gredis.SetData(key, resp, time.Hour*24*16)
-		return resp
+	key := cache_service.GetNovelInfoKey(meta)
+
+	if useCache && gredis.Online {
+		var result novelCore.Novel
+		if b := gredis.GetData(key, &result); b {
+			return result, 0
+		}
 	}
-	// redis has cache
-	var resp core.ApiResponse
-	if b := gredis.GetData(key, &resp); b {
-		return resp
+
+	result, errcode := _NovelGet(meta)
+	if errcode != 0 {
+		return result, errcode
 	}
-	resp = novelApi.GetInfoByProvider(provider, uri)
-	defer gredis.SetData(key, resp, time.Hour*24*16)
-	return resp
+	if gredis.Online {
+		defer gredis.SetData(key, result, time.Hour*24)
+	}
+	return result, 0
+}
+
+func _NovelGet(meta novelCore.ProviderMeta) (novell novelCore.Novel, errcode int) {
+	novell = novelCore.Novel{}
+	errcode = 0
+	var provider novelCore.NovelProvider
+	for _, providerName := range novel.GetNovelProviderList() {
+		if novel.GetNovelProvider(providerName).Validate(meta) {
+			provider = novel.GetNovelProvider(providerName)
+			break
+		}
+	}
+	if provider == nil {
+		errcode = e.NOVEL_PROVIDER_NOT_AVAILABLE
+		return
+	}
+	aMeta, err := provider.GetNovelMeta(meta)
+	if err != nil {
+		errcode = e.NOVEL_INITIALIZE_FAIL
+		return
+	}
+	novell, err = provider.GetNovel(aMeta)
+	if err != nil {
+		errcode = e.NOVEL_INITIALIZE_FAIL
+		return
+	}
+	return
 }

@@ -20,6 +20,7 @@ var CODE_MESSAGE = map[int]string{
 	BGM_PROVIDER_NOT_AVAILABLE: "该来源暂时不可用",
 	BGM_SEARCH_FAIL:            "资源搜索失败",
 	BGM_NO_RESULT:              "无结果",
+	BGM_VIDEO_NOT_FOUND:        "未找到id对应的视频",
 
 	AUTH_OK:                     "登录成功",
 	AUTH_ERROR_REQUIRE_USERNAME: "需要用户名",
@@ -29,6 +30,9 @@ var CODE_MESSAGE = map[int]string{
 	NOVEL_PROVIDER_NOT_AVAILABLE: "小说源暂时不可用",
 	NOVEL_URL_NOT_SUPPORT:        "Url不匹配",
 	NOVEL_GET_DATA_FAIL:          "获取数据失败",
+	NOVEL_SEARCH_FAIL:            "小说搜索失败",
+	NOVEL_INITIALIZE_FAIL:        "初始化数据失败",
+	NOVEL_CHAPTER_NOT_FOUND:      "未找到该章节",
 }
 
 // GetMessage get error information based on Code

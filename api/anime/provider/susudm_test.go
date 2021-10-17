@@ -1,12 +1,13 @@
 package provider
 
 import (
+	"AynaAPI/api/anime/core"
 	"fmt"
 	"testing"
 )
 
 func TestSusuDm_Search(t *testing.T) {
-	provider := _newSusuDm()
+	var provider core.AnimeProvider = SusuDmAPI
 	search, err := provider.Search("刀剑神域")
 	if err != nil {
 		return

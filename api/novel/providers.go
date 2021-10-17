@@ -1,89 +1,34 @@
 package novel
 
 import (
-	"AynaAPI/config"
-	"encoding/json"
-	"io/ioutil"
-	"path"
-	"regexp"
+	"AynaAPI/api/novel/core"
+	"AynaAPI/api/novel/provider"
 )
 
-var ProviderMap map[string]NovelProvider = map[string]NovelProvider{
-	//BiqugeProvider.Identifier:  BiqugeProvider,
-	//BiqugeBProvider.Identifier: BiqugeBProvider,
-	//BiqugeCProvider.Identifier: BiqugeCProvider,
-	//LigntNovelProvider.Identifier: LigntNovelProvider,
-}
+var ProviderMap map[string]core.NovelProvider
 
 func init() {
-	var count int = 0
-	fs, _ := ioutil.ReadDir(config.APIConfig.NovelRulePath)
-	for _, file := range fs {
-		if !file.IsDir() {
-			content, err := ioutil.ReadFile(path.Join(config.APIConfig.NovelRulePath, file.Name()))
-			if err != nil {
-				continue
-			}
-			var tmp []NovelProvider
-			if err := json.Unmarshal(content, &tmp); err != nil {
-				continue
-			}
-			for _, pv := range tmp {
-				ProviderMap[pv.Identifier] = pv
-				count++
-			}
-		}
+	ProviderMap = map[string]core.NovelProvider{
+		//provider.SobiqugeAPI.GetName():provider.SobiqugeAPI,
+		provider.LiqugeAPI.GetName(): provider.LiqugeAPI,
+		provider.BiquwxAPI.GetName(): provider.BiquwxAPI,
 	}
 }
 
-func Reload() {
-	ProviderMap = map[string]NovelProvider{}
-	var count int = 0
-	fs, _ := ioutil.ReadDir(config.APIConfig.NovelRulePath)
-	for _, file := range fs {
-		if !file.IsDir() {
-			content, err := ioutil.ReadFile(path.Join(config.APIConfig.NovelRulePath, file.Name()))
-			if err != nil {
-				continue
-			}
-			var tmp []NovelProvider
-			if err := json.Unmarshal(content, &tmp); err != nil {
-				continue
-			}
-			for _, pv := range tmp {
-				ProviderMap[pv.Identifier] = pv
-				count++
-			}
-		}
+func GetNovelProviderList() []string {
+	plist := make([]string, 0)
+	for key, _ := range ProviderMap {
+		plist = append(plist, key)
 	}
+	return plist
 }
 
 func IsProviderAvailable(identifier string) bool {
-	p, ok := ProviderMap[identifier]
-	if !ok {
-		return false
-	}
-	return p.Status
-}
-
-func IsNovelProviderExists(identifier string) bool {
-	_, ok := ProviderMap[identifier]
-	return ok
-}
-
-func GetNovelProvider(identifier string) *NovelProvider {
 	val, _ := ProviderMap[identifier]
-	return &val
+	return val != nil
 }
 
-func GetNovelProviderByUrl(uri string) *NovelProvider {
-	for _, provider := range ProviderMap {
-		if regexp.MustCompile(provider.InfoUrl).FindString(uri) != "" {
-			return &provider
-		}
-		if regexp.MustCompile(provider.ContentUrl).FindString(uri) != "" {
-			return &provider
-		}
-	}
-	return nil
+func GetNovelProvider(identifier string) core.NovelProvider {
+	val, _ := ProviderMap[identifier]
+	return val
 }

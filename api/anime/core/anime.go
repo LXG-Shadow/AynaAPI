@@ -1,9 +1,6 @@
 package core
 
-import (
-	"AynaAPI/utils/vhash"
-	"fmt"
-)
+import "encoding/json"
 
 type AnimeMeta struct {
 	Title       string       `json:"title"`
@@ -14,9 +11,29 @@ type AnimeMeta struct {
 	Provider    ProviderMeta `json:"provider"`
 }
 
+func (a *AnimeMeta) GetCompletionStatus() bool {
+	return a.Title != "" && a.Provider.GetCompletionStatus()
+}
+
+// MarshalJSON method from http://choly.ca/post/go-json-marshalling/
+func (self *AnimeMeta) MarshalJSON() ([]byte, error) {
+	type FakeV AnimeMeta
+	return json.Marshal(&struct {
+		Metadata string `json:"metadata"`
+		*FakeV
+	}{
+		Metadata: self.Provider.Dump(),
+		FakeV:    (*FakeV)(self),
+	})
+}
+
 type Anime struct {
 	AnimeMeta
 	Playlists []Playlist `json:"playlists"`
+}
+
+func (a *Anime) GetCompletionStatus() bool {
+	return a.AnimeMeta.GetCompletionStatus() && a.Playlists != nil
 }
 
 type Playlist struct {
@@ -30,6 +47,6 @@ type AnimeVideo struct {
 	Provider ProviderMeta `json:"provider"`
 }
 
-func (a *Anime) GetUID() string {
-	return vhash.GetMD5Hash(fmt.Sprintf("%s-%s", a.Provider.Name, a.Title))
+func (a *AnimeVideo) GetCompletionStatus() bool {
+	return a.Url != ""
 }

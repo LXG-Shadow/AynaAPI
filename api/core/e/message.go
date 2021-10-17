@@ -11,6 +11,8 @@ var CODE_MESSAGE = map[int]string{
 
 	NOVEL_PROVIDER_URL_NOT_SUPPORT:   "非书籍源的url",
 	NOVEL_PROVIDER_URL_NOT_SUPPORT_2: "url不支持",
+
+	PROVIDER_META_NOT_VALIED: "meta信息错误",
 }
 
 // GetMessage get error information based on Code

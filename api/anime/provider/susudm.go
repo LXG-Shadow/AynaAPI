@@ -5,8 +5,8 @@ import (
 	"AynaAPI/api/anime/rule"
 	"AynaAPI/api/core/e"
 	"AynaAPI/api/httpc"
-	"AynaAPI/utils"
 	"AynaAPI/utils/vhttp"
+	"AynaAPI/utils/vstring"
 	"fmt"
 	"github.com/aynakeya/deepcolor"
 	"github.com/tidwall/gjson"
@@ -21,6 +21,15 @@ type SusuDm struct {
 	SearchAPI  string
 	PlayUrlAPI string
 	Rules      rule.SusuDmRules
+}
+
+func (p *SusuDm) GetName() string {
+	return "susudm"
+}
+
+func (p *SusuDm) Validate(meta core.ProviderMeta) bool {
+	return meta.Name == p.GetName() &&
+		regexp.MustCompile("^"+regexp.QuoteMeta(p.BaseUrl)).FindString(meta.Url) != ""
 }
 
 func _newSusuDm() *SusuDm {
@@ -48,7 +57,6 @@ func (p *SusuDm) getPlayUrlAPI(id string) string {
 }
 
 func (p *SusuDm) GetAnimeMeta(meta core.ProviderMeta) (core.AnimeMeta, error) {
-	meta.Name = "susudm"
 	aMeta := core.AnimeMeta{
 		Provider: meta,
 	}
@@ -64,7 +72,7 @@ func (p *SusuDm) UpdateAnimeMeta(meta *core.AnimeMeta) error {
 		Url:         meta.Provider.Url,
 		Charset:     "utf-8",
 		ContentType: deepcolor.TentacleContentTypeHTMl,
-	}, httpc.GetCORS, nil, nil)
+	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
@@ -97,12 +105,12 @@ func (p *SusuDm) UpdateAnime(anime *core.Anime) error {
 	if id == "" {
 		return e.NewError(e.INTERNAL_ERROR)
 	}
-	id, _ = utils.SliceString(id, 1, -1)
+	id, _ = vstring.SliceString(id, 1, -1)
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         p.getPlayUrlAPI(id),
 		Charset:     "utf-8",
 		ContentType: deepcolor.TentacleContentTypeText,
-	}, httpc.GetCORS, nil, nil)
+	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
@@ -145,12 +153,17 @@ func (p *SusuDm) UpdateAnime(anime *core.Anime) error {
 	return nil
 }
 
+func (p *SusuDm) UpdateAnimeVideo(video *core.AnimeVideo) error {
+	video.Url = video.Provider.Url
+	return nil
+}
+
 func (p *SusuDm) Search(keyword string) (core.AnimeSearchResult, error) {
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         p.getSearchApi(keyword),
 		Charset:     "utf-8",
 		ContentType: deepcolor.TentacleContentTypeText,
-	}, httpc.GetCORS, nil, nil)
+	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
 		return core.AnimeSearchResult{}, e.NewError(e.EXTERNAL_API_ERROR)
 	}
@@ -159,7 +172,7 @@ func (p *SusuDm) Search(keyword string) (core.AnimeSearchResult, error) {
 		strings.ReplaceAll(result.(deepcolor.TentacleTextResult).Data.(string), "\ufeff", ""))
 	jsonResult.ForEach(func(key, value gjson.Result) bool {
 		pMeta := core.ProviderMeta{
-			Name: "susudm",
+			Name: p.GetName(),
 			Url:  vhttp.JoinUrl(p.BaseUrl, vhttp.GetUrlPath("http://"+value.Get("url").String())),
 		}
 		aMeta := core.AnimeMeta{

@@ -15,6 +15,9 @@ type AgefansRules struct {
 	InfoYear  deepcolor.Item
 	InfoTag   deepcolor.Item
 	InfoDesc  deepcolor.Item
+
+	InfoVideos     deepcolor.Item
+	InfoVideoNames deepcolor.Item
 }
 
 func InitializeAgefansRules() AgefansRules {
@@ -115,6 +118,29 @@ func InitializeAgefansRules() AgefansRules {
 			Rules: []deepcolor.ItemRule{
 				{
 					Selector: "div.detail_imform_desc_pre > p",
+					Target:   deepcolor.TextTarget(),
+				},
+			},
+		},
+		InfoVideos: deepcolor.Item{
+			Type: deepcolor.ItemTypeList,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: "div.movurl > ul > li > a",
+					Target:   deepcolor.AttributeTarget("href"),
+					Substitution: map[string]string{
+						"/play/":     "",
+						"\\?playid=": "-",
+						"_":          "-",
+					},
+				},
+			},
+		},
+		InfoVideoNames: deepcolor.Item{
+			Type: deepcolor.ItemTypeList,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: "div.movurl > ul > li > a",
 					Target:   deepcolor.TextTarget(),
 				},
 			},

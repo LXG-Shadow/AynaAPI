@@ -2,17 +2,20 @@ package server
 
 import (
 	"AynaAPI/config"
-	_ "AynaAPI/docs"
-	"AynaAPI/server/api/v1/anime"
 	"AynaAPI/server/api/v1/auth"
 	"AynaAPI/server/api/v1/general"
-	"AynaAPI/server/api/v1/novel"
 	"AynaAPI/server/api/v1/upload"
+	"AynaAPI/server/api/v2/anime"
+	"AynaAPI/server/api/v2/novel"
 	"AynaAPI/server/fs"
 	"AynaAPI/server/middleware/jwt"
 	"AynaAPI/server/middleware/perm"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	_ "AynaAPI/docs"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 func init() {
@@ -42,6 +45,8 @@ func InitRouter() *gin.Engine {
 		staticFs.Static(fs.GetUploadUrl(), fs.GetUploadPath())
 	}
 
+	engine.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	apiV1 := engine.Group("/api/v1")
 	{
 		authApi := apiV1.Group("/auth")
@@ -60,27 +65,25 @@ func InitRouter() *gin.Engine {
 			generalApi.GET("/bypasscors", general.BypassCors)
 			generalApi.GET("/teamsplit", general.GetRandomSeparation)
 		}
-		animeApi := apiV1.Group("/anime")
+	}
+
+	apiV2 := engine.Group("/api/v2")
+	{
+		animeApi := apiV2.Group("/anime")
 		{
 			animeApi.GET("/plist", anime.GetProviderList)
 			animeApi.GET("/providerlist", anime.GetProviderList)
 
-			animeApi.GET("/search/:provider", anime.Search)
-			animeApi.GET("/playurl/:provider", anime.GetPlayUrl)
-			animeApi.GET("/info/:provider", anime.GetInfo)
-			animeApi.GET("/resolve/:provider", anime.Resolve)
-
 			animeApi.GET("/search", anime.SearchAll)
-			animeApi.GET("/playurl", anime.GetPlayUrlAll)
-			animeApi.GET("/info", anime.InfoAll)
-			animeApi.GET("/resolve", anime.ResolveAll)
+			animeApi.GET("/search/:provider", anime.Search)
+
+			animeApi.GET("/playurl", anime.GetPlayUrl)
+			animeApi.GET("/info", anime.GetInfo)
 		}
-		novelApi := apiV1.Group("/novel")
+		novelApi := apiV2.Group("/novel")
 		{
 			novelApi.GET("/plist", novel.GetProviderList)
 			novelApi.GET("/providerlist", novel.GetProviderList)
-			novelApi.GET("/rlist", novel.GetProviderRules)
-			novelApi.GET("/rulelist", novel.GetProviderRules)
 
 			novelApi.GET("/info", novel.GetInfo)
 			novelApi.GET("/content", novel.GetContent)

@@ -14,6 +14,12 @@ func (n *name) Search(keyword string) core.ApiResource {
 	return core.ApiResource{}
 }
 
-func TestProvider(t *testing.T) {
-
+func TestProviderMeta(t *testing.T) {
+	p := ProviderMeta{Name: "aa", Url: "https://大家好我超市你"}
+	s := p.Dump()
+	fmt.Printf("%s", s)
+	pnew := ProviderMeta{}
+	err := pnew.Load(s)
+	fmt.Println(err)
+	fmt.Println(pnew)
 }
