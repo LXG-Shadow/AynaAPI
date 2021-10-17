@@ -11,223 +11,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /api/v1/anime/info:
-    get:
-      description: 获取动漫信息
-      parameters:
-      - description: uid
-        in: query
-        name: uid
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: susudm-17891-acg-1
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: get anime info
-      tags:
-      - Anime
-  /api/v1/anime/info/{provider}:
-    get:
-      description: 根据来源获取动漫信息
-      parameters:
-      - description: anime provider identifier
-        in: path
-        name: provider
-        required: true
-        type: string
-      - description: uid
-        in: query
-        name: uid
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: susudm?uid=susudm-17891-acg-1
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: get anime info
-      tags:
-      - Anime
-  /api/v1/anime/playurl:
-    get:
-      description: 获取动漫播放地址
-      parameters:
-      - description: uid
-        in: query
-        name: uid
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: susudm-17891-acg-1
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: get anime playurl
-      tags:
-      - Anime
-  /api/v1/anime/playurl/{provider}:
-    get:
-      description: 根据来源获取动漫播放地址
-      parameters:
-      - description: anime provider identifier
-        in: path
-        name: provider
-        required: true
-        type: string
-      - description: uid
-        in: query
-        name: uid
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: susudm?uid=susudm-17891-acg-1
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: get anime playurl
-      tags:
-      - Anime
-  /api/v1/anime/providerlist:
-    get:
-      description: 获取来源列表
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: get provider list
-      tags:
-      - Novel
-  /api/v1/anime/resolve:
-    get:
-      description: 解析动漫
-      parameters:
-      - description: url
-        in: query
-        name: url
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: susudm-17891-acg-1, http://susudm.com/acg/17891/
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: resolve anime
-      tags:
-      - Anime
-  /api/v1/anime/resolve/{provider}:
-    get:
-      description: 根据来源解析动漫
-      parameters:
-      - description: anime provider identifier
-        in: path
-        name: provider
-        required: true
-        type: string
-      - description: url
-        in: query
-        name: url
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: susudm?url=susudm-17891-acg-1, susudm?url=http://susudm.com/acg/17891/
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: resolve anime
-      tags:
-      - Anime
-  /api/v1/anime/search:
-    get:
-      description: 搜索动漫
-      parameters:
-      - description: keyword
-        in: query
-        name: keyword
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 刀剑神域
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: search anime
-      tags:
-      - Anime
-  /api/v1/anime/search/{provider}:
-    get:
-      description: 根据来源搜索动漫
-      parameters:
-      - description: anime provider identifier
-        in: path
-        name: provider
-        required: true
-        type: string
-      - description: keyword
-        in: query
-        name: keyword
-        required: true
-        type: string
-      - description: use cache
-        in: query
-        name: cache
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: susudm?keyword=刀剑神域
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: search anime
-      tags:
-      - Anime
   /api/v1/auth/info:
     get:
       description: 获取当前用户信息
@@ -265,15 +48,141 @@ paths:
       summary: login
       tags:
       - Auth
-  /api/v1/novel/content:
+  /api/v2/anime/info:
+    get:
+      description: 根据metadata获取动漫信息
+      parameters:
+      - description: anime provider meta id
+        in: query
+        name: mid
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: xxxxxxx
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get anime info
+      tags:
+      - Anime
+  /api/v2/anime/playurl:
+    get:
+      description: 获取动漫播放地址
+      parameters:
+      - description: anime provider meta id
+        in: query
+        name: mid
+        required: true
+        type: string
+      - description: playlist id
+        in: query
+        name: pid
+        type: integer
+      - description: episode id
+        in: query
+        name: eid
+        type: integer
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: xxxxxxx
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get anime playurl
+      tags:
+      - Anime
+  /api/v2/anime/providerlist:
+    get:
+      description: 获取来源列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get provider list
+      tags:
+      - Anime
+  /api/v2/anime/search:
+    get:
+      description: 搜索动漫
+      parameters:
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 刀剑神域
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search anime
+      tags:
+      - Anime
+  /api/v2/anime/search/{provider}:
+    get:
+      description: 根据来源搜索动漫
+      parameters:
+      - description: anime provider identifier
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: susudm?keyword=刀剑神域
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search anime
+      tags:
+      - Anime
+  /api/v2/novel/content:
     get:
       description: 获取小说章节内容
       parameters:
-      - description: content url
+      - description: novel provider meta id
         in: query
-        name: url
+        name: mid
         required: true
         type: string
+      - description: volume id
+        in: query
+        name: vid
+        type: integer
+      - description: chapter id
+        in: query
+        name: cid
+        type: integer
       - description: use cache
         in: query
         name: cache
@@ -288,13 +197,13 @@ paths:
       summary: get novel content
       tags:
       - Novel
-  /api/v1/novel/info:
+  /api/v2/novel/info:
     get:
       description: 获取小说简介
       parameters:
-      - description: info page url
+      - description: novel provider meta id
         in: query
-        name: url
+        name: mid
         required: true
         type: string
       - description: use cache
@@ -305,13 +214,13 @@ paths:
       - application/json
       responses:
         "200":
-          description: https://www.linovelib.com/novel/8.html
+          description: OK
           schema:
             $ref: '#/definitions/app.AppJsonResponse'
       summary: get novel info
       tags:
       - Novel
-  /api/v1/novel/providerlist:
+  /api/v2/novel/providerlist:
     get:
       description: 获取来源列表
       produces:
@@ -324,20 +233,7 @@ paths:
       summary: get provider list
       tags:
       - Novel
-  /api/v1/novel/rulelist:
-    get:
-      description: 获取来源规则
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: get provider rules
-      tags:
-      - Novel
-  /api/v1/novel/search:
+  /api/v2/novel/search:
     get:
       description: 搜索小说
       parameters:
@@ -360,7 +256,7 @@ paths:
       summary: search novel
       tags:
       - Novel
-  /api/v1/novel/search/{provider}:
+  /api/v2/novel/search/{provider}:
     get:
       description: 根据来源搜索小说
       parameters:

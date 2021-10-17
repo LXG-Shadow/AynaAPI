@@ -16,6 +16,17 @@ func Get(url string, header map[string]string) *grequests.Response {
 
 }
 
+func Head(url string, header map[string]string) *grequests.Response {
+	resp, err := grequests.Head(url, &grequests.RequestOptions{
+		Headers: header,
+	})
+	if err != nil {
+		log.Println("Unable to make request: ", err)
+	}
+	return resp
+
+}
+
 func Post(url string, header map[string]string, data map[string]string) *grequests.Response {
 	resp, err := grequests.Post(url, &grequests.RequestOptions{
 		Headers: header,

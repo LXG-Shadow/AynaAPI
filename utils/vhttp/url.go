@@ -1,7 +1,7 @@
 package vhttp
 
 import (
-	"AynaAPI/utils"
+	"AynaAPI/utils/vstring"
 	"net/url"
 	"path"
 	"regexp"
@@ -22,12 +22,28 @@ func QueryEscapeWithEncoding(str string, encoding string) string {
 	return url.QueryEscape(EncodeString(str, encoding))
 }
 
+func QueryUnescapeWithEncoding(str string, encoding string) string {
+	s, err := url.QueryUnescape(EncodeString(str, encoding))
+	if err != nil {
+		return ""
+	}
+	return s
+}
+
 func GetUrlHost(uri string) string {
 	u, err := url.Parse(uri)
 	if err != nil {
 		return ""
 	}
 	return u.Host
+}
+
+func GetUrlPath(uri string) string {
+	u, err := url.Parse(uri)
+	if err != nil {
+		return ""
+	}
+	return u.Path
 }
 
 func JoinUrl(base string, paths ...string) string {
@@ -43,7 +59,7 @@ func JoinUrl(base string, paths ...string) string {
 		}
 	}
 	newPath := path.Join(paths...)
-	if utils.LenString(newPath) < 0 {
+	if vstring.LenString(newPath) < 0 {
 		return u.String()
 	}
 	if newPath[:1] == "/" {
@@ -55,4 +71,14 @@ func JoinUrl(base string, paths ...string) string {
 	} else {
 		return u.String()
 	}
+}
+
+func CompleteUrl(host, path string) string {
+	if path == "" {
+		return ""
+	}
+	if !IsUrl(path) {
+		return JoinUrl(host, path)
+	}
+	return path
 }
