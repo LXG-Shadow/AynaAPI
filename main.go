@@ -10,6 +10,7 @@ import (
 func main() {
 	if config.ServerConfig.UseRedisCache {
 		gredis.Initialize()
+		fmt.Printf("Redis Status: %t\n", gredis.Online)
 	}
 	router := server.InitRouter()
 	err := router.Run(fmt.Sprintf(":%d", config.ServerConfig.HttpPort))
