@@ -2,29 +2,32 @@ package api_service
 
 import (
 	"AynaAPI/api/anime"
-	animeCore "AynaAPI/api/anime/core"
+	"AynaAPI/api/core"
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/cache_service"
 	"time"
+	// load all provider
+	_ "AynaAPI/api/anime/provider"
 )
 
-func AnimeGetVideo(metadata string, playlist int, episode int, useCache bool) (animeCore.AnimeVideo, int) {
+func AnimeGetVideo(metadata string, playlist int, episode int, useCache bool) (anime.AnimeVideo, int) {
 	animee, errcode := AnimeGet(metadata, useCache)
+
 	if errcode != 0 {
-		return animeCore.AnimeVideo{}, errcode
+		return anime.AnimeVideo{}, errcode
 	}
 	if playlist < 0 || playlist >= len(animee.Playlists) {
-		return animeCore.AnimeVideo{}, e.BGM_VIDEO_NOT_FOUND
+		return anime.AnimeVideo{}, e.BGM_VIDEO_NOT_FOUND
 	}
 	if episode < 0 || episode >= len(animee.Playlists[playlist].Videos) {
-		return animeCore.AnimeVideo{}, e.BGM_VIDEO_NOT_FOUND
+		return anime.AnimeVideo{}, e.BGM_VIDEO_NOT_FOUND
 	}
 	v := &animee.Playlists[playlist].Videos[episode]
 	if v.GetCompletionStatus() && useCache {
 		return *v, 0
 	}
-	err := anime.GetAnimeProvider(animee.Provider.Name).UpdateAnimeVideo(v)
+	err := anime.Providers.GetProvider(animee.Provider.Name).UpdateAnimeVideo(v)
 	if err != nil {
 		return *v, e.BGM_VIDEO_NOT_FOUND
 	}
@@ -35,16 +38,16 @@ func AnimeGetVideo(metadata string, playlist int, episode int, useCache bool) (a
 	return *v, 0
 }
 
-func AnimeGet(metadata string, useCache bool) (animeCore.Anime, int) {
-	meta := animeCore.ProviderMeta{}
+func AnimeGet(metadata string, useCache bool) (anime.Anime, int) {
+	meta := core.ProviderMeta{}
 	err := meta.Load(metadata)
 	if err != nil {
-		return animeCore.Anime{}, e.BGM_INITIALIZE_FAIL
+		return anime.Anime{}, e.BGM_INITIALIZE_FAIL
 	}
 	key := cache_service.GetAnimeKey(meta)
 
 	if useCache && gredis.Online {
-		var result animeCore.Anime
+		var result anime.Anime
 		if b := gredis.GetData(key, &result); b {
 			return result, 0
 		}
@@ -60,13 +63,13 @@ func AnimeGet(metadata string, useCache bool) (animeCore.Anime, int) {
 	return result, 0
 }
 
-func _AnimeGet(meta animeCore.ProviderMeta) (animee animeCore.Anime, errcode int) {
-	animee = animeCore.Anime{}
+func _AnimeGet(meta core.ProviderMeta) (animee anime.Anime, errcode int) {
+	animee = anime.Anime{}
 	errcode = 0
-	var provider animeCore.AnimeProvider
-	for _, providerName := range anime.GetAnimeProviderList() {
-		if anime.GetAnimeProvider(providerName).Validate(meta) {
-			provider = anime.GetAnimeProvider(providerName)
+	var provider anime.AnimeProvider
+	for _, providerName := range anime.Providers.GetProviderList() {
+		if anime.Providers.GetProvider(providerName).Validate(meta) {
+			provider = anime.Providers.GetProvider(providerName)
 			break
 		}
 	}
@@ -87,15 +90,15 @@ func _AnimeGet(meta animeCore.ProviderMeta) (animee animeCore.Anime, errcode int
 	return
 }
 
-func AnimeSearch(providerName string, keyword string, useCache bool) (animeCore.AnimeSearchResult, int) {
-	provider := anime.GetAnimeProvider(providerName)
+func AnimeSearch(providerName string, keyword string, useCache bool) (anime.AnimeSearchResult, int) {
+	provider := anime.Providers.GetProvider(providerName)
 	if provider == nil {
-		return animeCore.AnimeSearchResult{}, e.BGM_PROVIDER_NOT_AVAILABLE
+		return anime.AnimeSearchResult{}, e.BGM_PROVIDER_NOT_AVAILABLE
 	}
 	key := cache_service.GetAnimeSearchKey(provider, keyword)
 
 	if useCache && gredis.Online {
-		var result animeCore.AnimeSearchResult
+		var result anime.AnimeSearchResult
 		if b := gredis.GetData(key, &result); b {
 			return result, 0
 		}

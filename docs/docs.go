@@ -259,6 +259,179 @@ var doc = `{
                 }
             }
         },
+        "/api/v2/music/info": {
+            "get": {
+                "description": "根据metadata获取音乐信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "get music info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "anime provider meta id",
+                        "name": "mid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "xxxxxxx",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/providerlist": {
+            "get": {
+                "description": "获取来源列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "get provider list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/search": {
+            "get": {
+                "description": "搜索音乐",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "search music",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "音乐",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/search/{provider}": {
+            "get": {
+                "description": "根据来源搜索音乐",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "search music",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "music provider identifier",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "bilibilimusic?keyword=霜雪千年",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/url": {
+            "get": {
+                "description": "获取音乐播放地址",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "get music playurl",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "music provider meta id",
+                        "name": "mid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "specify user agent",
+                        "name": "ua",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "xxxxxxx",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v2/novel/content": {
             "get": {
                 "description": "获取小说章节内容",

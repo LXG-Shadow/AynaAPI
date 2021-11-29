@@ -1,7 +1,8 @@
 package cache_service
 
 import (
-	animeCore "AynaAPI/api/anime/core"
+	"AynaAPI/api/anime"
+	"AynaAPI/api/core"
 	"fmt"
 )
 
@@ -10,10 +11,10 @@ const (
 	PREFIX_ANIME_SEARCH = "api_anime_search"
 )
 
-func GetAnimeKey(meta animeCore.ProviderMeta) string {
+func GetAnimeKey(meta core.ProviderMeta) string {
 	return PREFIX_ANIME_INFO + "_" + meta.Dump()
 }
 
-func GetAnimeSearchKey(provider animeCore.AnimeProvider, keyword string) string {
+func GetAnimeSearchKey(provider anime.AnimeProvider, keyword string) string {
 	return PREFIX_ANIME_SEARCH + "_" + fmt.Sprintf("%s_%s", provider.GetName(), keyword)
 }

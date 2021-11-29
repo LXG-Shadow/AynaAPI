@@ -6,12 +6,16 @@ import (
 	"AynaAPI/server/api/v1/general"
 	"AynaAPI/server/api/v1/upload"
 	"AynaAPI/server/api/v2/anime"
+	"AynaAPI/server/api/v2/music"
 	"AynaAPI/server/api/v2/novel"
 	"AynaAPI/server/fs"
 	"AynaAPI/server/middleware/jwt"
 	"AynaAPI/server/middleware/perm"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	// load all provider
+	_ "AynaAPI/server/service/api_service"
 
 	_ "AynaAPI/docs"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -57,12 +61,12 @@ func InitRouter() *gin.Engine {
 		uploadApi := apiV1.Group("/upload")
 		{
 			uploadApi.Use(jwt.AuthUser())
-			uploadApi.POST("/bilipic", upload.UploadBiliPic)
 			uploadApi.POST("/image", upload.UploadImage)
 		}
 		generalApi := apiV1.Group("/general")
 		{
-			generalApi.GET("/bypasscors", general.BypassCors)
+			generalApi.GET("/bypasscors", general.BypassCorsFixFile)
+			generalApi.GET("/bypasscors/:any", general.BypassCors)
 			generalApi.GET("/teamsplit", general.GetRandomSeparation)
 		}
 	}
@@ -90,6 +94,17 @@ func InitRouter() *gin.Engine {
 
 			novelApi.GET("/search/:provider", novel.Search)
 			novelApi.GET("/search", novel.SearchAll)
+		}
+		musicApi := apiV2.Group("/music")
+		{
+			musicApi.GET("/plist", music.GetProviderList)
+			musicApi.GET("/providerlist", music.GetProviderList)
+
+			musicApi.GET("/search", music.SearchAll)
+			musicApi.GET("/search/:provider", music.Search)
+
+			musicApi.GET("/url", music.GetUrl)
+			musicApi.GET("/info", music.GetInfo)
 		}
 	}
 	return engine

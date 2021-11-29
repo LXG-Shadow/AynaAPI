@@ -1,7 +1,7 @@
-package novel
+package music
 
 import (
-	"AynaAPI/api/novel"
+	"AynaAPI/api/music"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/api_service"
@@ -10,15 +10,15 @@ import (
 )
 
 // Search godoc
-// @Summary search novel
-// @Description 根据来源搜索小说
-// @Tags Novel
+// @Summary search music
+// @Description 根据来源搜索音乐
+// @Tags Music
 // @Produce json
-// @Param provider path string true "novel provider identifier"
+// @Param provider path string true "music provider identifier"
 // @Param keyword query string true "keyword"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "biqugeB?keyword=诡秘之主"
-// @Router /api/v2/novel/search/{provider} [get]
+// @Success 200 {object} app.AppJsonResponse "bilibilimusic?keyword=霜雪千年"
+// @Router /api/v2/music/search/{provider} [get]
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	providerName := context.Param("provider")
@@ -28,23 +28,23 @@ func Search(context *gin.Context) {
 		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require keyword")
 		return
 	}
-	resp, errcode := api_service.NovelSearch(providerName, keyword, useCache)
+	result, errcode := api_service.MusicSearch(providerName, keyword, useCache)
 	if errcode != 0 {
 		appG.MakeEmptyResponse(http.StatusOK, errcode)
 		return
 	}
-	appG.MakeResponse(http.StatusOK, e.API_OK, resp)
+	appG.MakeResponse(http.StatusOK, e.API_OK, result)
 }
 
 // SearchAll godoc
-// @Summary search novel
-// @Description 搜索小说
-// @Tags Novel
+// @Summary search music
+// @Description 搜索音乐
+// @Tags Music
 // @Produce json
 // @Param keyword query string true "keyword"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "诡秘之主"
-// @Router /api/v2/novel/search [get]
+// @Success 200 {object} app.AppJsonResponse "音乐"
+// @Router /api/v2/music/search [get]
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	keyword, b := appG.C.GetQuery("keyword")
@@ -53,12 +53,11 @@ func SearchAll(context *gin.Context) {
 		return
 	}
 	useCache := appG.GetBoolQueryWithDefault("cache", true)
-	result := map[string]novel.NovelSearchResult{}
-	for _, providerName := range novel.Providers.GetProviderList() {
-		if r, err := api_service.NovelSearch(providerName, keyword, useCache); err == 0 {
+	result := map[string]music.MusicSearchResult{}
+	for _, providerName := range music.Providers.GetProviderList() {
+		if r, err := api_service.MusicSearch(providerName, keyword, useCache); err == 0 {
 			result[providerName] = r
 		}
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, result)
-	return
 }

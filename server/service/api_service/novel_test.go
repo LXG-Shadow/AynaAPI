@@ -1,7 +1,7 @@
 package api_service
 
 import (
-	novelCore "AynaAPI/api/novel/core"
+	"AynaAPI/api/core"
 	"AynaAPI/pkg/gredis"
 	"fmt"
 	"testing"
@@ -15,11 +15,11 @@ func TestNovelSearch(t *testing.T) {
 
 func TestNovelGet(t *testing.T) {
 	gredis.Initialize()
-	meta1 := novelCore.ProviderMeta{
+	meta1 := core.ProviderMeta{
 		Name: "liquge",
 		Url:  "http://www.liquge.com/book/18641/",
 	}
-	meta2 := novelCore.ProviderMeta{
+	meta2 := core.ProviderMeta{
 		Name: "biquwx",
 		Url:  "https://www.biquwx.la/3_3746/",
 	}
@@ -29,11 +29,11 @@ func TestNovelGet(t *testing.T) {
 
 func TestNovelContent(t *testing.T) {
 	gredis.Initialize()
-	meta1 := novelCore.ProviderMeta{
+	meta1 := core.ProviderMeta{
 		Name: "liquge",
 		Url:  "http://www.liquge.com/book/18641/",
 	}
-	meta2 := novelCore.ProviderMeta{
+	meta2 := core.ProviderMeta{
 		Name: "biquwx",
 		Url:  "https://www.biquwx.la/3_3746/",
 	}

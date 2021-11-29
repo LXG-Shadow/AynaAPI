@@ -3,11 +3,13 @@ package httpc
 import (
 	"github.com/levigross/grequests"
 	"log"
+	"time"
 )
 
 func Get(url string, header map[string]string) *grequests.Response {
 	resp, err := grequests.Get(url, &grequests.RequestOptions{
-		Headers: header,
+		Headers:        header,
+		RequestTimeout: time.Second * 5,
 	})
 	if err != nil {
 		log.Println("Unable to make request: ", err)
@@ -18,7 +20,8 @@ func Get(url string, header map[string]string) *grequests.Response {
 
 func Head(url string, header map[string]string) *grequests.Response {
 	resp, err := grequests.Head(url, &grequests.RequestOptions{
-		Headers: header,
+		Headers:        header,
+		RequestTimeout: time.Second * 3,
 	})
 	if err != nil {
 		log.Println("Unable to make request: ", err)

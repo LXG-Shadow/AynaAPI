@@ -1,9 +1,10 @@
 package provider
 
 import (
-	"AynaAPI/api/anime/core"
+	"AynaAPI/api/anime"
 	"AynaAPI/api/anime/rule"
-	"AynaAPI/api/core/e"
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/e"
 	"AynaAPI/api/httpc"
 	"AynaAPI/utils/vhttp"
 	"AynaAPI/utils/vstring"
@@ -45,6 +46,7 @@ var SusuDmAPI *SusuDm
 
 func init() {
 	SusuDmAPI = _newSusuDm()
+	anime.Providers.Add(AgefansAPI.GetName(), AgefansAPI)
 }
 
 func (p *SusuDm) getSearchApi(keyword string) string {
@@ -56,17 +58,17 @@ func (p *SusuDm) getPlayUrlAPI(id string) string {
 	return fmt.Sprintf(p.PlayUrlAPI, intid, time.Now().Unix())
 }
 
-func (p *SusuDm) GetAnimeMeta(meta core.ProviderMeta) (core.AnimeMeta, error) {
-	aMeta := core.AnimeMeta{
+func (p *SusuDm) GetAnimeMeta(meta core.ProviderMeta) (anime.AnimeMeta, error) {
+	aMeta := anime.AnimeMeta{
 		Provider: meta,
 	}
 	err := p.UpdateAnimeMeta(&aMeta)
 	return aMeta, err
 }
 
-func (p *SusuDm) UpdateAnimeMeta(meta *core.AnimeMeta) error {
+func (p *SusuDm) UpdateAnimeMeta(meta *anime.AnimeMeta) error {
 	if regexp.MustCompile("/[0-9]+/").FindString(meta.Provider.Url) == "" {
-		return e.NewError(e.INTERNAL_ERROR)
+		return e2.NewError(e2.INTERNAL_ERROR)
 	}
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         meta.Provider.Url,
@@ -74,7 +76,7 @@ func (p *SusuDm) UpdateAnimeMeta(meta *core.AnimeMeta) error {
 		ContentType: deepcolor.TentacleContentTypeHTMl,
 	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
-		return e.NewError(e.EXTERNAL_API_ERROR)
+		return e2.NewError(e2.EXTERNAL_API_ERROR)
 	}
 	meta.Title = strings.TrimSpace(result.GetSingle(p.Rules.Title))
 	meta.Cover = result.GetSingle(p.Rules.Cover)
@@ -92,18 +94,18 @@ func (p *SusuDm) UpdateAnimeMeta(meta *core.AnimeMeta) error {
 	return nil
 }
 
-func (p *SusuDm) GetAnime(meta core.AnimeMeta) (core.Anime, error) {
-	anime := core.Anime{
+func (p *SusuDm) GetAnime(meta anime.AnimeMeta) (anime.Anime, error) {
+	animee := anime.Anime{
 		AnimeMeta: meta,
 	}
-	err := p.UpdateAnime(&anime)
-	return anime, err
+	err := p.UpdateAnime(&animee)
+	return animee, err
 }
 
-func (p *SusuDm) UpdateAnime(anime *core.Anime) error {
-	id := regexp.MustCompile("/[0-9]+/").FindString(anime.Provider.Url)
+func (p *SusuDm) UpdateAnime(animee *anime.Anime) error {
+	id := regexp.MustCompile("/[0-9]+/").FindString(animee.Provider.Url)
 	if id == "" {
-		return e.NewError(e.INTERNAL_ERROR)
+		return e2.NewError(e2.INTERNAL_ERROR)
 	}
 	id, _ = vstring.SliceString(id, 1, -1)
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
@@ -112,10 +114,10 @@ func (p *SusuDm) UpdateAnime(anime *core.Anime) error {
 		ContentType: deepcolor.TentacleContentTypeText,
 	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
-		return e.NewError(e.EXTERNAL_API_ERROR)
+		return e2.NewError(e2.EXTERNAL_API_ERROR)
 	}
-	if anime.Playlists == nil {
-		anime.Playlists = make([]core.Playlist, 0)
+	if animee.Playlists == nil {
+		animee.Playlists = make([]anime.Playlist, 0)
 	}
 	rawtext := result.(deepcolor.TentacleTextResult).Data.(string)
 	for i := 0; i < 10; i++ {
@@ -128,9 +130,9 @@ func (p *SusuDm) UpdateAnime(anime *core.Anime) error {
 		pattern := fmt.Sprintf("playarr%s\\[[0-9]+\\]=\"[^\"]*\";", playlistID)
 
 		if datas := regexp.MustCompile(pattern).FindAllString(rawtext, -1); len(datas) > 0 {
-			playlist := core.Playlist{
+			playlist := anime.Playlist{
 				Name:   fmt.Sprintf("%d", i),
-				Videos: make([]core.AnimeVideo, 0),
+				Videos: make([]anime.AnimeVideo, 0),
 			}
 			for _, data := range datas {
 				data = regexp.
@@ -138,7 +140,7 @@ func (p *SusuDm) UpdateAnime(anime *core.Anime) error {
 					ReplaceAllString(data, "")
 				data = regexp.MustCompile("\";").ReplaceAllString(data, "")
 				videoData := strings.Split(data, ",")
-				playlist.Videos = append(playlist.Videos, core.AnimeVideo{
+				playlist.Videos = append(playlist.Videos, anime.AnimeVideo{
 					Provider: core.ProviderMeta{
 						Name: videoData[len(videoData)-2],
 						Url:  strings.Join(videoData[0:len(videoData)-2], ","),
@@ -147,27 +149,27 @@ func (p *SusuDm) UpdateAnime(anime *core.Anime) error {
 					Url:   strings.Join(videoData[0:len(videoData)-2], ","),
 				})
 			}
-			anime.Playlists = append(anime.Playlists, playlist)
+			animee.Playlists = append(animee.Playlists, playlist)
 		}
 	}
 	return nil
 }
 
-func (p *SusuDm) UpdateAnimeVideo(video *core.AnimeVideo) error {
+func (p *SusuDm) UpdateAnimeVideo(video *anime.AnimeVideo) error {
 	video.Url = video.Provider.Url
 	return nil
 }
 
-func (p *SusuDm) Search(keyword string) (core.AnimeSearchResult, error) {
+func (p *SusuDm) Search(keyword string) (anime.AnimeSearchResult, error) {
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         p.getSearchApi(keyword),
 		Charset:     "utf-8",
 		ContentType: deepcolor.TentacleContentTypeText,
 	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
-		return core.AnimeSearchResult{}, e.NewError(e.EXTERNAL_API_ERROR)
+		return anime.AnimeSearchResult{}, e2.NewError(e2.EXTERNAL_API_ERROR)
 	}
-	var sResults = make([]core.AnimeMeta, 0)
+	var sResults = make([]anime.AnimeMeta, 0)
 	jsonResult := gjson.Parse(
 		strings.ReplaceAll(result.(deepcolor.TentacleTextResult).Data.(string), "\ufeff", ""))
 	jsonResult.ForEach(func(key, value gjson.Result) bool {
@@ -175,7 +177,7 @@ func (p *SusuDm) Search(keyword string) (core.AnimeSearchResult, error) {
 			Name: p.GetName(),
 			Url:  vhttp.JoinUrl(p.BaseUrl, vhttp.GetUrlPath("http://"+value.Get("url").String())),
 		}
-		aMeta := core.AnimeMeta{
+		aMeta := anime.AnimeMeta{
 			Title:    value.Get("title").String(),
 			Cover:    value.Get("thumb").String(),
 			Year:     value.Get("time").String(),
@@ -185,5 +187,5 @@ func (p *SusuDm) Search(keyword string) (core.AnimeSearchResult, error) {
 		return true
 
 	})
-	return core.AnimeSearchResult{Result: sResults}, nil
+	return anime.AnimeSearchResult{Result: sResults}, nil
 }

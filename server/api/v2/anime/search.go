@@ -2,7 +2,6 @@ package anime
 
 import (
 	"AynaAPI/api/anime"
-	animeCore "AynaAPI/api/anime/core"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/api_service"
@@ -29,7 +28,7 @@ func Search(context *gin.Context) {
 		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require keyword")
 		return
 	}
-	result, errcode := api_service.NovelSearch(providerName, keyword, useCache)
+	result, errcode := api_service.AnimeSearch(providerName, keyword, useCache)
 	if errcode != 0 {
 		appG.MakeEmptyResponse(http.StatusOK, errcode)
 		return
@@ -54,8 +53,8 @@ func SearchAll(context *gin.Context) {
 		return
 	}
 	useCache := appG.GetBoolQueryWithDefault("cache", true)
-	result := map[string]animeCore.AnimeSearchResult{}
-	for _, providerName := range anime.GetAnimeProviderList() {
+	result := map[string]anime.AnimeSearchResult{}
+	for _, providerName := range anime.Providers.GetProviderList() {
 		if r, err := api_service.AnimeSearch(providerName, keyword, useCache); err == 0 {
 			result[providerName] = r
 		}

@@ -1,18 +1,18 @@
 package provider
 
 import (
-	"AynaAPI/api/novel/core"
+	"AynaAPI/api/novel"
 	"fmt"
 	"testing"
 )
 
 func TestLiquge_Search(t *testing.T) {
-	var provider core.NovelProvider = LiqugeAPI
+	var provider novel.NovelProvider = LiqugeAPI
 	fmt.Println(provider.Search("诡秘之主"))
 }
 
 func TestLiquge_Novel(t *testing.T) {
-	var provider core.NovelProvider = LiqugeAPI
+	var provider novel.NovelProvider = LiqugeAPI
 	result, _ := provider.Search("诡秘之主")
 	meta := result.Result[0]
 	novel, _ := provider.GetNovel(meta)

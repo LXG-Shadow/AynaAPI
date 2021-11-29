@@ -166,6 +166,120 @@ paths:
       summary: search anime
       tags:
       - Anime
+  /api/v2/music/info:
+    get:
+      description: 根据metadata获取音乐信息
+      parameters:
+      - description: anime provider meta id
+        in: query
+        name: mid
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: xxxxxxx
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get music info
+      tags:
+      - Music
+  /api/v2/music/providerlist:
+    get:
+      description: 获取来源列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get provider list
+      tags:
+      - Music
+  /api/v2/music/search:
+    get:
+      description: 搜索音乐
+      parameters:
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 音乐
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search music
+      tags:
+      - Music
+  /api/v2/music/search/{provider}:
+    get:
+      description: 根据来源搜索音乐
+      parameters:
+      - description: music provider identifier
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: bilibilimusic?keyword=霜雪千年
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: search music
+      tags:
+      - Music
+  /api/v2/music/url:
+    get:
+      description: 获取音乐播放地址
+      parameters:
+      - description: music provider meta id
+        in: query
+        name: mid
+        required: true
+        type: string
+      - description: specify user agent
+        in: query
+        name: ua
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: xxxxxxx
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: get music playurl
+      tags:
+      - Music
   /api/v2/novel/content:
     get:
       description: 获取小说章节内容

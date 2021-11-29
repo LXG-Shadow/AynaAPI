@@ -1,9 +1,10 @@
 package provider
 
 import (
-	"AynaAPI/api/core/e"
+	"AynaAPI/api/core"
+	e2 "AynaAPI/api/e"
 	"AynaAPI/api/httpc"
-	"AynaAPI/api/novel/core"
+	"AynaAPI/api/novel"
 	"AynaAPI/api/novel/rule"
 	"AynaAPI/utils/vhttp"
 	"fmt"
@@ -45,16 +46,16 @@ func (p *Biquge) Validate(meta core.ProviderMeta) bool {
 		regexp.MustCompile("^"+regexp.QuoteMeta(p.BaseUrl)).FindString(meta.Url) != ""
 }
 
-func (p *Biquge) GetNovelMeta(meta core.ProviderMeta) (core.NovelMeta, error) {
-	nMeta := core.NovelMeta{Provider: meta}
+func (p *Biquge) GetNovelMeta(meta core.ProviderMeta) (novel.NovelMeta, error) {
+	nMeta := novel.NovelMeta{Provider: meta}
 	err := p.UpdateNovelMeta(&nMeta)
 	return nMeta, err
 }
 
-func (p *Biquge) UpdateNovelMeta(meta *core.NovelMeta) error {
+func (p *Biquge) UpdateNovelMeta(meta *novel.NovelMeta) error {
 	meta.Provider.Name = p.Name
 	if meta.Provider.Url == "" {
-		return e.NewError(e.INTERNAL_ERROR)
+		return e2.NewError(e2.INTERNAL_ERROR)
 	}
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         meta.Provider.Url,
@@ -71,46 +72,46 @@ func (p *Biquge) UpdateNovelMeta(meta *core.NovelMeta) error {
 	return nil
 }
 
-func (p *Biquge) GetNovel(meta core.NovelMeta) (core.Novel, error) {
-	novel := core.Novel{NovelMeta: meta}
-	err := p.UpdateNovel(&novel)
-	return novel, err
+func (p *Biquge) GetNovel(meta novel.NovelMeta) (novel.Novel, error) {
+	novell := novel.Novel{NovelMeta: meta}
+	err := p.UpdateNovel(&novell)
+	return novell, err
 }
 
-func (p *Biquge) UpdateNovel(novel *core.Novel) error {
-	if novel.Provider.Url == "" {
-		return e.NewError(e.INTERNAL_ERROR)
+func (p *Biquge) UpdateNovel(novell *novel.Novel) error {
+	if novell.Provider.Url == "" {
+		return e2.NewError(e2.INTERNAL_ERROR)
 	}
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
-		Url:         novel.Provider.Url,
+		Url:         novell.Provider.Url,
 		Charset:     p.Charset,
 		ContentType: deepcolor.TentacleContentTypeHTMl,
 	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
 		return err
 	}
-	novel.Volumes = make([]core.NovelVolume, 0)
-	volume := core.NovelVolume{
+	novell.Volumes = make([]novel.NovelVolume, 0)
+	volume := novel.NovelVolume{
 		Title:    "正文",
-		Chapters: make([]core.NovelChapter, 0),
+		Chapters: make([]novel.NovelChapter, 0),
 	}
 	for _, chapter := range result.GetMapList(p.Rules.Chapters) {
-		volume.Chapters = append(volume.Chapters, core.NovelChapter{
+		volume.Chapters = append(volume.Chapters, novel.NovelChapter{
 			Title:   chapter["name"],
 			Content: "",
 			Provider: core.ProviderMeta{
 				Name: p.Name,
-				Url:  vhttp.CompleteUrl(novel.Provider.Url, chapter["url"]),
+				Url:  vhttp.CompleteUrl(novell.Provider.Url, chapter["url"]),
 			},
 		})
 	}
-	novel.Volumes = append(novel.Volumes, volume)
+	novell.Volumes = append(novell.Volumes, volume)
 	return nil
 }
 
-func (p *Biquge) UpdateNovelChapter(chapter *core.NovelChapter) error {
+func (p *Biquge) UpdateNovelChapter(chapter *novel.NovelChapter) error {
 	if chapter.Provider.Url == "" {
-		return e.NewError(e.INTERNAL_ERROR)
+		return e2.NewError(e2.INTERNAL_ERROR)
 	}
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         chapter.Provider.Url,
@@ -125,7 +126,7 @@ func (p *Biquge) UpdateNovelChapter(chapter *core.NovelChapter) error {
 	return nil
 }
 
-func (p *Biquge) Search(keyword string) (core.NovelSearchResult, error) {
+func (p *Biquge) Search(keyword string) (novel.NovelSearchResult, error) {
 	uri := fmt.Sprintf(p.SearchAPI, keyword)
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         uri,
@@ -133,13 +134,13 @@ func (p *Biquge) Search(keyword string) (core.NovelSearchResult, error) {
 		ContentType: deepcolor.TentacleContentTypeHTMl,
 	}, httpc.GetCORSString, nil, nil)
 	if err != nil {
-		return core.NovelSearchResult{}, err
+		return novel.NovelSearchResult{}, err
 	}
-	searchResult := core.NovelSearchResult{
-		Result: make([]core.NovelMeta, 0),
+	searchResult := novel.NovelSearchResult{
+		Result: make([]novel.NovelMeta, 0),
 	}
 	for _, sr := range result.GetMapList(p.Rules.Search) {
-		searchResult.Result = append(searchResult.Result, core.NovelMeta{
+		searchResult.Result = append(searchResult.Result, novel.NovelMeta{
 			Title:       sr["title"],
 			Author:      sr["author"],
 			Cover:       sr["cover"],

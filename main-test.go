@@ -1,11 +1,5 @@
 package main
 
-import (
-	"AynaAPI/api/novel"
-	"AynaAPI/utils/vjson"
-	"fmt"
-)
-
 func TestA() {
 	//fmt.Println(novel.GetDataByProvider(&novel.BiqugeProvider,"https://www.biquge.com.cn/book/32135/"))
 	//fmt.Println(novel.SearchByProvider(&novel.BiqugeBProvider,"猫腻").Data)
@@ -27,7 +21,7 @@ func TestA() {
 	//b, c = a["asdf"]
 	//fmt.Println(b, c)
 	//fmt.Println(a["asdf"])
-	v, _ := vjson.MarshalIndentUnescape(novel.LigntNovelProvider, "", "  ")
-	fmt.Println(v)
+	//v, _ := vjson.MarshalIndentUnescape(novel.LigntNovelProvider, "", "  ")
+	//fmt.Println(v)
 	//fmt.Printf("%s",novel.GetData("https://www.linovelib.com/novel/111/121832.html"))
 }

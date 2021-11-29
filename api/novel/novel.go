@@ -1,13 +1,16 @@
-package core
+package novel
 
-import "encoding/json"
+import (
+	"AynaAPI/api/core"
+	"encoding/json"
+)
 
 type NovelMeta struct {
-	Title       string       `json:"title"`
-	Author      string       `json:"cover"`
-	Cover       string       `json:"year"`
-	Description string       `json:"description"`
-	Provider    ProviderMeta `json:"provider"`
+	Title       string            `json:"title"`
+	Author      string            `json:"cover"`
+	Cover       string            `json:"year"`
+	Description string            `json:"description"`
+	Provider    core.ProviderMeta `json:"provider"`
 }
 
 func (a *NovelMeta) GetCompletionStatus() bool {
@@ -41,9 +44,9 @@ type NovelVolume struct {
 }
 
 type NovelChapter struct {
-	Title    string       `json:"title"`
-	Content  string       `json:"content"`
-	Provider ProviderMeta `json:"provider"`
+	Title    string            `json:"title"`
+	Content  string            `json:"content"`
+	Provider core.ProviderMeta `json:"provider"`
 }
 
 func (a *NovelChapter) GetCompletionStatus() bool {

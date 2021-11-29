@@ -1,23 +1,26 @@
 package api_service
 
 import (
+	"AynaAPI/api/core"
 	"AynaAPI/api/novel"
-	novelCore "AynaAPI/api/novel/core"
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/cache_service"
 	"time"
+
+	// load all provider
+	_ "AynaAPI/api/novel/provider"
 )
 
-func NovelSearch(providerName string, keyword string, useCache bool) (novelCore.NovelSearchResult, int) {
-	provider := novel.GetNovelProvider(providerName)
+func NovelSearch(providerName string, keyword string, useCache bool) (novel.NovelSearchResult, int) {
+	provider := novel.Providers.GetProvider(providerName)
 	if provider == nil {
-		return novelCore.NovelSearchResult{}, e.NOVEL_PROVIDER_NOT_AVAILABLE
+		return novel.NovelSearchResult{}, e.NOVEL_PROVIDER_NOT_AVAILABLE
 	}
 	key := cache_service.GetNovelSearchKey(provider, keyword)
 
 	if useCache && gredis.Online {
-		var result novelCore.NovelSearchResult
+		var result novel.NovelSearchResult
 		if b := gredis.GetData(key, &result); b {
 			return result, 0
 		}
@@ -32,22 +35,22 @@ func NovelSearch(providerName string, keyword string, useCache bool) (novelCore.
 	return result, 0
 }
 
-func NovelContent(metadata string, volume int, chapter int, useCache bool) (novelCore.NovelChapter, int) {
+func NovelContent(metadata string, volume int, chapter int, useCache bool) (novel.NovelChapter, int) {
 	novell, errcode := NovelGet(metadata, useCache)
 	if errcode != 0 {
-		return novelCore.NovelChapter{}, errcode
+		return novel.NovelChapter{}, errcode
 	}
 	if volume < 0 || volume >= len(novell.Volumes) {
-		return novelCore.NovelChapter{}, e.NOVEL_CHAPTER_NOT_FOUND
+		return novel.NovelChapter{}, e.NOVEL_CHAPTER_NOT_FOUND
 	}
 	if chapter < 0 || chapter >= len(novell.Volumes[volume].Chapters) {
-		return novelCore.NovelChapter{}, e.NOVEL_CHAPTER_NOT_FOUND
+		return novel.NovelChapter{}, e.NOVEL_CHAPTER_NOT_FOUND
 	}
 	c := &novell.Volumes[volume].Chapters[chapter]
 	if c.GetCompletionStatus() && useCache {
 		return *c, 0
 	}
-	err := novel.GetNovelProvider(novell.Provider.Name).UpdateNovelChapter(c)
+	err := novel.Providers.GetProvider(novell.Provider.Name).UpdateNovelChapter(c)
 	if err != nil {
 		return *c, e.NOVEL_CHAPTER_NOT_FOUND
 	}
@@ -58,16 +61,16 @@ func NovelContent(metadata string, volume int, chapter int, useCache bool) (nove
 	return *c, 0
 }
 
-func NovelGet(metadata string, useCache bool) (novelCore.Novel, int) {
-	meta := novelCore.ProviderMeta{}
+func NovelGet(metadata string, useCache bool) (novel.Novel, int) {
+	meta := core.ProviderMeta{}
 	err := meta.Load(metadata)
 	if err != nil {
-		return novelCore.Novel{}, e.NOVEL_INITIALIZE_FAIL
+		return novel.Novel{}, e.NOVEL_INITIALIZE_FAIL
 	}
 	key := cache_service.GetNovelInfoKey(meta)
 
 	if useCache && gredis.Online {
-		var result novelCore.Novel
+		var result novel.Novel
 		if b := gredis.GetData(key, &result); b {
 			return result, 0
 		}
@@ -83,13 +86,13 @@ func NovelGet(metadata string, useCache bool) (novelCore.Novel, int) {
 	return result, 0
 }
 
-func _NovelGet(meta novelCore.ProviderMeta) (novell novelCore.Novel, errcode int) {
-	novell = novelCore.Novel{}
+func _NovelGet(meta core.ProviderMeta) (novell novel.Novel, errcode int) {
+	novell = novel.Novel{}
 	errcode = 0
-	var provider novelCore.NovelProvider
-	for _, providerName := range novel.GetNovelProviderList() {
-		if novel.GetNovelProvider(providerName).Validate(meta) {
-			provider = novel.GetNovelProvider(providerName)
+	var provider novel.NovelProvider
+	for _, providerName := range novel.Providers.GetProviderList() {
+		if novel.Providers.GetProvider(providerName).Validate(meta) {
+			provider = novel.Providers.GetProvider(providerName)
 			break
 		}
 	}

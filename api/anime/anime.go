@@ -1,14 +1,17 @@
-package core
+package anime
 
-import "encoding/json"
+import (
+	"AynaAPI/api/core"
+	"encoding/json"
+)
 
 type AnimeMeta struct {
-	Title       string       `json:"title"`
-	Cover       string       `json:"cover"`
-	Year        string       `json:"year"`
-	Tags        []string     `json:"tags"`
-	Description string       `json:"description"`
-	Provider    ProviderMeta `json:"provider"`
+	Title       string            `json:"title"`
+	Cover       string            `json:"cover"`
+	Year        string            `json:"year"`
+	Tags        []string          `json:"tags"`
+	Description string            `json:"description"`
+	Provider    core.ProviderMeta `json:"provider"`
 }
 
 func (a *AnimeMeta) GetCompletionStatus() bool {
@@ -42,9 +45,9 @@ type Playlist struct {
 }
 
 type AnimeVideo struct {
-	Title    string       `json:"title"`
-	Url      string       `json:"url"`
-	Provider ProviderMeta `json:"provider"`
+	Title    string            `json:"title"`
+	Url      string            `json:"url"`
+	Provider core.ProviderMeta `json:"provider"`
 }
 
 func (a *AnimeVideo) GetCompletionStatus() bool {

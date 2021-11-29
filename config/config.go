@@ -63,7 +63,7 @@ func Initialize() {
 	cfg, err := ini.Load("conf/conf.ini")
 	if err != nil {
 		cfg, err = ini.Load("D:\\Repository\\AynaAPI\\conf\\test_conf.ini")
-		log.Fatalf("setting.Setup, fail to parse 'conf/conf.ini': %v", err)
+		//log.Fatalf("setting.Setup, fail to parse 'conf/conf.ini': %v", err)
 	}
 
 	mapTo(cfg, "API", APIConfig)

@@ -1,7 +1,7 @@
 package api_service
 
 import (
-	animeCore "AynaAPI/api/anime/core"
+	"AynaAPI/api/core"
 	"AynaAPI/pkg/gredis"
 	"fmt"
 	"testing"
@@ -16,11 +16,11 @@ func TestAnimeSearch(t *testing.T) {
 
 func TestAnimeGet(t *testing.T) {
 	gredis.Initialize()
-	meta1 := animeCore.ProviderMeta{
+	meta1 := core.ProviderMeta{
 		Name: "susudm",
 		Url:  "http://www.susudm.com/acg/38695/",
 	}
-	meta2 := animeCore.ProviderMeta{
+	meta2 := core.ProviderMeta{
 		Name: "agefans",
 		Url:  "https://www.agefans.cc/detail/20120038",
 	}
@@ -30,11 +30,11 @@ func TestAnimeGet(t *testing.T) {
 
 func TestAnimeGetVideo(t *testing.T) {
 	gredis.Initialize()
-	meta1 := animeCore.ProviderMeta{
+	meta1 := core.ProviderMeta{
 		Name: "susudm",
 		Url:  "http://www.susudm.com/acg/38695/",
 	}
-	meta2 := animeCore.ProviderMeta{
+	meta2 := core.ProviderMeta{
 		Name: "agefans",
 		Url:  "https://www.agefans.cc/detail/20120038",
 	}
