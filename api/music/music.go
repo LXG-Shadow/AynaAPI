@@ -8,7 +8,8 @@ import (
 type MusicMeta struct {
 	Title    string            `json:"title"`
 	Cover    string            `json:"cover"`
-	Author   string            `json:"author"`
+	Artist   string            `json:"author"`
+	Album    string            `json:"album"`
 	Provider core.ProviderMeta `json:"provider"`
 }
 
@@ -37,6 +38,8 @@ type Music struct {
 type MusicAudio struct {
 	Url       string            `json:"url"`
 	UserAgent string            `json:"user_agent"`
+	Type      string            `json:"type"`
+	Size      int               `json:"size"`
 	Provider  core.ProviderMeta `json:"provider"`
 }
 

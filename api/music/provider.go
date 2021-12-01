@@ -11,7 +11,7 @@ type MusicProvider interface {
 	GetMusicMeta(meta core.ProviderMeta) (MusicMeta, error)
 	UpdateMusicMeta(meta *MusicMeta) error
 	GetMusic(meta MusicMeta) (Music, error)
-	UpdateMusic(anime *Music) error
+	UpdateMusic(musicc *Music) error
 	UpdateMusicAudio(audio *MusicAudio) error
 }
 

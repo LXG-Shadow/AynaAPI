@@ -20,6 +20,30 @@ const (
 	BilibiliMusicQualityLow    BilibiliMusicQuality = 0
 )
 
+type BilibiliMusicQualityInfo struct {
+	Tag         string `json:"tag"`
+	Description string `json:"description"`
+	BPS         string `json:"bps"`
+}
+
+var BilibiliMusicQualities = map[BilibiliMusicQuality]BilibiliMusicQualityInfo{
+	BilibiliMusicQualityHigh: {
+		Tag:         "HQ",
+		Description: "高品质",
+		BPS:         "320kbps",
+	},
+	BilibiliMusicQualityMedium: {
+		Tag:         "HQ",
+		Description: "标准",
+		BPS:         "192kbps",
+	},
+	BilibiliMusicQualityLow: {
+		Tag:         "Q",
+		Description: "流畅",
+		BPS:         "128kbps",
+	},
+}
+
 type Bilibili struct {
 	InfoApi   string
 	FileApi   string
@@ -85,7 +109,7 @@ func (b *Bilibili) Search(keyword string) (music.MusicSearchResult, error) {
 		result.Result = append(result.Result, music.MusicMeta{
 			Title:  value.Get("title").String(),
 			Cover:  value.Get("cover").String(),
-			Author: value.Get("author").String(),
+			Artist: value.Get("author").String(),
 			Provider: core.ProviderMeta{
 				Name: b.GetName(),
 				Url:  fmt.Sprintf("au%s", value.Get("id").String()),
@@ -117,7 +141,8 @@ func (b *Bilibili) UpdateMusicMeta(meta *music.MusicMeta) error {
 	}
 	meta.Title = gjson.Get(resp.String(), "data.title").String()
 	meta.Cover = gjson.Get(resp.String(), "data.cover").String()
-	meta.Author = gjson.Get(resp.String(), "data.author").String()
+	meta.Artist = gjson.Get(resp.String(), "data.author").String()
+	meta.Album = meta.Title
 	return nil
 }
 
@@ -166,5 +191,7 @@ func (b *Bilibili) UpdateMusicAudio(audio *music.MusicAudio) error {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
 	audio.Url = url
+	audio.Type = BilibiliMusicQualities[BilibiliMusicQuality(gjson.Get(resp.String(), "data.type").Int())].Description
+	audio.Size = int(gjson.Get(resp.String(), "data.size").Int())
 	return nil
 }
