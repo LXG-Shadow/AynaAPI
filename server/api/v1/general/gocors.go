@@ -3,6 +3,7 @@ package general
 import (
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
+	"AynaAPI/server/common"
 	"AynaAPI/utils/vhttp"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -73,6 +74,8 @@ func BypassCors(context *gin.Context) {
 			fmt.Println(value)
 			req.Header.Set("user-agent", value)
 		}
+
+		common.Logger.Info(req.Header)
 
 	}
 	proxy.ServeHTTP(context.Writer, context.Request)

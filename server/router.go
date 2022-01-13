@@ -15,12 +15,13 @@ import (
 	"AynaAPI/server/middleware/perm"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+
 	// load all provider
 	_ "AynaAPI/server/service/api_service"
 
 	_ "AynaAPI/docs"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 // InitRouter initialize routing information
@@ -34,7 +35,9 @@ func InitRouter() *gin.Engine {
 
 	corsconfig := cors.DefaultConfig()
 	// https://www.cnblogs.com/cnxkey/articles/14259716.html
-	corsconfig.AllowOrigins = []string{"http://localhost:3000"}
+	//corsconfig.AllowOrigins = []string{"http://127.0.0.1:3000", "http://localhost:3000"}
+	corsconfig.AllowOrigins = []string{"*"}
+	corsconfig.AllowMethods = []string{"GET", "POST", "OPTIONS"}
 	corsconfig.AllowCredentials = true
 
 	engine.Use(cors.New(corsconfig))
