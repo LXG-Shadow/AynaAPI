@@ -2,15 +2,10 @@ package app
 
 import (
 	"AynaAPI/server/app/e"
-	"AynaAPI/server/fs"
-	"AynaAPI/server/models"
-	"AynaAPI/utils/vfile"
+	"AynaAPI/server/model"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
-	"io"
-	"mime/multipart"
-	"os"
-	"path/filepath"
+	"net/http"
 )
 
 type AppGin struct {
@@ -69,44 +64,23 @@ func (g *AppGin) MakeEmptyResponse(httpCode int, statusCode int) {
 }
 
 func (g *AppGin) SetCookie(name, value string, maxAge int, secure, httpOnly bool) {
+	g.C.SetSameSite(http.SameSiteNoneMode)
 	g.C.SetCookie(name, value, maxAge, "", "", secure, httpOnly)
 }
 
 func (g *AppGin) DeleteCookie(name string) {
+	g.C.SetSameSite(http.SameSiteNoneMode)
 	g.C.SetCookie(name, "", -1, "", "", true, true)
 }
 
-func (g *AppGin) SetUser(user *models.User) {
+func (g *AppGin) SetUser(user *model.User) {
 	g.C.Set("ayapi_user", user)
 }
 
-func (g *AppGin) GetUser() (user *models.User, exists bool) {
+func (g *AppGin) GetUser() (user *model.User, exists bool) {
 	if val, ok := g.C.Get("ayapi_user"); !ok {
 		return nil, false
 	} else {
-		return val.(*models.User), true
+		return val.(*model.User), true
 	}
-}
-
-func (g *AppGin) SaveUploadedFileWithMD5(file *multipart.FileHeader) (string, error) {
-	src, err := file.Open()
-	if err != nil {
-		return "", err
-	}
-	defer src.Close()
-
-	md5string, err := vfile.CalcFileHeaderMD5(file)
-	if err != nil {
-		return "", err
-	}
-	filename := md5string + vfile.GetFileExt(file.Filename)
-	dst := filepath.Join(fs.GetUploadPath(), filename)
-	out, err := os.Create(dst)
-	if err != nil {
-		return filename, err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, src)
-	return filename, err
 }

@@ -4,16 +4,17 @@ import (
 	"AynaAPI/config"
 	"AynaAPI/server/api/v1/auth"
 	"AynaAPI/server/api/v1/general"
-	"AynaAPI/server/api/v1/upload"
 	"AynaAPI/server/api/v2/anime"
+	authV2 "AynaAPI/server/api/v2/auth"
 	"AynaAPI/server/api/v2/music"
 	"AynaAPI/server/api/v2/novel"
-	"AynaAPI/server/fs"
+	"AynaAPI/server/api/v2/upload"
+	"AynaAPI/server/controllers/chat"
+	"AynaAPI/server/controllers/index"
 	"AynaAPI/server/middleware/jwt"
 	"AynaAPI/server/middleware/perm"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-
 	// load all provider
 	_ "AynaAPI/server/service/api_service"
 
@@ -22,18 +23,19 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
-func init() {
-	gin.SetMode(config.ServerConfig.GinMode)
-}
-
 // InitRouter initialize routing information
 func InitRouter() *gin.Engine {
 	var engine *gin.Engine = gin.New()
+
+	engine.LoadHTMLGlob("./server/view/**/*")
+
 	engine.Use(gin.Logger())
 	engine.Use(gin.Recovery())
 
 	corsconfig := cors.DefaultConfig()
-	corsconfig.AllowOrigins = []string{"*"}
+	// https://www.cnblogs.com/cnxkey/articles/14259716.html
+	corsconfig.AllowOrigins = []string{"http://localhost:3000"}
+	corsconfig.AllowCredentials = true
 
 	engine.Use(cors.New(corsconfig))
 
@@ -46,7 +48,7 @@ func InitRouter() *gin.Engine {
 	staticFs := engine.Group("/static")
 	{
 		staticFs.Static("/file", config.ServerConfig.GetFilePath("file"))
-		staticFs.Static(fs.GetUploadUrl(), fs.GetUploadPath())
+		staticFs.Static("/upload", config.ServerConfig.UploadSavePath)
 	}
 
 	engine.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -57,11 +59,7 @@ func InitRouter() *gin.Engine {
 		{
 			authApi.GET("/login", auth.Login)
 			authApi.GET("/info", jwt.GetUserOnly(), auth.GetInfo)
-		}
-		uploadApi := apiV1.Group("/upload")
-		{
-			uploadApi.Use(jwt.AuthUser())
-			uploadApi.POST("/image", upload.UploadImage)
+			authApi.GET("/logout", jwt.GetUserOnly(), auth.GetInfo)
 		}
 		generalApi := apiV1.Group("/general")
 		{
@@ -73,6 +71,19 @@ func InitRouter() *gin.Engine {
 
 	apiV2 := engine.Group("/api/v2")
 	{
+		authV2Api := apiV2.Group("/auth")
+		{
+			authV2Api.GET("/login", authV2.Login)
+			authV2Api.GET("/info", jwt.GetUserOnly(), authV2.GetInfo)
+			authV2Api.GET("/logout", jwt.GetUserOnly(), authV2.Logout)
+		}
+
+		uploadApi := apiV1.Group("/upload")
+		{
+			//uploadApi.Use(jwt.AuthUser())
+			uploadApi.POST("/image", upload.UploadFile)
+		}
+
 		animeApi := apiV2.Group("/anime")
 		{
 			animeApi.GET("/plist", anime.GetProviderList)
@@ -107,5 +118,12 @@ func InitRouter() *gin.Engine {
 			musicApi.GET("/info", music.GetInfo)
 		}
 	}
+
+	frontend := engine.Group("/frontend")
+	{
+		frontend.GET("/", index.Index)
+		frontend.GET("/chat", jwt.GetUserOnly(), chat.Index)
+	}
+
 	return engine
 }

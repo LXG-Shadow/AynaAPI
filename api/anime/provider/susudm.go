@@ -46,7 +46,7 @@ var SusuDmAPI *SusuDm
 
 func init() {
 	SusuDmAPI = _newSusuDm()
-	anime.Providers.Add(AgefansAPI.GetName(), AgefansAPI)
+	anime.Providers.Add(SusuDmAPI.GetName(), SusuDmAPI)
 }
 
 func (p *SusuDm) getSearchApi(keyword string) string {

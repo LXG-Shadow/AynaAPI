@@ -33,7 +33,7 @@ func Search(context *gin.Context) {
 		appG.MakeEmptyResponse(http.StatusOK, errcode)
 		return
 	}
-	appG.MakeResponse(http.StatusOK, e.API_OK, result)
+	appG.MakeResponse(http.StatusOK, e.API_OK, result.Result)
 }
 
 // SearchAll godoc
@@ -53,10 +53,10 @@ func SearchAll(context *gin.Context) {
 		return
 	}
 	useCache := appG.GetBoolQueryWithDefault("cache", true)
-	result := map[string]music.MusicSearchResult{}
+	result := map[string][]music.MusicMeta{}
 	for _, providerName := range music.Providers.GetProviderList() {
 		if r, err := api_service.MusicSearch(providerName, keyword, useCache); err == 0 {
-			result[providerName] = r
+			result[providerName] = r.Result
 		}
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, result)

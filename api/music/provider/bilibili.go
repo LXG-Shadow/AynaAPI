@@ -5,6 +5,7 @@ import (
 	"AynaAPI/api/e"
 	"AynaAPI/api/httpc"
 	"AynaAPI/api/music"
+	"AynaAPI/utils/vhttp"
 	"AynaAPI/utils/vstring"
 	"fmt"
 	"github.com/spf13/cast"
@@ -75,7 +76,7 @@ func (b *Bilibili) getFileApi(sid int, quality BilibiliMusicQuality) string {
 }
 
 func (b *Bilibili) getSearchApi(keyword string) string {
-	return fmt.Sprintf(b.SearchApi, keyword, 1, 100)
+	return fmt.Sprintf(b.SearchApi, vhttp.QueryEscapeWithEncoding(keyword, "utf-8"), 1, 100)
 }
 
 func (b *Bilibili) parseSongId(url string) int {
@@ -98,14 +99,14 @@ func (b *Bilibili) Validate(meta core.ProviderMeta) bool {
 }
 
 func (b *Bilibili) Search(keyword string) (music.MusicSearchResult, error) {
-	resp := httpc.Get(b.getSearchApi(keyword), map[string]string{
+	resp := httpc.GetBodyString(b.getSearchApi(keyword), map[string]string{
 		"user-agent": "BiliMusic/2.233.3",
 	})
-	if resp.String() == "" {
+	if resp == "" {
 		return music.MusicSearchResult{}, e.NewError(e.EXTERNAL_API_ERROR)
 	}
 	result := music.MusicSearchResult{Result: make([]music.MusicMeta, 0)}
-	gjson.Get(resp.String(), "data.result").ForEach(func(key, value gjson.Result) bool {
+	gjson.Get(resp, "data.result").ForEach(func(key, value gjson.Result) bool {
 		result.Result = append(result.Result, music.MusicMeta{
 			Title:  value.Get("title").String(),
 			Cover:  value.Get("cover").String(),
@@ -130,18 +131,18 @@ func (b *Bilibili) GetMusicMeta(meta core.ProviderMeta) (music.MusicMeta, error)
 }
 
 func (b *Bilibili) UpdateMusicMeta(meta *music.MusicMeta) error {
-	resp := httpc.Get(b.getInfoApi(b.parseSongId(meta.Provider.Url)), map[string]string{
+	resp := httpc.GetBodyString(b.getInfoApi(b.parseSongId(meta.Provider.Url)), map[string]string{
 		"user-agent": "BiliMusic/2.233.3",
 	})
-	if resp.String() == "" {
+	if resp == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
-	if gjson.Get(resp.String(), "data.title").String() == "" {
+	if gjson.Get(resp, "data.title").String() == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
-	meta.Title = gjson.Get(resp.String(), "data.title").String()
-	meta.Cover = gjson.Get(resp.String(), "data.cover").String()
-	meta.Artist = gjson.Get(resp.String(), "data.author").String()
+	meta.Title = gjson.Get(resp, "data.title").String()
+	meta.Cover = gjson.Get(resp, "data.cover").String()
+	meta.Artist = gjson.Get(resp, "data.author").String()
 	meta.Album = meta.Title
 	return nil
 }
@@ -179,19 +180,19 @@ func (b *Bilibili) UpdateMusic(musicc *music.Music) error {
 }
 
 func (b *Bilibili) UpdateMusicAudio(audio *music.MusicAudio) error {
-	resp := httpc.Get(b.getFileApi(b.parseSongId(audio.Provider.Url), BilibiliMusicQualityHigh), map[string]string{
+	resp := httpc.GetBodyString(b.getFileApi(b.parseSongId(audio.Provider.Url), BilibiliMusicQualityHigh), map[string]string{
 		"user-agent": audio.UserAgent,
 	})
-	if resp.String() == "" {
+	if resp == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
 
-	url := gjson.Get(resp.String(), "data.cdns.0").String()
+	url := gjson.Get(resp, "data.cdns.0").String()
 	if url == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
 	audio.Url = url
-	audio.Type = BilibiliMusicQualities[BilibiliMusicQuality(gjson.Get(resp.String(), "data.type").Int())].Description
-	audio.Size = int(gjson.Get(resp.String(), "data.size").Int())
+	audio.Type = BilibiliMusicQualities[BilibiliMusicQuality(gjson.Get(resp, "data.type").Int())].Description
+	audio.Size = int(gjson.Get(resp, "data.size").Int())
 	return nil
 }

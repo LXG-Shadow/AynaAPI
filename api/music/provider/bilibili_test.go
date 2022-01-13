@@ -9,7 +9,7 @@ import (
 
 func TestBilibili_Search(t *testing.T) {
 	var api music.MusicProvider = BiliMusicAPI
-	rs, _ := api.Search("霜雪千年")
+	rs, _ := api.Search("霜雪千年 乐正绫")
 	fmt.Println(rs)
 	fmt.Println(api.Validate(rs.Result[0].Provider))
 	fmt.Println(api.Search("asdbfdadfas"))

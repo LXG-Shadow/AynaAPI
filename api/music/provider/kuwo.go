@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/spf13/cast"
 	"github.com/tidwall/gjson"
+	"html"
 	"regexp"
 )
 
@@ -69,16 +70,19 @@ func (k *Kuwo) Validate(meta core.ProviderMeta) bool {
 }
 
 func (k *Kuwo) httpGet(url string) string {
-	searchCookie := httpc.Get(fmt.Sprintf(k.SearchCookie, "any"), nil).RawResponse.Header.Get("set-cookie")
-	kwToken, ok := vstring.SliceString(regexp.MustCompile("kw_token=([^;])*;").FindString(searchCookie), 9, -1)
+	searchCookie, err := httpc.Head(fmt.Sprintf(k.SearchCookie, "any"), nil)
+	if err != nil {
+		return ""
+	}
+	kwToken, ok := vstring.SliceString(regexp.MustCompile("kw_token=([^;])*;").FindString(searchCookie.Header().Get("set-cookie")), 9, -1)
 	if !ok {
 		return ""
 	}
-	return httpc.Get(url, map[string]string{
+	return httpc.GetBodyString(url, map[string]string{
 		"cookie":  "kw_token=" + kwToken,
 		"csrf":    kwToken,
 		"referer": "http://www.kuwo.cn/",
-	}).String()
+	})
 }
 
 func (k *Kuwo) Search(keyword string) (music.MusicSearchResult, error) {
@@ -89,7 +93,7 @@ func (k *Kuwo) Search(keyword string) (music.MusicSearchResult, error) {
 	var result music.MusicSearchResult = music.MusicSearchResult{Result: make([]music.MusicMeta, 0)}
 	gjson.Parse(resp).Get("data.list").ForEach(func(key, value gjson.Result) bool {
 		result.Result = append(result.Result, music.MusicMeta{
-			Title:  value.Get("name").String(),
+			Title:  html.UnescapeString(value.Get("name").String()),
 			Cover:  value.Get("pic").String(),
 			Artist: value.Get("artist").String(),
 			Album:  value.Get("album").String(),
@@ -121,7 +125,7 @@ func (k *Kuwo) UpdateMusicMeta(meta *music.MusicMeta) error {
 	if jresp.Get("data.musicrid").String() == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
-	meta.Title = jresp.Get("data.name").String()
+	meta.Title = html.UnescapeString(jresp.Get("data.name").String())
 	meta.Cover = jresp.Get("data.pic").String()
 	meta.Artist = jresp.Get("data.artist").String()
 	meta.Album = jresp.Get("data.album").String()
@@ -150,7 +154,7 @@ func (k *Kuwo) UpdateMusic(musicc *music.Music) error {
 }
 
 func (k *Kuwo) UpdateMusicAudio(audio *music.MusicAudio) error {
-	result := httpc.Get(k.getFileApi(k.parseSongId(audio.Provider.Url)), nil).String()
+	result := httpc.GetBodyString(k.getFileApi(k.parseSongId(audio.Provider.Url)), nil)
 	if result == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}

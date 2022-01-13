@@ -1,8 +1,10 @@
 package jwt
 
 import (
+	"AynaAPI/config"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
+	"AynaAPI/server/common"
 	"AynaAPI/server/service/auth_service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,7 +18,7 @@ func AuthUser() gin.HandlerFunc {
 		if t, b := appG.C.GetQuery("token"); b {
 			token = t
 		} else {
-			if cookie, err := appG.C.Cookie("ayapi_token"); err == nil {
+			if cookie, err := appG.C.Cookie(config.ServerConfig.JwtTokenName); err == nil {
 				token = cookie
 			}
 		}
@@ -26,12 +28,13 @@ func AuthUser() gin.HandlerFunc {
 			return
 		}
 		var claim *Claims
-		if claim, _ = ParseToken(token); claim == nil {
+		if claim, _ := ParseToken(token); claim == nil {
 			appG.MakeEmptyResponse(http.StatusUnauthorized, e.API_ERROR_INVALID_TOKEN)
 			c.Abort()
 			return
 		}
-		if ok, user := auth_service.GetAuthUser(claim.Username, claim.Password); !ok {
+
+		if user, ok := auth_service.New().AuthUser(auth_service.LoginParam{Username: claim.Username, Password: claim.Password}); !ok {
 			appG.MakeEmptyResponse(http.StatusUnauthorized, e.API_ERROR_INVALID_TOKEN)
 			c.Abort()
 			return
@@ -49,7 +52,7 @@ func GetUserOnly() gin.HandlerFunc {
 		if t, b := appG.C.GetQuery("token"); b {
 			token = t
 		} else {
-			if cookie, err := appG.C.Cookie("ayapi_token"); err == nil {
+			if cookie, err := appG.C.Cookie(config.ServerConfig.JwtTokenName); err == nil {
 				token = cookie
 			}
 		}
@@ -61,9 +64,9 @@ func GetUserOnly() gin.HandlerFunc {
 		if claim, _ = ParseToken(token); claim == nil {
 			c.Next()
 			return
-
 		}
-		if ok, user := auth_service.GetAuthUser(claim.Username, claim.Password); !ok {
+		common.Logger.Info(claim)
+		if user, ok := auth_service.New().AuthUser(auth_service.LoginParam{Username: claim.Username, Password: claim.Password}); !ok {
 			c.Next()
 			return
 		} else {

@@ -17,7 +17,7 @@ func CheckPermission(level int) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if auth_service.GetPermissionByUser(user) < level {
+		if auth_service.New().GetPermissionByUser(user) < level {
 			appG.MakeEmptyResponse(http.StatusUnauthorized, e.API_ERROR_PERMISSION_NOT_ALLOWED)
 			c.Abort()
 			return

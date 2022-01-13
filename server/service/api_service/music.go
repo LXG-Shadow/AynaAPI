@@ -6,7 +6,6 @@ import (
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/cache_service"
-	"fmt"
 	"time"
 
 	_ "AynaAPI/api/music/provider"
@@ -18,7 +17,6 @@ func MusicGetAudio(metadata string, ua string, useCache bool) (music.MusicAudio,
 		return musicc.Audio, errcode
 	}
 	audio := musicc.Audio
-	fmt.Println(ua)
 	audio.UserAgent = ua
 	err := music.Providers.GetProvider(musicc.Provider.Name).UpdateMusicAudio(&audio)
 	if err != nil {

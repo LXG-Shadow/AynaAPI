@@ -20,7 +20,7 @@ func TestAgefans_GetAnimeMeta(t *testing.T) {
 	var provider anime.AnimeProvider = AgefansAPI
 	fmt.Println(provider.GetAnimeMeta(core.ProviderMeta{
 		Name: "agefans",
-		Url:  "https://www.agefans.cc/detail/20190087",
+		Url:  "https://www.agefans.vip/detail/20190087",
 	}))
 }
 
@@ -40,7 +40,7 @@ func TestAgefans_updateAnimeVideo(t *testing.T) {
 		Url:   "",
 		Provider: core.ProviderMeta{
 			Name: "",
-			Url:  "https://www.agefans.cc/_getplay?aid=20210249&playindex=2&epindex=1",
+			Url:  "https://www.agefans.vip/_getplay?aid=20210249&playindex=2&epindex=1",
 		},
 	}
 	fmt.Println(provider.UpdateAnimeVideo(&video))

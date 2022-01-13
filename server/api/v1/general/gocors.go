@@ -12,6 +12,8 @@ import (
 	"strings"
 )
 
+// todo: rewrite use HandleContext
+
 func BypassCorsFixFile(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	value, b := context.GetQuery("url")

@@ -2,16 +2,17 @@ package main
 
 import (
 	"AynaAPI/config"
-	"AynaAPI/pkg/gredis"
 	"AynaAPI/server"
+	"flag"
 	"fmt"
 )
 
+var configPath = flag.String("c", "conf/conf.ini", "-c config path")
+
 func main() {
-	if config.ServerConfig.UseRedisCache {
-		gredis.Initialize()
-		fmt.Printf("Redis Status: %t\n", gredis.Online)
-	}
+	flag.Parse()
+	config.Load(*configPath)
+	server.Initialize()
 	router := server.InitRouter()
 	err := router.Run(fmt.Sprintf(":%d", config.ServerConfig.HttpPort))
 	if err != nil {

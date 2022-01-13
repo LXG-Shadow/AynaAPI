@@ -33,7 +33,9 @@ func Search(context *gin.Context) {
 		appG.MakeEmptyResponse(http.StatusOK, errcode)
 		return
 	}
-	appG.MakeResponse(http.StatusOK, e.API_OK, result)
+	appG.MakeResponse(http.StatusOK, e.API_OK, map[string][]anime.AnimeMeta{
+		providerName: result.Result,
+	})
 }
 
 // SearchAll godoc
@@ -53,10 +55,10 @@ func SearchAll(context *gin.Context) {
 		return
 	}
 	useCache := appG.GetBoolQueryWithDefault("cache", true)
-	result := map[string]anime.AnimeSearchResult{}
+	result := map[string][]anime.AnimeMeta{}
 	for _, providerName := range anime.Providers.GetProviderList() {
 		if r, err := api_service.AnimeSearch(providerName, keyword, useCache); err == 0 {
-			result[providerName] = r
+			result[providerName] = r.Result
 		}
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, result)

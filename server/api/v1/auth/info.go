@@ -29,7 +29,7 @@ func GetInfo(c *gin.Context) {
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, publicInfo{
 		Username:        user.Username,
-		PermissionLevel: auth_service.GetPermissionByUser(user),
+		PermissionLevel: auth_service.New().GetPermissionByUser(user),
 	})
 	return
 }

@@ -8,7 +8,7 @@ import (
 type MusicMeta struct {
 	Title    string            `json:"title"`
 	Cover    string            `json:"cover"`
-	Artist   string            `json:"author"`
+	Artist   string            `json:"artist"`
 	Album    string            `json:"album"`
 	Provider core.ProviderMeta `json:"provider"`
 }
