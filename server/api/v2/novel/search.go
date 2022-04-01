@@ -19,6 +19,7 @@ import (
 // @Param cache query boolean false "use cache"
 // @Success 200 {object} app.AppJsonResponse "biqugeB?keyword=诡秘之主"
 // @Router /api/v2/novel/search/{provider} [get]
+// @deprecated
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	providerName := context.Param("provider")
@@ -45,6 +46,7 @@ func Search(context *gin.Context) {
 // @Param cache query boolean false "use cache"
 // @Success 200 {object} app.AppJsonResponse "诡秘之主"
 // @Router /api/v2/novel/search [get]
+// @deprecated
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	keyword, b := appG.C.GetQuery("keyword")

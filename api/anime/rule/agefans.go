@@ -26,8 +26,9 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "a.cell_imform_name",
-					Target:   deepcolor.AttributeTarget("href"),
+					Selector: deepcolor.AttributeSelector(
+						"a.cell_imform_name",
+						"href"),
 				},
 			},
 		},
@@ -35,8 +36,9 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "a.cell_poster > img",
-					Target:   deepcolor.AttributeTarget("src"),
+					Selector: deepcolor.AttributeSelector("a.cell_poster > img",
+						"src",
+					),
 				},
 			},
 		},
@@ -44,8 +46,8 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "a.cell_imform_name",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(
+						"a.cell_imform_name"),
 				},
 			},
 		},
@@ -53,8 +55,9 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "div.blockcontent1 > div.cell > div.cell_imform > div.cell_imform_kvs > div:nth-child(4) > span.cell_imform_value",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(
+						"div.blockcontent1 > div.cell > div.cell_imform > div.cell_imform_kvs > div:nth-child(4) > span.cell_imform_value",
+					),
 				},
 			},
 		},
@@ -62,8 +65,8 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "div.blockcontent1 > div.cell > div.cell_imform > div.cell_imform_kvs > div:nth-child(7) > span.cell_imform_value",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(
+						"div.blockcontent1 > div.cell > div.cell_imform > div.cell_imform_kvs > div:nth-child(7) > span.cell_imform_value"),
 				},
 			},
 		},
@@ -71,8 +74,7 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "div.cell_imform_desc",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector("div.cell_imform_desc"),
 				},
 			},
 		},
@@ -81,8 +83,7 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: ".detail_imform_name",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(".detail_imform_name"),
 				},
 			},
 		},
@@ -90,8 +91,9 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "img.poster",
-					Target:   deepcolor.AttributeTarget("src"),
+					Selector: deepcolor.AttributeSelector(
+						"img.poster",
+						"src"),
 				},
 			},
 		},
@@ -99,8 +101,7 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "ul.blockcontent > li.detail_imform_kv:nth-child(7) > span.detail_imform_value",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector("ul.blockcontent > li.detail_imform_kv:nth-child(7) > span.detail_imform_value"),
 				},
 			},
 		},
@@ -108,8 +109,8 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "ul.blockcontent > li.detail_imform_kv:nth-child(10) > span.detail_imform_value",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(
+						"ul.blockcontent > li.detail_imform_kv:nth-child(10) > span.detail_imform_value"),
 				},
 			},
 		},
@@ -117,8 +118,7 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "div.detail_imform_desc_pre > p",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector("div.detail_imform_desc_pre > p"),
 				},
 			},
 		},
@@ -126,8 +126,10 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "div.movurl > ul > li > a",
-					Target:   deepcolor.AttributeTarget("href"),
+					Selector: deepcolor.AttributeSelector(
+						"div.movurl > ul > li > a",
+						"href",
+					),
 					Substitution: map[string]string{
 						"/play/":     "",
 						"\\?playid=": "-",
@@ -140,8 +142,7 @@ func InitializeAgefansRules() AgefansRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "div.movurl > ul > li > a",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector("div.movurl > ul > li > a"),
 				},
 			},
 		},

@@ -17,8 +17,7 @@ func InitializeSusuDmRules() SusuDmRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "dt.name",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector("dt.name"),
 					Substitution: map[string]string{
 						"<span[^>]*>.*</span>": "",
 					},
@@ -29,8 +28,10 @@ func InitializeSusuDmRules() SusuDmRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "body > div.wrap > div.content.mb.clearfix > div.pic > img",
-					Target:   deepcolor.AttributeTarget("src"),
+					Selector: deepcolor.AttributeSelector(
+						"body > div.wrap > div.content.mb.clearfix > div.pic > img",
+						"src",
+					),
 				},
 			},
 		},
@@ -38,8 +39,9 @@ func InitializeSusuDmRules() SusuDmRules {
 			Type: deepcolor.ItemTypeList,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "body > div.wrap > div.content.mb.clearfix > div.info > dl > dd:nth-child(4) > a",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(
+						"body > div.wrap > div.content.mb.clearfix > div.info > dl > dd:nth-child(4) > a",
+					),
 				},
 			},
 		},
@@ -47,8 +49,7 @@ func InitializeSusuDmRules() SusuDmRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "div.des2",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector("div.des2"),
 					Substitution: map[string]string{
 						"剧情：": "",
 					},
@@ -59,8 +60,9 @@ func InitializeSusuDmRules() SusuDmRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "body > div.wrap > div.content.mb.clearfix > div.info > dl > dd:nth-child(3)",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(
+						"body > div.wrap > div.content.mb.clearfix > div.info > dl > dd:nth-child(3)",
+					),
 					Substitution: map[string]string{
 						"<b>地区：</b>":       "",
 						"(\\s)*<b>年代：</b>": "---",
@@ -72,8 +74,9 @@ func InitializeSusuDmRules() SusuDmRules {
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: "body > div.wrap > div.content.mb.clearfix > div.info > dl > dd:nth-child(2)",
-					Target:   deepcolor.TextTarget(),
+					Selector: deepcolor.TextSelector(
+						"body > div.wrap > div.content.mb.clearfix > div.info > dl > dd:nth-child(2)",
+					),
 					Substitution: map[string]string{
 						"<b>地区：</b>":       "",
 						"(\\s)*<b>年代：</b>": "---",

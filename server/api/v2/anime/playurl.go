@@ -17,7 +17,7 @@ import (
 // @Param pid query int false "playlist id"
 // @Param eid query int false "episode id"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "xxxxxxx"
+// @Success 200 {object} resp.AnimePlayUrl
 // @Router /api/v2/anime/playurl [get]
 func GetPlayUrl(context *gin.Context) {
 	appG := app.AppGin{C: context}

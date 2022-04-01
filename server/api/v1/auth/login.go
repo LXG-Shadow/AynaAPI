@@ -19,6 +19,7 @@ import (
 // @Param password query string true "password"
 // @Success 200 {object} app.AppJsonResponse "
 // @Router /api/v1/auth/login [get]
+// @deprecated
 func Login(c *gin.Context) {
 	appG := app.AppGin{C: c}
 

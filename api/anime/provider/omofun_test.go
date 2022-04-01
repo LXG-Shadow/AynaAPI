@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-func TestAgefans_Search(t *testing.T) {
-	var provider anime.AnimeProvider = AgefansAPI
+func TestOmofun_Search(t *testing.T) {
+	var provider anime.AnimeProvider = OmofunAPI
 	search, err := provider.Search("刀剑神域")
 	if err != nil {
 		return
@@ -16,31 +16,30 @@ func TestAgefans_Search(t *testing.T) {
 	fmt.Println(search)
 }
 
-func TestAgefans_GetAnimeMeta(t *testing.T) {
-	var provider anime.AnimeProvider = AgefansAPI
+func TestOmofun_GetAnimeMeta(t *testing.T) {
+	var provider anime.AnimeProvider = OmofunAPI
 	fmt.Println(provider.GetAnimeMeta(core.ProviderMeta{
-		Name: "agefans",
-		Url:  "20190087",
+		Name: "omofun",
+		Url:  "2240",
 	}))
 }
 
-func TestAgefans_GetAnime(t *testing.T) {
-	var provider anime.AnimeProvider = AgefansAPI
-	search, _ := provider.Search("ggo")
+func TestAOmofun_GetAnime(t *testing.T) {
+	var provider anime.AnimeProvider = OmofunAPI
+	search, _ := provider.Search("Gun Gale Online")
 	am := search.Result[0]
-	//fmt.Println(am)
 	animee, _ := provider.GetAnime(am)
 	fmt.Println(animee.Playlists)
 }
 
-func TestAgefans_updateAnimeVideo(t *testing.T) {
-	provider := AgefansAPI
+func TestOmofun_updateAnimeVideo(t *testing.T) {
+	var provider anime.AnimeProvider = OmofunAPI
 	video := anime.AnimeVideo{
 		Title: "miao",
 		Url:   "",
 		Provider: core.ProviderMeta{
 			Name: "",
-			Url:  "20210249-2-1",
+			Url:  "5277-1-1",
 		},
 	}
 	fmt.Println(provider.UpdateAnimeVideo(&video))

@@ -6,7 +6,6 @@ import (
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/cache_service"
-	"time"
 	// load all provider
 	_ "AynaAPI/api/anime/provider"
 )
@@ -33,7 +32,7 @@ func AnimeGetVideo(metadata string, playlist int, episode int, useCache bool) (a
 	}
 	key := cache_service.GetAnimeKey(animee.Provider)
 	if gredis.Online {
-		defer gredis.SetData(key, animee, time.Hour*24)
+		defer gredis.SetData(key, animee, cache_service.GetCacheExpirePeriod())
 	}
 	return *v, 0
 }
@@ -58,7 +57,7 @@ func AnimeGet(metadata string, useCache bool) (anime.Anime, int) {
 		return result, errcode
 	}
 	if gredis.Online {
-		defer gredis.SetData(key, result, time.Hour*24)
+		defer gredis.SetData(key, result, cache_service.GetCacheExpirePeriod())
 	}
 	return result, 0
 }
@@ -108,7 +107,7 @@ func AnimeSearch(providerName string, keyword string, useCache bool) (anime.Anim
 		return result, e.BGM_SEARCH_FAIL
 	}
 	if gredis.Online {
-		defer gredis.SetData(key, result, time.Hour*24)
+		defer gredis.SetData(key, result, cache_service.GetCacheExpirePeriod())
 	}
 	return result, 0
 }

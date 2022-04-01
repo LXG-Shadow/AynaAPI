@@ -15,7 +15,7 @@ import (
 // @Produce json
 // @Param mid query string true "anime provider meta id"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "xxxxxxx"
+// @Success 200 {object} resp.AnimeInfo
 // @Router /api/v2/anime/info [get]
 func GetInfo(context *gin.Context) {
 	appG := app.AppGin{C: context}

@@ -15,7 +15,7 @@ import (
 // @Produce json
 // @Param mid query string true "music provider meta id"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "xxxxxxx"
+// @Success 200 {object} resp.MusicInfo
 // @Router /api/v2/music/info [get]
 func GetInfo(context *gin.Context) {
 	appG := app.AppGin{C: context}

@@ -7,7 +7,6 @@ import (
 	"AynaAPI/server/api/v2/anime"
 	authV2 "AynaAPI/server/api/v2/auth"
 	"AynaAPI/server/api/v2/music"
-	"AynaAPI/server/api/v2/novel"
 	"AynaAPI/server/api/v2/upload"
 	"AynaAPI/server/controllers/chat"
 	"AynaAPI/server/controllers/index"
@@ -35,8 +34,8 @@ func InitRouter() *gin.Engine {
 
 	corsconfig := cors.DefaultConfig()
 	// https://www.cnblogs.com/cnxkey/articles/14259716.html
-	//corsconfig.AllowOrigins = []string{"http://127.0.0.1:3000", "http://localhost:3000"}
-	corsconfig.AllowOrigins = []string{"*"}
+	corsconfig.AllowOrigins = []string{"http://127.0.0.1:3000", "http://localhost:3000"}
+	//corsconfig.AllowOrigins = []string{"*"}
 	corsconfig.AllowMethods = []string{"GET", "POST", "OPTIONS"}
 	corsconfig.AllowCredentials = true
 
@@ -98,17 +97,17 @@ func InitRouter() *gin.Engine {
 			animeApi.GET("/playurl", anime.GetPlayUrl)
 			animeApi.GET("/info", anime.GetInfo)
 		}
-		novelApi := apiV2.Group("/novel")
-		{
-			novelApi.GET("/plist", novel.GetProviderList)
-			novelApi.GET("/providerlist", novel.GetProviderList)
-
-			novelApi.GET("/info", novel.GetInfo)
-			novelApi.GET("/content", novel.GetContent)
-
-			novelApi.GET("/search/:provider", novel.Search)
-			novelApi.GET("/search", novel.SearchAll)
-		}
+		//novelApi := apiV2.Group("/novel")
+		//{
+		//	novelApi.GET("/plist", novel.GetProviderList)
+		//	novelApi.GET("/providerlist", novel.GetProviderList)
+		//
+		//	novelApi.GET("/info", novel.GetInfo)
+		//	novelApi.GET("/content", novel.GetContent)
+		//
+		//	novelApi.GET("/search/:provider", novel.Search)
+		//	novelApi.GET("/search", novel.SearchAll)
+		//}
 		musicApi := apiV2.Group("/music")
 		{
 			musicApi.GET("/plist", music.GetProviderList)

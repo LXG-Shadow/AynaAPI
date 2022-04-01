@@ -14,10 +14,10 @@ import (
 // @Description 根据来源搜索音乐
 // @Tags Music
 // @Produce json
-// @Param provider path string true "music provider identifier"
-// @Param keyword query string true "keyword"
+// @Param provider path string true "music provider identifier (e.g. bilibilimusic)"
+// @Param keyword query string true "keyword (e.g. 霜雪千年)"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "bilibilimusic?keyword=霜雪千年"
+// @Success 200 {object} resp.MusicSearchResult
 // @Router /api/v2/music/search/{provider} [get]
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
@@ -33,7 +33,9 @@ func Search(context *gin.Context) {
 		appG.MakeEmptyResponse(http.StatusOK, errcode)
 		return
 	}
-	appG.MakeResponse(http.StatusOK, e.API_OK, result.Result)
+	appG.MakeResponse(http.StatusOK, e.API_OK, map[string][]music.MusicMeta{
+		providerName: result.Result,
+	})
 }
 
 // SearchAll godoc
@@ -43,7 +45,7 @@ func Search(context *gin.Context) {
 // @Produce json
 // @Param keyword query string true "keyword"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "音乐"
+// @Success 200 {object} resp.MusicSearchResult
 // @Router /api/v2/music/search [get]
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}

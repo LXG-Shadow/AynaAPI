@@ -5,7 +5,6 @@ import (
 	"AynaAPI/api/anime/rule"
 	"AynaAPI/api/core"
 	e2 "AynaAPI/api/e"
-	"AynaAPI/api/httpc"
 	"AynaAPI/utils/vhttp"
 	"AynaAPI/utils/vstring"
 	"fmt"
@@ -73,8 +72,8 @@ func (p *SusuDm) UpdateAnimeMeta(meta *anime.AnimeMeta) error {
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         meta.Provider.Url,
 		Charset:     "utf-8",
-		ContentType: deepcolor.TentacleContentTypeHTMl,
-	}, httpc.GetCORSString, nil, nil)
+		ContentType: deepcolor.ResultTypeHTMl | deepcolor.ResultTypeText,
+	}, deepcolor.GetCORS, nil, nil)
 	if err != nil {
 		return e2.NewError(e2.EXTERNAL_API_ERROR)
 	}
@@ -111,15 +110,16 @@ func (p *SusuDm) UpdateAnime(animee *anime.Anime) error {
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         p.getPlayUrlAPI(id),
 		Charset:     "utf-8",
-		ContentType: deepcolor.TentacleContentTypeText,
-	}, httpc.GetCORSString, nil, nil)
+		ContentType: deepcolor.ResultTypeText,
+	}, deepcolor.GetCORS, nil, nil)
 	if err != nil {
 		return e2.NewError(e2.EXTERNAL_API_ERROR)
 	}
 	if animee.Playlists == nil {
 		animee.Playlists = make([]anime.Playlist, 0)
 	}
-	rawtext := result.(deepcolor.TentacleTextResult).Data.(string)
+	// magic stuff
+	rawtext := result.Parsers[0].Data.(string)
 	for i := 0; i < 10; i++ {
 		var playlistID string
 		if i == 0 {
@@ -164,14 +164,14 @@ func (p *SusuDm) Search(keyword string) (anime.AnimeSearchResult, error) {
 	result, err := deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         p.getSearchApi(keyword),
 		Charset:     "utf-8",
-		ContentType: deepcolor.TentacleContentTypeText,
-	}, httpc.GetCORSString, nil, nil)
+		ContentType: deepcolor.ResultTypeText,
+	}, deepcolor.GetCORS, nil, nil)
 	if err != nil {
 		return anime.AnimeSearchResult{}, e2.NewError(e2.EXTERNAL_API_ERROR)
 	}
 	var sResults = make([]anime.AnimeMeta, 0)
 	jsonResult := gjson.Parse(
-		strings.ReplaceAll(result.(deepcolor.TentacleTextResult).Data.(string), "\ufeff", ""))
+		strings.ReplaceAll(result.Parsers[0].Data.(string), "\ufeff", ""))
 	jsonResult.ForEach(func(key, value gjson.Result) bool {
 		pMeta := core.ProviderMeta{
 			Name: p.GetName(),

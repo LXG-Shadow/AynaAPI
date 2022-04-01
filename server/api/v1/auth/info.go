@@ -20,6 +20,7 @@ type publicInfo struct {
 // @Produce json
 // @Success 200 {object} app.AppJsonResponse
 // @Router /api/v1/auth/info [get]
+// @deprecated
 func GetInfo(c *gin.Context) {
 	appG := app.AppGin{C: c}
 	user, ok := appG.GetUser()

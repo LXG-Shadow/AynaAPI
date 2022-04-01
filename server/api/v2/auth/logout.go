@@ -13,7 +13,7 @@ import (
 // @Description 登出
 // @Tags Auth
 // @Produce json
-// @Success 200 {object} app.AppJsonResponse "
+// @Success 200 {object} app.AppJsonResponse
 // @Router /api/v2/auth/logout [get]
 func Logout(c *gin.Context) {
 	appG := app.AppGin{C: c}

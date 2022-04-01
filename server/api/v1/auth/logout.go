@@ -15,6 +15,7 @@ import (
 // @Produce json
 // @Success 200 {object} app.AppJsonResponse "
 // @Router /api/v1/auth/logout [get]
+// @deprecated
 func Logout(c *gin.Context) {
 	appG := app.AppGin{C: c}
 	appG.DeleteCookie(config.ServerConfig.JwtTokenName)

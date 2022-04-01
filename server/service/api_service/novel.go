@@ -6,10 +6,8 @@ import (
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/cache_service"
-	"time"
-
 	// load all provider
-	_ "AynaAPI/api/novel/provider"
+	//_ "AynaAPI/api/novel/provider"
 )
 
 func NovelSearch(providerName string, keyword string, useCache bool) (novel.NovelSearchResult, int) {
@@ -30,7 +28,7 @@ func NovelSearch(providerName string, keyword string, useCache bool) (novel.Nove
 		return result, e.NOVEL_SEARCH_FAIL
 	}
 	if gredis.Online {
-		defer gredis.SetData(key, result, time.Hour*24)
+		defer gredis.SetData(key, result, cache_service.GetCacheExpirePeriod())
 	}
 	return result, 0
 }
@@ -56,7 +54,7 @@ func NovelContent(metadata string, volume int, chapter int, useCache bool) (nove
 	}
 	key := cache_service.GetNovelInfoKey(novell.Provider)
 	if gredis.Online {
-		defer gredis.SetData(key, novell, time.Hour*24)
+		defer gredis.SetData(key, novell, cache_service.GetCacheExpirePeriod())
 	}
 	return *c, 0
 }
@@ -81,7 +79,7 @@ func NovelGet(metadata string, useCache bool) (novel.Novel, int) {
 		return result, errcode
 	}
 	if gredis.Online {
-		defer gredis.SetData(key, result, time.Hour*24)
+		defer gredis.SetData(key, result, cache_service.GetCacheExpirePeriod())
 	}
 	return result, 0
 }

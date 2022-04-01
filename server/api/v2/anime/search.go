@@ -14,10 +14,10 @@ import (
 // @Description 根据来源搜索动漫
 // @Tags Anime
 // @Produce json
-// @Param provider path string true "anime provider identifier"
-// @Param keyword query string true "keyword"
+// @Param provider path string true "anime provider identifier (e.g. susudm)"
+// @Param keyword query string true "keyword (e.g. 刀剑神域)"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "susudm?keyword=刀剑神域"
+// @Success 200 {object} resp.AnimeSearchResult
 // @Router /api/v2/anime/search/{provider} [get]
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
@@ -43,9 +43,9 @@ func Search(context *gin.Context) {
 // @Description 搜索动漫
 // @Tags Anime
 // @Produce json
-// @Param keyword query string true "keyword"
+// @Param keyword query string true "keyword (e.g. 刀剑神域)"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "刀剑神域"
+// @Success 200 {object} resp.AnimeSearchResult
 // @Router /api/v2/anime/search [get]
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}

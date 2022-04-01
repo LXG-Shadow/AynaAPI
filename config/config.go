@@ -13,6 +13,9 @@ type API struct {
 	Bilibili_JCT      string
 
 	NovelRulePath string
+
+	AnimeAgefansBaseUrl string
+	AnimeOmofunBaseUrl  string
 }
 
 type Server struct {
@@ -29,7 +32,8 @@ type Server struct {
 	UploadMaxSize        int
 	UploadAllowImageExts []string
 
-	UseRedisCache bool
+	UseRedisCache    bool
+	RedisCachePeriod int // in seconds
 
 	LogFile string
 }
@@ -66,7 +70,8 @@ func Load(path string) {
 	var err error
 	cfgFile, err = ini.Load(path)
 	if err != nil {
-		log.Fatal("Load config fail")
+		//log.Fatal("Load config fail")
+		log.Println("Load config fail")
 		return
 	}
 	Initialize()

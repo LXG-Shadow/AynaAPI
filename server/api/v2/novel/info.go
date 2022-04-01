@@ -17,6 +17,7 @@ import (
 // @Param cache query boolean false "use cache"
 // @Success 200 {object} app.AppJsonResponse ""
 // @Router /api/v2/novel/info [get]
+// @deprecated
 func GetInfo(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	metadata, b := appG.C.GetQuery("mid")

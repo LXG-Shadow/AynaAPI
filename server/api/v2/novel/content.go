@@ -19,6 +19,7 @@ import (
 // @Param cache query boolean false "use cache"
 // @Success 200 {object} app.AppJsonResponse "https://www.linovelib.com/novel/2342/133318.html"
 // @Router /api/v2/novel/content [get]
+// @deprecated
 func GetContent(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	metadata, b := appG.C.GetQuery("mid")

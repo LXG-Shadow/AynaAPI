@@ -18,7 +18,7 @@ import (
 // @Produce json
 // @Param username query string true "username"
 // @Param password query string true "password"
-// @Success 200 {object} app.AppJsonResponse "
+// @Success 200 {object} resp.LoginResp
 // @Router /api/v2/auth/login [get]
 func Login(c *gin.Context) {
 	appG := app.AppGin{C: c}

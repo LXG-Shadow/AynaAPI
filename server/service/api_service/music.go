@@ -3,12 +3,10 @@ package api_service
 import (
 	"AynaAPI/api/core"
 	"AynaAPI/api/music"
+	_ "AynaAPI/api/music/provider"
 	"AynaAPI/pkg/gredis"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/cache_service"
-	"time"
-
-	_ "AynaAPI/api/music/provider"
 )
 
 func MusicGetAudio(metadata string, ua string, useCache bool) (music.MusicAudio, int) {
@@ -45,7 +43,7 @@ func MusicGet(metadata string, useCache bool) (music.Music, int) {
 		return result, errcode
 	}
 	if gredis.Online {
-		defer gredis.SetData(key, result, time.Hour*24)
+		defer gredis.SetData(key, result, cache_service.GetCacheExpirePeriod())
 	}
 	return result, 0
 }
@@ -95,7 +93,7 @@ func MusicSearch(providerName string, keyword string, useCache bool) (music.Musi
 		return result, e.MUSIC_SEARCH_FAIL
 	}
 	if gredis.Online {
-		defer gredis.SetData(key, result, time.Hour*24)
+		defer gredis.SetData(key, result, cache_service.GetCacheExpirePeriod())
 	}
 	return result, 0
 }

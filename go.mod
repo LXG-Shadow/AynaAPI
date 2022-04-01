@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/antonfisher/nested-logrus-formatter v1.3.1
-	github.com/aynakeya/deepcolor v0.0.5
+	github.com/aynakeya/deepcolor v0.0.7
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.3.1
@@ -21,7 +21,7 @@ require (
 	github.com/spf13/cast v1.3.1
 	github.com/swaggo/gin-swagger v1.3.2
 	github.com/swaggo/swag v1.7.0
-	github.com/tidwall/gjson v1.7.5
+	github.com/tidwall/gjson v1.14.0
 	github.com/ugorji/go v1.1.13 // indirect
 	golang.org/x/net v0.0.0-20211029224645-99673261e6eb
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
