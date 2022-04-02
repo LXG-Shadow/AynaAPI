@@ -51,7 +51,6 @@ func commonSearch(providerName string, url string, rules rule.CommonSearchRules)
 	result, err := deepcolor.Fetch(
 		deepcolor.TentacleHTML(url, "utf-8"),
 		deepcolor.GetCORS, nil, nil)
-
 	if err != nil {
 		return anime.AnimeSearchResult{}, e.NewError(e.EXTERNAL_API_ERROR)
 	}

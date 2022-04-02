@@ -2,17 +2,16 @@ package rule
 
 import "github.com/aynakeya/deepcolor"
 
-type OmofunRules struct {
+type DldmRules struct {
 	CommonSearchRules
 	CommonInfoRules
 	CommonPlaylistRules
-	VideoId     deepcolor.Item
-	VideoEncUrl deepcolor.Item
-	VideoAesIv  deepcolor.Item
+	VideoId  deepcolor.Item
+	VideoUrl deepcolor.Item
 }
 
-func InitializeOmofunRules() OmofunRules {
-	return OmofunRules{
+func InitializeDldmRules() DldmRules {
+	return DldmRules{
 		CommonSearchRules: CommonSearchRules{
 			SearchID: deepcolor.Item{
 				Type: deepcolor.ItemTypeList,
@@ -174,28 +173,13 @@ func InitializeOmofunRules() OmofunRules {
 				},
 			},
 		},
-		VideoAesIv: deepcolor.Item{
+		VideoUrl: deepcolor.Item{
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: deepcolor.RegExpSelector(
-						"bt_token = \"([^;]*)\";"),
+					Selector: deepcolor.JsonSelector("url"),
 					Substitution: map[string]string{
-						"bt_token = \"": "",
-						"\";":           "",
-					},
-				},
-			},
-		},
-		VideoEncUrl: deepcolor.Item{
-			Type: deepcolor.ItemTypeSingle,
-			Rules: []deepcolor.ItemRule{
-				{
-					Selector: deepcolor.RegExpSelector(
-						"getVideoInfo\\(\"[^\"]*\"\\)"),
-					Substitution: map[string]string{
-						"getVideoInfo\\(\"": "",
-						"\"\\)":             "",
+						"\\/": "/",
 					},
 				},
 			},

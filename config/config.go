@@ -16,6 +16,7 @@ type API struct {
 
 	AnimeAgefansBaseUrl string
 	AnimeOmofunBaseUrl  string
+	AnimeDldmBaseUrl    string
 }
 
 type Server struct {
