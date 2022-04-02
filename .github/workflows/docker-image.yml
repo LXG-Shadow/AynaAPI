@@ -4,8 +4,8 @@ name: Build & Push Docker Image
 # 配置触发workflow的事件
 on:
   push:
-    branches: # master分支有push时触发此workflow
-      - 'master'
+#    branches: # master分支有push时触发此workflow
+#      - 'master'
     tags: # tag更新时触发此workflow
       - '*'
 
