@@ -34,8 +34,8 @@ func InitRouter() *gin.Engine {
 
 	corsconfig := cors.DefaultConfig()
 	// https://www.cnblogs.com/cnxkey/articles/14259716.html
-	corsconfig.AllowOrigins = []string{"http://127.0.0.1:3000", "http://localhost:3000"}
-	//corsconfig.AllowOrigins = []string{"*"}
+	//corsconfig.AllowOrigins = []string{"http://127.0.0.1:3000", "http://localhost:3000"}
+	corsconfig.AllowOrigins = []string{"*"}
 	corsconfig.AllowMethods = []string{"GET", "POST", "OPTIONS"}
 	corsconfig.AllowCredentials = true
 
