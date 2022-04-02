@@ -5,7 +5,7 @@ RUN apk add build-base
 WORKDIR /go/src/github.com/aynakeya/AynaAPI
 COPY . .
 
-RUN go generate && go env && go build -o ayapi ./server/main
+RUN go generate && go env && go build -buildvcs=false -o ayapi ./server/main
 
 FROM alpine:latest
 
