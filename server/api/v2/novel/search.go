@@ -2,7 +2,6 @@ package novel
 
 import (
 	"AynaAPI/api/novel"
-	novelCore "AynaAPI/api/novel/core"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/api_service"
@@ -20,6 +19,7 @@ import (
 // @Param cache query boolean false "use cache"
 // @Success 200 {object} app.AppJsonResponse "biqugeB?keyword=诡秘之主"
 // @Router /api/v2/novel/search/{provider} [get]
+// @deprecated
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	providerName := context.Param("provider")
@@ -46,6 +46,7 @@ func Search(context *gin.Context) {
 // @Param cache query boolean false "use cache"
 // @Success 200 {object} app.AppJsonResponse "诡秘之主"
 // @Router /api/v2/novel/search [get]
+// @deprecated
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
 	keyword, b := appG.C.GetQuery("keyword")
@@ -54,8 +55,8 @@ func SearchAll(context *gin.Context) {
 		return
 	}
 	useCache := appG.GetBoolQueryWithDefault("cache", true)
-	result := map[string]novelCore.NovelSearchResult{}
-	for _, providerName := range novel.GetNovelProviderList() {
+	result := map[string]novel.NovelSearchResult{}
+	for _, providerName := range novel.Providers.GetProviderList() {
 		if r, err := api_service.NovelSearch(providerName, keyword, useCache); err == 0 {
 			result[providerName] = r
 		}

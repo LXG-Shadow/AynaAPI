@@ -1,10 +1,12 @@
 package provider
 
 import (
-	"AynaAPI/api/anime/core"
+	"AynaAPI/api/anime"
 	"AynaAPI/api/anime/rule"
-	"AynaAPI/api/core/e"
+	"AynaAPI/api/core"
+	"AynaAPI/api/e"
 	"AynaAPI/api/httpc"
+	"AynaAPI/config"
 	"AynaAPI/utils/vhttp"
 	"AynaAPI/utils/vstring"
 	"fmt"
@@ -19,6 +21,7 @@ import (
 
 type Agefans struct {
 	BaseUrl    string
+	InfoAPI    string
 	SearchAPI  string
 	PlayUrlAPI string
 	Rules      rule.AgefansRules
@@ -29,15 +32,15 @@ func (p *Agefans) GetName() string {
 }
 
 func (p *Agefans) Validate(meta core.ProviderMeta) bool {
-	return meta.Name == p.GetName() &&
-		regexp.MustCompile("^"+regexp.QuoteMeta(p.BaseUrl)).FindString(meta.Url) != ""
+	return meta.Name == p.GetName() && regexp.MustCompile("^[0-9]+$").FindString(meta.Url) != ""
 }
 
-func _newAgefans() *Agefans {
+func _newAgefans(baseurl string) *Agefans {
 	return &Agefans{
-		BaseUrl:    "https://www.agefans.cc",
-		SearchAPI:  "https://www.agefans.cc/search?query=%s&page=%d",
-		PlayUrlAPI: "https://www.agefans.cc/_getplay?aid=%s&playindex=%s&epindex=%s",
+		BaseUrl:    baseurl,
+		InfoAPI:    baseurl + "/detail/%s",
+		SearchAPI:  baseurl + "/search?query=%s&page=%d",
+		PlayUrlAPI: baseurl + "/_getplay?aid=%s&playindex=%s&epindex=%s",
 		Rules:      rule.InitializeAgefansRules(),
 	}
 }
@@ -45,7 +48,16 @@ func _newAgefans() *Agefans {
 var AgefansAPI *Agefans
 
 func init() {
-	AgefansAPI = _newAgefans()
+	if config.APIConfig == nil {
+		AgefansAPI = _newAgefans("https://www.agemys.com")
+	} else {
+		AgefansAPI = _newAgefans(config.APIConfig.AnimeAgefansBaseUrl)
+	}
+	anime.Providers.Add(AgefansAPI.GetName(), AgefansAPI)
+}
+
+func (p *Agefans) getInfoApi(aid string) string {
+	return fmt.Sprintf(p.InfoAPI, aid)
 }
 
 func (p *Agefans) getSearchApi(keyword string) string {
@@ -56,8 +68,8 @@ func (p *Agefans) getPlayUrlAPI(aid string, playindex string, epindex string) st
 	return fmt.Sprintf(p.PlayUrlAPI, aid, playindex, epindex)
 }
 
-func (p *Agefans) GetAnimeMeta(meta core.ProviderMeta) (core.AnimeMeta, error) {
-	aMeta := core.AnimeMeta{Provider: meta}
+func (p *Agefans) GetAnimeMeta(meta core.ProviderMeta) (anime.AnimeMeta, error) {
+	aMeta := anime.AnimeMeta{Provider: meta}
 	if !p.Validate(meta) {
 		return aMeta, e.NewError(e.PROVIDER_META_NOT_VALIED)
 	}
@@ -65,17 +77,17 @@ func (p *Agefans) GetAnimeMeta(meta core.ProviderMeta) (core.AnimeMeta, error) {
 	return aMeta, err
 }
 
-func (p *Agefans) UpdateAnimeMeta(meta *core.AnimeMeta) error {
-	id := regexp.MustCompile("/detail/[0-9]+").FindString(meta.Provider.Url)
-	if id == "" {
-		return e.NewError(e.INTERNAL_ERROR)
-	}
+func (p *Agefans) UpdateAnimeMeta(meta *anime.AnimeMeta) error {
+	//id := regexp.MustCompile("/detail/[0-9]+").FindString(meta.Provider.Url)
+	//if id == "" {
+	//	return e.NewError(e.INTERNAL_ERROR)
+	//}
 	meta.Provider.Name = "agefans"
-	result, err := deepcolor.Fetch(deepcolor.Tentacle{
-		Url:         meta.Provider.Url,
-		Charset:     "utf-8",
-		ContentType: deepcolor.TentacleContentTypeHTMl,
-	}, httpc.GetCORSString, nil, nil)
+	//fmt.Println(p.getInfoApi(meta.Provider.Url))
+	result, err := deepcolor.Fetch(
+		deepcolor.TentacleHTML(p.getInfoApi(meta.Provider.Url), "utf-8"),
+		deepcolor.GetCORS,
+		nil, nil)
 	if err != nil {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
@@ -87,23 +99,21 @@ func (p *Agefans) UpdateAnimeMeta(meta *core.AnimeMeta) error {
 	return nil
 }
 
-func (p *Agefans) GetAnime(meta core.AnimeMeta) (core.Anime, error) {
-	anime := core.Anime{AnimeMeta: meta}
-	err := p.UpdateAnime(&anime)
-	return anime, err
+func (p *Agefans) GetAnime(meta anime.AnimeMeta) (anime.Anime, error) {
+	animee := anime.Anime{AnimeMeta: meta}
+	err := p.UpdateAnime(&animee)
+	return animee, err
 }
-func (p *Agefans) UpdateAnime(anime *core.Anime) error {
-	result, err := deepcolor.Fetch(deepcolor.Tentacle{
-		Url:         anime.Provider.Url,
-		Charset:     "utf-8",
-		ContentType: deepcolor.TentacleContentTypeHTMl,
-	}, httpc.GetCORSString, nil, nil)
+func (p *Agefans) UpdateAnime(animee *anime.Anime) error {
+	result, err := deepcolor.Fetch(
+		deepcolor.TentacleHTML(p.getInfoApi(animee.Provider.Url), "utf-8"),
+		deepcolor.GetCORS, nil, nil)
 	if err != nil {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
 	ids := result.GetList(p.Rules.InfoVideos)
 	urlNames := result.GetList(p.Rules.InfoVideoNames)
-	anime.Playlists = make([]core.Playlist, 0)
+	animee.Playlists = make([]anime.Playlist, 0)
 	current_playlist_id := "-1"
 	current_playlist_index := -1
 	for index, id := range ids {
@@ -114,19 +124,19 @@ func (p *Agefans) UpdateAnime(anime *core.Anime) error {
 		animeId, playlistId, epId := tmp[0], tmp[1], tmp[2]
 		if playlistId != current_playlist_id {
 			current_playlist_id = playlistId
-			anime.Playlists = append(anime.Playlists, core.Playlist{
+			animee.Playlists = append(animee.Playlists, anime.Playlist{
 				Name:   playlistId,
-				Videos: make([]core.AnimeVideo, 0),
+				Videos: make([]anime.AnimeVideo, 0),
 			})
-			current_playlist_index = len(anime.Playlists) - 1
+			current_playlist_index = len(animee.Playlists) - 1
 		}
-		anime.Playlists[current_playlist_index].Videos = append(anime.Playlists[current_playlist_index].Videos,
-			core.AnimeVideo{
+		animee.Playlists[current_playlist_index].Videos = append(animee.Playlists[current_playlist_index].Videos,
+			anime.AnimeVideo{
 				Title: urlNames[index],
 				Url:   "",
 				Provider: core.ProviderMeta{
 					Name: "",
-					Url:  p.getPlayUrlAPI(animeId, playlistId, epId),
+					Url:  strings.Join([]string{animeId, playlistId, epId}, "-"),
 				},
 			})
 	}
@@ -150,13 +160,19 @@ func (p *Agefans) getCookie(t1 int) string {
 	return fmt.Sprintf("t1=%d;k2=%d;t2=%d", t1, k2, t2)
 }
 
-func (p *Agefans) UpdateAnimeVideo(video *core.AnimeVideo) error {
-	url := video.Provider.Url
-	resp := httpc.Head(url, map[string]string{
+func (p *Agefans) UpdateAnimeVideo(video *anime.AnimeVideo) error {
+	tmp := strings.Split(video.Provider.Url, "-")
+	if len(tmp) < 3 {
+		return e.NewError(e.PROVIDER_META_NOT_VALIED)
+	}
+	url := p.getPlayUrlAPI(tmp[0], tmp[1], tmp[2])
+	resp, err := httpc.Head(url, map[string]string{
 		"referer": p.BaseUrl,
 	})
-
-	initiator := regexp.MustCompile("t1=[^;]*;").FindString(resp.Header.Get("set-cookie"))
+	if err != nil {
+		return e.NewError(e.EXTERNAL_API_ERROR)
+	}
+	initiator := regexp.MustCompile("t1=[^;]*;").FindString(resp.Header().Get("set-cookie"))
 
 	if initiator == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
@@ -164,35 +180,35 @@ func (p *Agefans) UpdateAnimeVideo(video *core.AnimeVideo) error {
 	t1, _ := vstring.SliceString(initiator, 3, -1)
 
 	authCookie := p.getCookie(cast.ToInt(t1))
-	resp = httpc.Get(url, map[string]string{
+	respString := httpc.GetBodyString(url, map[string]string{
 		"referer": p.BaseUrl,
 		"cookie":  authCookie,
 	})
 	video.Provider.Name = regexp.MustCompile("</?play>").
-		ReplaceAllString(gjson.Parse(resp.String()).Get("playid").String(), "")
-	video.Url = vhttp.QueryUnescapeWithEncoding(gjson.Parse(resp.String()).Get("vurl").String(), "utf-8")
+		ReplaceAllString(gjson.Parse(respString).Get("playid").String(), "")
+
+	video.Url = vhttp.QueryUnescapeWithEncoding(gjson.Parse(respString).Get("vurl").String(), "utf-8")
 	return nil
 }
 
-func (p *Agefans) Search(keyword string) (core.AnimeSearchResult, error) {
-	result, err := deepcolor.Fetch(deepcolor.Tentacle{
-		Url:         p.getSearchApi(keyword),
-		Charset:     "utf-8",
-		ContentType: deepcolor.TentacleContentTypeHTMl,
-	}, httpc.GetCORSString, nil, nil)
+func (p *Agefans) Search(keyword string) (anime.AnimeSearchResult, error) {
+	result, err := deepcolor.Fetch(
+		deepcolor.TentacleHTML(p.getSearchApi(keyword), "utf-8"),
+		deepcolor.GetCORS, nil, nil)
 
 	if err != nil {
-		return core.AnimeSearchResult{}, e.NewError(e.EXTERNAL_API_ERROR)
+		return anime.AnimeSearchResult{}, e.NewError(e.EXTERNAL_API_ERROR)
 	}
-	var sResults = make([]core.AnimeMeta, 0)
+	var sResults = make([]anime.AnimeMeta, 0)
 	urls := result.GetList(p.Rules.SearchURL)
 	titles := result.GetList(p.Rules.SearchTitle)
 	years := result.GetList(p.Rules.SearchYear)
 	tags := result.GetList(p.Rules.SearchTag)
 	covers := result.GetList(p.Rules.SearchCover)
 	desc := result.GetList(p.Rules.SearchDesc)
+	idreg := regexp.MustCompile("[0-9]+")
 	for index, url := range urls {
-		meta := core.AnimeMeta{
+		meta := anime.AnimeMeta{
 			Title:       titles[index],
 			Year:        years[index],
 			Tags:        strings.Split(tags[index], " "),
@@ -200,10 +216,10 @@ func (p *Agefans) Search(keyword string) (core.AnimeSearchResult, error) {
 			Description: desc[index],
 			Provider: core.ProviderMeta{
 				Name: p.GetName(),
-				Url:  vhttp.JoinUrl(p.BaseUrl, url),
+				Url:  idreg.FindString(url),
 			},
 		}
 		sResults = append(sResults, meta)
 	}
-	return core.AnimeSearchResult{Result: sResults}, nil
+	return anime.AnimeSearchResult{Result: sResults}, nil
 }

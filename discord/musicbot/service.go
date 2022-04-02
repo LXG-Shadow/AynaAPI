@@ -1,0 +1,88 @@
+package musicbot
+
+import (
+	"AynaAPI/api/core"
+	"AynaAPI/api/music"
+	"AynaAPI/discord/e"
+
+	_ "AynaAPI/api/music/provider"
+)
+
+func MusicSearch(providerName string, keyword string) (music.MusicSearchResult, int) {
+	provider := music.Providers.GetProvider(providerName)
+	if provider == nil {
+		return music.MusicSearchResult{}, e.MUSIC_ERROR_PROVIDER_NOT_AVAILABLE
+	}
+	result, err := provider.Search(keyword)
+	if err != nil {
+		return result, e.MUSIC_ERROR_SEARCH_FAIL
+	}
+	return result, 0
+}
+
+func MusicGet(metadata string) (music.Music, int) {
+	meta := core.ProviderMeta{}
+	err := meta.Load(metadata)
+	if err != nil {
+		return music.Music{}, e.MUSIC_ERROR_INITIALIZE_FAIL
+	}
+	return _MusicGet(meta)
+}
+
+func MusicGetFromMusicMeta(mMeta music.MusicMeta) (musicc music.Music, errcode int) {
+	musicc, err := music.Providers.GetProvider(mMeta.Provider.Name).GetMusic(mMeta)
+	if err != nil {
+		errcode = e.MUSIC_ERROR_INITIALIZE_FAIL
+		return
+	}
+	return
+}
+
+func _MusicGet(meta core.ProviderMeta) (musicc music.Music, errcode int) {
+	musicc = music.Music{}
+	errcode = 0
+	var provider music.MusicProvider
+	for _, providerName := range music.Providers.GetProviderList() {
+		if music.Providers.GetProvider(providerName).Validate(meta) {
+			provider = music.Providers.GetProvider(providerName)
+			break
+		}
+	}
+	if provider == nil {
+		errcode = e.MUSIC_ERROR_PROVIDER_NOT_AVAILABLE
+		return
+	}
+	aMeta, err := provider.GetMusicMeta(meta)
+	if err != nil {
+		errcode = e.MUSIC_ERROR_INITIALIZE_FAIL
+		return
+	}
+	musicc, err = provider.GetMusic(aMeta)
+	if err != nil {
+		errcode = e.MUSIC_ERROR_INITIALIZE_FAIL
+		return
+	}
+	return
+}
+
+func MusicGetAudioFromMusic(musicc music.Music) (music.MusicAudio, int) {
+	audio := musicc.Audio
+	err := music.Providers.GetProvider(musicc.Provider.Name).UpdateMusicAudio(&audio)
+	if err != nil {
+		return audio, e.MUSIC_ERROR_GET_DATA_FAIL
+	}
+	return audio, 0
+}
+
+func MusicGetAudio(metadata string) (music.MusicAudio, int) {
+	musicc, errcode := MusicGet(metadata)
+	if errcode != 0 {
+		return musicc.Audio, errcode
+	}
+	audio := musicc.Audio
+	err := music.Providers.GetProvider(musicc.Provider.Name).UpdateMusicAudio(&audio)
+	if err != nil {
+		return audio, e.MUSIC_ERROR_GET_DATA_FAIL
+	}
+	return audio, 0
+}

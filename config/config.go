@@ -13,19 +13,30 @@ type API struct {
 	Bilibili_JCT      string
 
 	NovelRulePath string
+
+	AnimeAgefansBaseUrl string
+	AnimeOmofunBaseUrl  string
+	AnimeDldmBaseUrl    string
 }
 
 type Server struct {
-	Version   string
-	GinMode   string
-	HttpPort  int
-	JwtSecret string
-	FileRoot  string
-	RealUrl   string
+	Version      string
+	GinMode      string
+	HttpPort     int
+	JwtSecret    string
+	JwtTokenName string
+	FileRoot     string
+	RealUrl      string
 
-	UploadImageMaxSize int64
+	UploadSavePath       string
+	UploadServerUrl      string
+	UploadMaxSize        int
+	UploadAllowImageExts []string
 
-	UseRedisCache bool
+	UseRedisCache    bool
+	RedisCachePeriod int // in seconds
+
+	LogFile string
 }
 
 func (self *Server) GetFilePath(path string) string {
@@ -50,26 +61,32 @@ var APIConfig *API
 var ServerConfig *Server
 var ServerDBConfig *ServerDB
 var RedisConfig *Redis
+var cfgFile *ini.File
 
 func init() {
-	APIConfig = &API{}
-	ServerConfig = &Server{}
-	ServerDBConfig = &ServerDB{}
-	RedisConfig = &Redis{}
+	Load("conf/conf.ini")
+}
+
+func Load(path string) {
+	var err error
+	cfgFile, err = ini.Load(path)
+	if err != nil {
+		//log.Fatal("Load config fail")
+		log.Println("Load config fail")
+		return
+	}
 	Initialize()
 }
 
 func Initialize() {
-	cfg, err := ini.Load("conf/conf.ini")
-	if err != nil {
-		cfg, err = ini.Load("D:\\Repository\\AynaAPI\\conf\\test_conf.ini")
-		log.Fatalf("setting.Setup, fail to parse 'conf/conf.ini': %v", err)
-	}
-
-	mapTo(cfg, "API", APIConfig)
-	mapTo(cfg, "Server", ServerConfig)
-	mapTo(cfg, "ServerDB", ServerDBConfig)
-	mapTo(cfg, "Redis", RedisConfig)
+	APIConfig = &API{}
+	ServerConfig = &Server{}
+	ServerDBConfig = &ServerDB{}
+	RedisConfig = &Redis{}
+	mapTo(cfgFile, "API", APIConfig)
+	mapTo(cfgFile, "Server", ServerConfig)
+	mapTo(cfgFile, "ServerDB", ServerDBConfig)
+	mapTo(cfgFile, "Redis", RedisConfig)
 }
 
 // mapTo map section

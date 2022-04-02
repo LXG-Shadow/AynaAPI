@@ -13,10 +13,10 @@ import (
 // @Description 获取来源列表
 // @Tags Anime
 // @Produce json
-// @Success 200 {object} app.AppJsonResponse
+// @Success 200 {object} resp.AnimeProviderList
 // @Router /api/v2/anime/providerlist [get]
 func GetProviderList(context *gin.Context) {
 	appG := app.AppGin{C: context}
-	appG.MakeResponse(http.StatusOK, e.API_OK, anime.GetAnimeProviderList())
+	appG.MakeResponse(http.StatusOK, e.API_OK, anime.Providers.GetProviderList())
 	return
 }

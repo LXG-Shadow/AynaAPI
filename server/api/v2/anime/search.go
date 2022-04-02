@@ -2,7 +2,6 @@ package anime
 
 import (
 	"AynaAPI/api/anime"
-	animeCore "AynaAPI/api/anime/core"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/service/api_service"
@@ -15,10 +14,10 @@ import (
 // @Description 根据来源搜索动漫
 // @Tags Anime
 // @Produce json
-// @Param provider path string true "anime provider identifier"
-// @Param keyword query string true "keyword"
+// @Param provider path string true "anime provider identifier (e.g. susudm)"
+// @Param keyword query string true "keyword (e.g. 刀剑神域)"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "susudm?keyword=刀剑神域"
+// @Success 200 {object} resp.AnimeSearchResult
 // @Router /api/v2/anime/search/{provider} [get]
 func Search(context *gin.Context) {
 	appG := app.AppGin{C: context}
@@ -29,12 +28,14 @@ func Search(context *gin.Context) {
 		appG.MakeResponse(http.StatusBadRequest, e.API_ERROR_REQUIRE_PARAMETER, "require keyword")
 		return
 	}
-	result, errcode := api_service.NovelSearch(providerName, keyword, useCache)
+	result, errcode := api_service.AnimeSearch(providerName, keyword, useCache)
 	if errcode != 0 {
 		appG.MakeEmptyResponse(http.StatusOK, errcode)
 		return
 	}
-	appG.MakeResponse(http.StatusOK, e.API_OK, result)
+	appG.MakeResponse(http.StatusOK, e.API_OK, map[string][]anime.AnimeMeta{
+		providerName: result.Result,
+	})
 }
 
 // SearchAll godoc
@@ -42,9 +43,9 @@ func Search(context *gin.Context) {
 // @Description 搜索动漫
 // @Tags Anime
 // @Produce json
-// @Param keyword query string true "keyword"
+// @Param keyword query string true "keyword (e.g. 刀剑神域)"
 // @Param cache query boolean false "use cache"
-// @Success 200 {object} app.AppJsonResponse "刀剑神域"
+// @Success 200 {object} resp.AnimeSearchResult
 // @Router /api/v2/anime/search [get]
 func SearchAll(context *gin.Context) {
 	appG := app.AppGin{C: context}
@@ -54,10 +55,10 @@ func SearchAll(context *gin.Context) {
 		return
 	}
 	useCache := appG.GetBoolQueryWithDefault("cache", true)
-	result := map[string]animeCore.AnimeSearchResult{}
-	for _, providerName := range anime.GetAnimeProviderList() {
+	result := map[string][]anime.AnimeMeta{}
+	for _, providerName := range anime.Providers.GetProviderList() {
 		if r, err := api_service.AnimeSearch(providerName, keyword, useCache); err == 0 {
-			result[providerName] = r
+			result[providerName] = r.Result
 		}
 	}
 	appG.MakeResponse(http.StatusOK, e.API_OK, result)

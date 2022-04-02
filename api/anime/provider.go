@@ -1,33 +1,34 @@
 package anime
 
 import (
-	"AynaAPI/api/anime/core"
-	"AynaAPI/api/anime/provider"
+	"AynaAPI/api/core"
 )
 
-var ProviderMap map[string]core.AnimeProvider
+type AnimeProvider interface {
+	GetName() string
+	Validate(meta core.ProviderMeta) bool
+	Search(keyword string) (AnimeSearchResult, error)
+	GetAnimeMeta(meta core.ProviderMeta) (AnimeMeta, error)
+	UpdateAnimeMeta(meta *AnimeMeta) error
+	GetAnime(meta AnimeMeta) (Anime, error)
+	UpdateAnime(anime *Anime) error
+	UpdateAnimeVideo(video *AnimeVideo) error
+}
+
+type AnimeProviderManager struct {
+	core.ProviderManager
+}
+
+func (p *AnimeProviderManager) GetProvider(identifier string) AnimeProvider {
+	val, _ := p.ProviderMap[identifier]
+	if val == nil {
+		return nil
+	}
+	return val.(AnimeProvider)
+}
+
+var Providers *AnimeProviderManager
 
 func init() {
-	ProviderMap = map[string]core.AnimeProvider{
-		provider.AgefansAPI.GetName(): provider.AgefansAPI,
-		provider.SusuDmAPI.GetName():  provider.SusuDmAPI,
-	}
-}
-
-func GetAnimeProviderList() []string {
-	plist := make([]string, 0)
-	for key, _ := range ProviderMap {
-		plist = append(plist, key)
-	}
-	return plist
-}
-
-func IsProviderAvailable(identifier string) bool {
-	val, _ := ProviderMap[identifier]
-	return val != nil
-}
-
-func GetAnimeProvider(identifier string) core.AnimeProvider {
-	val, _ := ProviderMap[identifier]
-	return val
+	Providers = &AnimeProviderManager{core.ProviderManager{ProviderMap: map[string]interface{}{}}}
 }

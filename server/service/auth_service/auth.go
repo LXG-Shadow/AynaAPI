@@ -1,21 +1,37 @@
 package auth_service
 
-import "AynaAPI/server/models"
+import (
+	"AynaAPI/server/model"
+)
 
-func Auth(username, password string) bool {
-	if ok, err := models.AuthUser(username, password); err == nil {
-		return ok
-	}
-	return false
+type LoginParam struct {
+	Username string `form:"username" binding:"required,min=2,max=32"`
+	Password string `form:"password" binding:"required,min=6,max=32"`
 }
 
-func GetAuthUser(username, password string) (bool, *models.User) {
-	user, err := models.GetUser(username)
+func (s *AuthService) AuthUser(param LoginParam) (*model.User, bool) {
+	user, err := s.Dao.GetUser(param.Username)
 	if err != nil {
-		return false, nil
+		return nil, false
 	}
-	if user.Password != password {
-		return false, nil
+	if user.Password != param.Password {
+		return nil, false
 	}
-	return true, user
+	return user, true
+}
+
+func (s *AuthService) Login(param LoginParam) bool {
+	_, ok := s.AuthUser(param)
+	return ok
+}
+
+func (s *AuthService) IsUserNameExists(username string) (bool, error) {
+	user, err := s.Dao.GetUser(username)
+	if err != nil {
+		return false, err
+	}
+	if user.ID > 0 {
+		return true, nil
+	}
+	return false, nil
 }

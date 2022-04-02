@@ -1,4 +1,60 @@
 definitions:
+  anime.Anime:
+    properties:
+      cover:
+        type: string
+      description:
+        type: string
+      playlists:
+        items:
+          $ref: '#/definitions/anime.Playlist'
+        type: array
+      provider:
+        $ref: '#/definitions/core.ProviderMeta'
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      year:
+        type: string
+    type: object
+  anime.AnimeMeta:
+    properties:
+      cover:
+        type: string
+      description:
+        type: string
+      provider:
+        $ref: '#/definitions/core.ProviderMeta'
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      year:
+        type: string
+    type: object
+  anime.AnimeVideo:
+    properties:
+      provider:
+        $ref: '#/definitions/core.ProviderMeta'
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  anime.Playlist:
+    properties:
+      name:
+        type: string
+      videos:
+        items:
+          $ref: '#/definitions/anime.AnimeVideo'
+        type: array
+    type: object
   app.AppJsonResponse:
     properties:
       code:
@@ -8,11 +64,180 @@ definitions:
       msg:
         type: string
     type: object
+  core.ProviderMeta:
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  music.Music:
+    properties:
+      album:
+        type: string
+      artist:
+        type: string
+      audio:
+        $ref: '#/definitions/music.MusicAudio'
+      cover:
+        type: string
+      lyric:
+        $ref: '#/definitions/music.MusicLyric'
+      provider:
+        $ref: '#/definitions/core.ProviderMeta'
+      title:
+        type: string
+    type: object
+  music.MusicAudio:
+    properties:
+      provider:
+        $ref: '#/definitions/core.ProviderMeta'
+      size:
+        type: integer
+      type:
+        type: string
+      url:
+        type: string
+      user_agent:
+        type: string
+    type: object
+  music.MusicLyric:
+    properties:
+      data:
+        type: string
+    type: object
+  music.MusicMeta:
+    properties:
+      album:
+        type: string
+      artist:
+        type: string
+      cover:
+        type: string
+      provider:
+        $ref: '#/definitions/core.ProviderMeta'
+      title:
+        type: string
+    type: object
+  resp.AnimeInfo:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/anime.Anime'
+      msg:
+        type: string
+    type: object
+  resp.AnimePlayUrl:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/anime.AnimeVideo'
+      msg:
+        type: string
+    type: object
+  resp.AnimeProviderList:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          type: string
+        type: array
+      msg:
+        type: string
+    type: object
+  resp.AnimeSearchResult:
+    properties:
+      code:
+        type: integer
+      data:
+        additionalProperties:
+          items:
+            $ref: '#/definitions/anime.AnimeMeta'
+          type: array
+        type: object
+      msg:
+        type: string
+    type: object
+  resp.LoginResp:
+    properties:
+      code:
+        type: integer
+      data:
+        additionalProperties:
+          type: string
+        example:
+          token: token1234
+        type: object
+      msg:
+        type: string
+    type: object
+  resp.MusicInfo:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/music.Music'
+      msg:
+        type: string
+    type: object
+  resp.MusicPlayUrl:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/music.MusicAudio'
+      msg:
+        type: string
+    type: object
+  resp.MusicProviderList:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          type: string
+        type: array
+      msg:
+        type: string
+    type: object
+  resp.MusicSearchResult:
+    properties:
+      code:
+        type: integer
+      data:
+        additionalProperties:
+          items:
+            $ref: '#/definitions/music.MusicMeta'
+          type: array
+        type: object
+      msg:
+        type: string
+    type: object
+  resp.PublicInfo:
+    properties:
+      permission:
+        type: integer
+      username:
+        type: string
+    type: object
+  resp.UserPublicInfo:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/resp.PublicInfo'
+      msg:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
   /api/v1/auth/info:
     get:
+      deprecated: true
       description: 获取当前用户信息
       produces:
       - application/json
@@ -26,6 +251,7 @@ paths:
       - Auth
   /api/v1/auth/login:
     get:
+      deprecated: true
       description: 登录
       parameters:
       - description: username
@@ -48,6 +274,20 @@ paths:
       summary: login
       tags:
       - Auth
+  /api/v1/auth/logout:
+    get:
+      deprecated: true
+      description: 登出
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: logout
+      tags:
+      - Auth
   /api/v2/anime/info:
     get:
       description: 根据metadata获取动漫信息
@@ -65,9 +305,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: xxxxxxx
+          description: OK
           schema:
-            $ref: '#/definitions/app.AppJsonResponse'
+            $ref: '#/definitions/resp.AnimeInfo'
       summary: get anime info
       tags:
       - Anime
@@ -96,9 +336,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: xxxxxxx
+          description: OK
           schema:
-            $ref: '#/definitions/app.AppJsonResponse'
+            $ref: '#/definitions/resp.AnimePlayUrl'
       summary: get anime playurl
       tags:
       - Anime
@@ -111,7 +351,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/app.AppJsonResponse'
+            $ref: '#/definitions/resp.AnimeProviderList'
       summary: get provider list
       tags:
       - Anime
@@ -119,7 +359,7 @@ paths:
     get:
       description: 搜索动漫
       parameters:
-      - description: keyword
+      - description: keyword (e.g. 刀剑神域)
         in: query
         name: keyword
         required: true
@@ -132,9 +372,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: 刀剑神域
+          description: OK
           schema:
-            $ref: '#/definitions/app.AppJsonResponse'
+            $ref: '#/definitions/resp.AnimeSearchResult'
       summary: search anime
       tags:
       - Anime
@@ -142,11 +382,120 @@ paths:
     get:
       description: 根据来源搜索动漫
       parameters:
-      - description: anime provider identifier
+      - description: anime provider identifier (e.g. susudm)
         in: path
         name: provider
         required: true
         type: string
+      - description: keyword (e.g. 刀剑神域)
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.AnimeSearchResult'
+      summary: search anime
+      tags:
+      - Anime
+  /api/v2/auth/info:
+    get:
+      description: 获取当前用户信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.UserPublicInfo'
+      summary: get current user info
+      tags:
+      - Auth
+  /api/v2/auth/login:
+    get:
+      description: 登录
+      parameters:
+      - description: username
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: password
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.LoginResp'
+      summary: login
+      tags:
+      - Auth
+  /api/v2/auth/logout:
+    get:
+      description: 登出
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.AppJsonResponse'
+      summary: logout
+      tags:
+      - Auth
+  /api/v2/music/info:
+    get:
+      description: 根据metadata获取音乐信息
+      parameters:
+      - description: music provider meta id
+        in: query
+        name: mid
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.MusicInfo'
+      summary: get music info
+      tags:
+      - Music
+  /api/v2/music/providerlist:
+    get:
+      description: 获取来源列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.MusicProviderList'
+      summary: get provider list
+      tags:
+      - Music
+  /api/v2/music/search:
+    get:
+      description: 搜索音乐
+      parameters:
       - description: keyword
         in: query
         name: keyword
@@ -160,14 +509,70 @@ paths:
       - application/json
       responses:
         "200":
-          description: susudm?keyword=刀剑神域
+          description: OK
           schema:
-            $ref: '#/definitions/app.AppJsonResponse'
-      summary: search anime
+            $ref: '#/definitions/resp.MusicSearchResult'
+      summary: search music
       tags:
-      - Anime
+      - Music
+  /api/v2/music/search/{provider}:
+    get:
+      description: 根据来源搜索音乐
+      parameters:
+      - description: music provider identifier (e.g. bilibilimusic)
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: keyword (e.g. 霜雪千年)
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.MusicSearchResult'
+      summary: search music
+      tags:
+      - Music
+  /api/v2/music/url:
+    get:
+      description: 获取音乐播放地址
+      parameters:
+      - description: music provider meta id
+        in: query
+        name: mid
+        required: true
+        type: string
+      - description: specify user agent
+        in: query
+        name: ua
+        type: string
+      - description: use cache
+        in: query
+        name: cache
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.MusicPlayUrl'
+      summary: get music playurl
+      tags:
+      - Music
   /api/v2/novel/content:
     get:
+      deprecated: true
       description: 获取小说章节内容
       parameters:
       - description: novel provider meta id
@@ -199,6 +604,7 @@ paths:
       - Novel
   /api/v2/novel/info:
     get:
+      deprecated: true
       description: 获取小说简介
       parameters:
       - description: novel provider meta id
@@ -222,6 +628,7 @@ paths:
       - Novel
   /api/v2/novel/providerlist:
     get:
+      deprecated: true
       description: 获取来源列表
       produces:
       - application/json
@@ -235,6 +642,7 @@ paths:
       - Novel
   /api/v2/novel/search:
     get:
+      deprecated: true
       description: 搜索小说
       parameters:
       - description: keyword
@@ -258,6 +666,7 @@ paths:
       - Novel
   /api/v2/novel/search/{provider}:
     get:
+      deprecated: true
       description: 根据来源搜索小说
       parameters:
       - description: novel provider identifier

@@ -1,13 +1,14 @@
 package provider
 
 import (
-	"AynaAPI/api/anime/core"
+	"AynaAPI/api/anime"
+	"AynaAPI/api/core"
 	"fmt"
 	"testing"
 )
 
 func TestAgefans_Search(t *testing.T) {
-	var provider core.AnimeProvider = AgefansAPI
+	var provider anime.AnimeProvider = AgefansAPI
 	search, err := provider.Search("刀剑神域")
 	if err != nil {
 		return
@@ -16,30 +17,30 @@ func TestAgefans_Search(t *testing.T) {
 }
 
 func TestAgefans_GetAnimeMeta(t *testing.T) {
-	var provider core.AnimeProvider = AgefansAPI
+	var provider anime.AnimeProvider = AgefansAPI
 	fmt.Println(provider.GetAnimeMeta(core.ProviderMeta{
 		Name: "agefans",
-		Url:  "https://www.agefans.cc/detail/20190087",
+		Url:  "20190087",
 	}))
 }
 
 func TestAgefans_GetAnime(t *testing.T) {
-	var provider core.AnimeProvider = AgefansAPI
+	var provider anime.AnimeProvider = AgefansAPI
 	search, _ := provider.Search("ggo")
 	am := search.Result[0]
-	fmt.Println(am)
-	anime, _ := provider.GetAnime(am)
-	fmt.Println(anime)
+	//fmt.Println(am)
+	animee, _ := provider.GetAnime(am)
+	fmt.Println(animee.Playlists)
 }
 
 func TestAgefans_updateAnimeVideo(t *testing.T) {
 	provider := AgefansAPI
-	video := core.AnimeVideo{
+	video := anime.AnimeVideo{
 		Title: "miao",
 		Url:   "",
 		Provider: core.ProviderMeta{
 			Name: "",
-			Url:  "https://www.agefans.cc/_getplay?aid=20210249&playindex=2&epindex=1",
+			Url:  "20210249-2-1",
 		},
 	}
 	fmt.Println(provider.UpdateAnimeVideo(&video))

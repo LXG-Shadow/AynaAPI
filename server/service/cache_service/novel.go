@@ -1,7 +1,8 @@
 package cache_service
 
 import (
-	novelCore "AynaAPI/api/novel/core"
+	"AynaAPI/api/core"
+	"AynaAPI/api/novel"
 	"fmt"
 )
 
@@ -10,10 +11,10 @@ const (
 	PREFIX_NOVEL_SEARCH = "api_novel_search"
 )
 
-func GetNovelInfoKey(meta novelCore.ProviderMeta) string {
+func GetNovelInfoKey(meta core.ProviderMeta) string {
 	return PREFIX_NOVEL_INFO + "_" + meta.Dump()
 }
 
-func GetNovelSearchKey(provider novelCore.NovelProvider, keyword string) string {
+func GetNovelSearchKey(provider novel.NovelProvider, keyword string) string {
 	return PREFIX_NOVEL_SEARCH + "_" + fmt.Sprintf("%s_%s", provider.GetName(), keyword)
 }

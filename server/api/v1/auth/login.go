@@ -1,10 +1,11 @@
 package auth
 
 import (
+	"AynaAPI/config"
 	"AynaAPI/server/app"
 	"AynaAPI/server/app/e"
 	"AynaAPI/server/middleware/jwt"
-	"AynaAPI/server/models"
+	"AynaAPI/server/service/auth_service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -18,6 +19,7 @@ import (
 // @Param password query string true "password"
 // @Success 200 {object} app.AppJsonResponse "
 // @Router /api/v1/auth/login [get]
+// @deprecated
 func Login(c *gin.Context) {
 	appG := app.AppGin{C: c}
 
@@ -32,7 +34,10 @@ func Login(c *gin.Context) {
 		return
 	}
 	// todo change to service
-	if ok, _ := models.AuthUser(username, password); !ok {
+	if !auth_service.New().Login(auth_service.LoginParam{
+		Username: username,
+		Password: password,
+	}) {
 		appG.MakeEmptyResponse(http.StatusOK, e.AUTH_ERROR_U_P_NOT_MATCH)
 		return
 	}
@@ -41,7 +46,7 @@ func Login(c *gin.Context) {
 		appG.MakeEmptyResponse(http.StatusInternalServerError, e.ERROR_UNKNOWN)
 		return
 	}
-	appG.SetCookie("ayapi_token", token, 7*24*3600, false, true)
+	appG.SetCookie(config.ServerConfig.JwtTokenName, token, 7*24*3600, false, true)
 	appG.MakeResponse(http.StatusOK, e.AUTH_OK, map[string]string{
 		"token": token,
 	})

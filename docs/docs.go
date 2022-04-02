@@ -34,6 +34,7 @@ var doc = `{
                     "Auth"
                 ],
                 "summary": "get current user info",
+                "deprecated": true,
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -54,6 +55,7 @@ var doc = `{
                     "Auth"
                 ],
                 "summary": "login",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -70,6 +72,27 @@ var doc = `{
                         "required": true
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "get": {
+                "description": "登出",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "logout",
+                "deprecated": true,
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -107,9 +130,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "xxxxxxx",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app.AppJsonResponse"
+                            "$ref": "#/definitions/resp.AnimeInfo"
                         }
                     }
                 }
@@ -154,9 +177,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "xxxxxxx",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app.AppJsonResponse"
+                            "$ref": "#/definitions/resp.AnimePlayUrl"
                         }
                     }
                 }
@@ -176,7 +199,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app.AppJsonResponse"
+                            "$ref": "#/definitions/resp.AnimeProviderList"
                         }
                     }
                 }
@@ -195,7 +218,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "keyword",
+                        "description": "keyword (e.g. 刀剑神域)",
                         "name": "keyword",
                         "in": "query",
                         "required": true
@@ -209,9 +232,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "刀剑神域",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app.AppJsonResponse"
+                            "$ref": "#/definitions/resp.AnimeSearchResult"
                         }
                     }
                 }
@@ -230,11 +253,177 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "anime provider identifier",
+                        "description": "anime provider identifier (e.g. susudm)",
                         "name": "provider",
                         "in": "path",
                         "required": true
                     },
+                    {
+                        "type": "string",
+                        "description": "keyword (e.g. 刀剑神域)",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.AnimeSearchResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/auth/info": {
+            "get": {
+                "description": "获取当前用户信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "get current user info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.UserPublicInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/auth/login": {
+            "get": {
+                "description": "登录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.LoginResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/auth/logout": {
+            "get": {
+                "description": "登出",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "logout",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/info": {
+            "get": {
+                "description": "根据metadata获取音乐信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "get music info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "music provider meta id",
+                        "name": "mid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.MusicInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/providerlist": {
+            "get": {
+                "description": "获取来源列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "get provider list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.MusicProviderList"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/search": {
+            "get": {
+                "description": "搜索音乐",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "search music",
+                "parameters": [
                     {
                         "type": "string",
                         "description": "keyword",
@@ -251,9 +440,92 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "susudm?keyword=刀剑神域",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app.AppJsonResponse"
+                            "$ref": "#/definitions/resp.MusicSearchResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/search/{provider}": {
+            "get": {
+                "description": "根据来源搜索音乐",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "search music",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "music provider identifier (e.g. bilibilimusic)",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "keyword (e.g. 霜雪千年)",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.MusicSearchResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/music/url": {
+            "get": {
+                "description": "获取音乐播放地址",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Music"
+                ],
+                "summary": "get music playurl",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "music provider meta id",
+                        "name": "mid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "specify user agent",
+                        "name": "ua",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "use cache",
+                        "name": "cache",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.MusicPlayUrl"
                         }
                     }
                 }
@@ -269,6 +541,7 @@ var doc = `{
                     "Novel"
                 ],
                 "summary": "get novel content",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -316,6 +589,7 @@ var doc = `{
                     "Novel"
                 ],
                 "summary": "get novel info",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -351,6 +625,7 @@ var doc = `{
                     "Novel"
                 ],
                 "summary": "get provider list",
+                "deprecated": true,
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -371,6 +646,7 @@ var doc = `{
                     "Novel"
                 ],
                 "summary": "search novel",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -406,6 +682,7 @@ var doc = `{
                     "Novel"
                 ],
                 "summary": "search novel",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -440,6 +717,92 @@ var doc = `{
         }
     },
     "definitions": {
+        "anime.Anime": {
+            "type": "object",
+            "properties": {
+                "cover": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "playlists": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/anime.Playlist"
+                    }
+                },
+                "provider": {
+                    "$ref": "#/definitions/core.ProviderMeta"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "anime.AnimeMeta": {
+            "type": "object",
+            "properties": {
+                "cover": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "provider": {
+                    "$ref": "#/definitions/core.ProviderMeta"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "anime.AnimeVideo": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "$ref": "#/definitions/core.ProviderMeta"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "anime.Playlist": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "videos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/anime.AnimeVideo"
+                    }
+                }
+            }
+        },
         "app.AppJsonResponse": {
             "type": "object",
             "properties": {
@@ -448,6 +811,266 @@ var doc = `{
                 },
                 "data": {
                     "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "core.ProviderMeta": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "music.Music": {
+            "type": "object",
+            "properties": {
+                "album": {
+                    "type": "string"
+                },
+                "artist": {
+                    "type": "string"
+                },
+                "audio": {
+                    "$ref": "#/definitions/music.MusicAudio"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "lyric": {
+                    "$ref": "#/definitions/music.MusicLyric"
+                },
+                "provider": {
+                    "$ref": "#/definitions/core.ProviderMeta"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "music.MusicAudio": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "$ref": "#/definitions/core.ProviderMeta"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "user_agent": {
+                    "type": "string"
+                }
+            }
+        },
+        "music.MusicLyric": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                }
+            }
+        },
+        "music.MusicMeta": {
+            "type": "object",
+            "properties": {
+                "album": {
+                    "type": "string"
+                },
+                "artist": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "provider": {
+                    "$ref": "#/definitions/core.ProviderMeta"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.AnimeInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/anime.Anime"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.AnimePlayUrl": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/anime.AnimeVideo"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.AnimeProviderList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.AnimeSearchResult": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/anime.AnimeMeta"
+                        }
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.LoginResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "token": "token1234"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.MusicInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/music.Music"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.MusicPlayUrl": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/music.MusicAudio"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.MusicProviderList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.MusicSearchResult": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/music.MusicMeta"
+                        }
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.PublicInfo": {
+            "type": "object",
+            "properties": {
+                "permission": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.UserPublicInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/resp.PublicInfo"
                 },
                 "msg": {
                     "type": "string"

@@ -15,8 +15,9 @@ import (
 // @Produce json
 // @Success 200 {object} app.AppJsonResponse
 // @Router /api/v2/novel/providerlist [get]
+// @deprecated
 func GetProviderList(context *gin.Context) {
 	appG := app.AppGin{C: context}
-	appG.MakeResponse(http.StatusOK, e.API_OK, novel.GetNovelProviderList())
+	appG.MakeResponse(http.StatusOK, e.API_OK, novel.Providers.GetProviderList())
 	return
 }

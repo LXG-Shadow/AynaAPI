@@ -1,7 +1,7 @@
 package core
 
 import (
-	e2 "AynaAPI/api/core/e"
+	"AynaAPI/api/e"
 )
 
 type ApiResponse struct {
@@ -13,7 +13,7 @@ type ApiResponse struct {
 func CreateApiResponseByStatus(status int, data map[string]interface{}) ApiResponse {
 	return ApiResponse{
 		Status:  status,
-		Message: e2.GetMessage(status),
+		Message: e.GetMessage(status),
 		Data:    data,
 	}
 }
@@ -21,7 +21,7 @@ func CreateApiResponseByStatus(status int, data map[string]interface{}) ApiRespo
 func CreateEmptyApiResponseByStatus(status int) ApiResponse {
 	return ApiResponse{
 		Status:  status,
-		Message: e2.GetMessage(status),
+		Message: e.GetMessage(status),
 		Data:    nil,
 	}
 }
