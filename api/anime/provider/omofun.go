@@ -123,6 +123,7 @@ func (p *Omofun) UpdateAnimeVideo(video *anime.AnimeVideo) error {
 	// unpad and decode
 	length := len(ciphertext)
 	video.Url = string(ciphertext[:length-int(ciphertext[length-1])])
+	video.Url = regexp.MustCompile("\\\\/").ReplaceAllString(video.Url, "/")
 	if err != nil {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}

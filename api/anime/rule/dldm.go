@@ -6,8 +6,9 @@ type DldmRules struct {
 	CommonSearchRules
 	CommonInfoRules
 	CommonPlaylistRules
-	VideoId  deepcolor.Item
-	VideoUrl deepcolor.Item
+	VideoId     deepcolor.Item
+	VideoAesIv  deepcolor.Item
+	VideoEncUrl deepcolor.Item
 }
 
 func InitializeDldmRules() DldmRules {
@@ -173,13 +174,28 @@ func InitializeDldmRules() DldmRules {
 				},
 			},
 		},
-		VideoUrl: deepcolor.Item{
+		VideoAesIv: deepcolor.Item{
 			Type: deepcolor.ItemTypeSingle,
 			Rules: []deepcolor.ItemRule{
 				{
-					Selector: deepcolor.JsonSelector("url"),
+					Selector: deepcolor.RegExpSelector(
+						"le_token = \"([^;]*)\";"),
 					Substitution: map[string]string{
-						"\\/": "/",
+						"le_token = \"": "",
+						"\";":           "",
+					},
+				},
+			},
+		},
+		VideoEncUrl: deepcolor.Item{
+			Type: deepcolor.ItemTypeSingle,
+			Rules: []deepcolor.ItemRule{
+				{
+					Selector: deepcolor.RegExpSelector(
+						"getVideoInfo\\(\"[^\"]*\"\\)"),
+					Substitution: map[string]string{
+						"getVideoInfo\\(\"": "",
+						"\"\\)":             "",
 					},
 				},
 			},

@@ -26,7 +26,7 @@ func TestOmofun_GetAnimeMeta(t *testing.T) {
 
 func TestAOmofun_GetAnime(t *testing.T) {
 	var provider anime.AnimeProvider = OmofunAPI
-	search, _ := provider.Search("Gun Gale Online")
+	search, _ := provider.Search("天才王子的赤字国家振兴术")
 	am := search.Result[0]
 	animee, _ := provider.GetAnime(am)
 	fmt.Println(animee.Playlists)

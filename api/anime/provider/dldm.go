@@ -6,6 +6,11 @@ import (
 	"AynaAPI/api/core"
 	"AynaAPI/api/e"
 	"AynaAPI/config"
+	"AynaAPI/utils/vfile"
+	"AynaAPI/utils/vhttp"
+	"crypto/aes"
+	"crypto/cipher"
+	"encoding/base64"
 	"fmt"
 	"github.com/aynakeya/deepcolor"
 	"regexp"
@@ -16,6 +21,7 @@ type Dldm struct {
 	CommonProvider
 	PlayUrlAPI1 string
 	PlayUrlAPI2 string
+	AesKey      []byte
 	Rules       rule.DldmRules
 }
 
@@ -32,7 +38,8 @@ func _newDldm(baseurl string) *Dldm {
 			PlaylistRules: rules.CommonPlaylistRules,
 		},
 		PlayUrlAPI1: baseurl + "/index.php/vod/play/id/%s/sid/%s/nid/%s.html",
-		PlayUrlAPI2: baseurl + "/v/json_api.php?url=%s",
+		PlayUrlAPI2: baseurl + "/v/?url=%s",
+		AesKey:      []byte("A42EAC0C2B40847B"),
 		Rules:       rules,
 	}
 }
@@ -85,16 +92,78 @@ func (p *Dldm) UpdateAnimeVideo(video *anime.AnimeVideo) error {
 	if videoid == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
+	videoid = vhttp.QueryUnescapeWithEncoding(videoid, "utf-8")
+	if vfile.GetFileExt(videoid) == ".m3u8" {
+		video.Url = videoid
+		return nil
+	}
 	url = fmt.Sprintf(p.PlayUrlAPI2, videoid)
 	result, err = deepcolor.Fetch(deepcolor.Tentacle{
 		Url:         url,
 		Charset:     "utf-8",
-		ContentType: deepcolor.ResultTypeText | deepcolor.ResultTypeJson,
+		ContentType: deepcolor.ResultTypeText,
 	}, deepcolor.GetCORS, nil, nil)
-	realUrl := result.GetSingle(p.Rules.VideoUrl)
-	if realUrl == "" {
+	aesiv := result.GetSingle(p.Rules.VideoAesIv)
+	if aesiv == "" {
 		return e.NewError(e.EXTERNAL_API_ERROR)
 	}
-	video.Url = realUrl
+	iv := []byte(aesiv)
+	block, err := aes.NewCipher(p.AesKey)
+	if err != nil {
+		return e.NewError(e.INTERNAL_ERROR)
+	}
+	mode := cipher.NewCBCDecrypter(block, iv)
+	raw_text := result.GetSingle(p.Rules.VideoEncUrl)
+	if aesiv == "" {
+		return e.NewError(e.EXTERNAL_API_ERROR)
+	}
+	ciphertext, _ := base64.StdEncoding.DecodeString(raw_text)
+	if err != nil {
+		return e.NewError(e.INTERNAL_ERROR)
+	}
+	// CBC mode always works in whole blocks.
+	if len(ciphertext)%aes.BlockSize != 0 {
+		fmt.Println("ciphertext is not a multiple of the block size")
+	}
+	mode.CryptBlocks(ciphertext, ciphertext)
+	// unpad and decode
+	length := len(ciphertext)
+	video.Url = string(ciphertext[:length-int(ciphertext[length-1])])
+	video.Url = regexp.MustCompile("\\\\/").ReplaceAllString(video.Url, "/")
+	if err != nil {
+		return e.NewError(e.EXTERNAL_API_ERROR)
+	}
 	return nil
 }
+
+//func (p *Dldm) UpdateAnimeVideo(video *anime.AnimeVideo) error {
+//	tmp := strings.Split(video.Provider.Url, "-")
+//	if len(tmp) < 3 {
+//		return e.NewError(e.PROVIDER_META_NOT_VALIED)
+//	}
+//	url := fmt.Sprintf(p.PlayUrlAPI1, tmp[0], tmp[1], tmp[2])
+//	result, err := deepcolor.Fetch(deepcolor.Tentacle{
+//		Url:         url,
+//		Charset:     "utf-8",
+//		ContentType: deepcolor.ResultTypeText,
+//	}, deepcolor.GetCORS, nil, nil)
+//	if err != nil {
+//		return e.NewError(e.EXTERNAL_API_ERROR)
+//	}
+//	videoid := result.GetSingle(p.Rules.VideoId)
+//	if videoid == "" {
+//		return e.NewError(e.EXTERNAL_API_ERROR)
+//	}
+//	url = fmt.Sprintf(p.PlayUrlAPI2, videoid)
+//	result, err = deepcolor.Fetch(deepcolor.Tentacle{
+//		Url:         url,
+//		Charset:     "utf-8",
+//		ContentType: deepcolor.ResultTypeText | deepcolor.ResultTypeJson,
+//	}, deepcolor.GetCORS, nil, nil)
+//	realUrl := result.GetSingle(p.Rules.VideoUrl)
+//	if realUrl == "" {
+//		return e.NewError(e.EXTERNAL_API_ERROR)
+//	}
+//	video.Url = realUrl
+//	return nil
+//}

@@ -19,7 +19,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.AttributeSelector(
-							"div.module-search-item > div.video-info > div.video-info-header > h3 > a",
+							"div.module-card-item-info > div.module-card-item-title > a",
 							"href"),
 						Substitution: map[string]string{
 							".html":                     "",
@@ -33,7 +33,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"div.module-search-item > div.video-info > div.video-info-header > h3 > a"),
+							"div.module-card-item-info > div.module-card-item-title > a > strong"),
 					},
 				},
 			},
@@ -42,8 +42,8 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.AttributeSelector(
-							"div.module-search-item > div.video-cover > div > div > img",
-							"data-src"),
+							"div.module-item-pic > img",
+							"data-original"),
 					},
 				},
 			},
@@ -52,10 +52,11 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"div.module-search-item > div.video-info > div.video-info-header > div > div:nth-child(2)",
+							"div.module-card-item-info > div:nth-child(2) > div",
 						),
 						Substitution: map[string]string{
-							" ": "",
+							" ":       "",
+							"[^1-9]*": "",
 						},
 					},
 				},
@@ -65,7 +66,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"div.module-search-item >  div.video-info > div.video-info-header > div > a > span"),
+							"div.module-card-item-class"),
 					},
 				},
 			},
@@ -74,7 +75,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"div.module-search-item >  div.video-info > div.video-info-main > div:nth-child(3) > div"),
+							"div.module-card-item-info > div:nth-child(3) > div"),
 					},
 				},
 			},
@@ -84,7 +85,7 @@ func InitializeOmofunRules() OmofunRules {
 				Type: deepcolor.ItemTypeSingle,
 				Rules: []deepcolor.ItemRule{
 					{
-						Selector: deepcolor.TextSelector(".page-title"),
+						Selector: deepcolor.TextSelector("div.module-main > div.module-info-main > div.module-info-heading > h1"),
 					},
 				},
 			},
@@ -93,8 +94,8 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.AttributeSelector(
-							"#main > div > div.box.view-heading > div.video-cover > div > div > img",
-							"data-src"),
+							"div.module-main > div.module-info-poster > div > div > img",
+							"data-original"),
 					},
 				},
 			},
@@ -103,7 +104,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"#main > div > div.box.view-heading > div.video-info > div.video-info-header > div.scroll-box > div > a:nth-child(3)"),
+							"div.module-main > div.module-info-main > div.module-info-heading > div.module-info-tag > div:nth-child(1)"),
 					},
 				},
 			},
@@ -112,7 +113,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"#main > div > div.box.view-heading > div.video-info > div.video-info-header > div.scroll-box > div > div > a"),
+							"div.module-main > div.module-info-main > div.module-info-heading > div.module-info-tag > div:nth-child(3) > a"),
 					},
 				},
 			},
@@ -120,7 +121,8 @@ func InitializeOmofunRules() OmofunRules {
 				Type: deepcolor.ItemTypeSingle,
 				Rules: []deepcolor.ItemRule{
 					{
-						Selector: deepcolor.TextSelector("#main > div > div.box.view-heading > div.video-info > div.video-info-main > div.video-info-items > div > span"),
+						Selector: deepcolor.TextSelector(
+							"div.module-main > div.module-info-main > div.module-info-content > div.module-info-items > div.module-info-item.module-info-introduction > div > p"),
 					},
 				},
 			},
@@ -131,7 +133,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"div.module-heading > div.module-tab.module-player-tab > div > div.module-tab-content > div > span"),
+							"div.module-tab-items-box > div.module-tab-item > span"),
 					},
 				},
 			},
@@ -140,7 +142,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.TextSelector(
-							"div.module-blocklist.scroll-box.scroll-box-y > div > a > span"),
+							"a.module-play-list-link > span"),
 					},
 				},
 			},
@@ -149,7 +151,7 @@ func InitializeOmofunRules() OmofunRules {
 				Rules: []deepcolor.ItemRule{
 					{
 						Selector: deepcolor.AttributeSelector(
-							"div.module-blocklist.scroll-box.scroll-box-y > div > a",
+							"a.module-play-list-link",
 							"href"),
 						Substitution: map[string]string{
 							"/index.php/vod/play/id/": "",
